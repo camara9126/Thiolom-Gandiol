@@ -1,0 +1,33 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('bon_commandes', function (Blueprint $table) {
+            $table->id();
+            $table->string('reference')->unique();
+            //$table->foreignId('fournisseur_id')->constrained()->onDelete('cascade');
+            $table->decimal('total', 10, 2)->default(0);
+            $table->enum('statut', ['en_attente', 'envoye', 'recu'])->default('en_attente');
+            $table->date('date_commande');
+            $table->text('note')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('bon_commandes');
+    }
+};
