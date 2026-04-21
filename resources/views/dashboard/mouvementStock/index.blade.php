@@ -55,12 +55,12 @@
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Reference</th>
-                                        <th>Produit</th>
-                                        <th>Type</th>
-                                        <th>Quantite</th>
-                                        <th>Magasin</th>
-                                        <th>Date</th>
+                                        <th style="background-color: #EC6206;" class="text-white">Reference</th>
+                                        <th style="background-color: #EC6206;" class="text-white">Produit</th>
+                                        <th style="background-color: #EC6206;" class="text-white">Type</th>
+                                        <th style="background-color: #EC6206;" class="text-white">Quantite</th>
+                                        <th style="background-color: #EC6206;" class="text-white">Magasin</th>
+                                        <th style="background-color: #EC6206;" class="text-white">Date</th>
                                     </tr>
                                 </thead>
                                 <tbody>

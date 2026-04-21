@@ -45,7 +45,7 @@
         }
 
         :root {
-            --primary: #00457F;
+            --primary: #00778B;
             --primary-dark: #2F8EE0;
             --primary-light: #EDF5FA;
             --white: #ffffff;
@@ -54,7 +54,7 @@
             --gray-300: #dee2e6;
             --gray-600: #6c757d;
             --gray-800: #343a40;
-            --shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            --shadow: 0 0.125rem 0.25rem #B4EBF4;
             --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
         }
 
@@ -133,8 +133,8 @@
 
         .sidebar-nav a:hover, .sidebar-nav a.active {
             background: rgba(255, 255, 255, 0.1);
-            color: var(--white);
-            border-left-color: var(--white);
+            color: #FF9D1B;
+            border-left-color: #FF9D1B;
         }
 
         .sidebar-nav a i {

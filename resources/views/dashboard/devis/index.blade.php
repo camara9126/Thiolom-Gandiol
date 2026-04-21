@@ -48,13 +48,13 @@
                             <table class="">
                                 <thead>
                                     <tr>
-                                        <th>Reference</th>
-                                        <th>Client</th>
-                                        <th>Total Devis</th>
-                                        <th>Date de devis</th>
-                                        <th>Date d'expiration</th>
-                                        <th>Statut</th>
-                                        <th>Actions</th>
+                                        <th style="background-color: #00457F;" class="text-white">Reference</th>
+                                        <th style="background-color: #00457F;" class="text-white">Client</th>
+                                        <th style="background-color: #00457F;" class="text-white">Total Devis</th>
+                                        <th style="background-color: #00457F;" class="text-white">Date de devis</th>
+                                        <th style="background-color: #00457F;" class="text-white">Date d'expiration</th>
+                                        <th style="background-color: #00457F;" class="text-white">Statut</th>
+                                        <th style="background-color: #00457F;" class="text-white">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>

@@ -37,7 +37,7 @@
                 <!-- Stats Cards -->
                  <!-- 1er ligne -->
                 <div class="stats-grid">
-                    <div class="stat-card">
+                    <div class="stat-card" style="background-color: #E5D8FF;">
                         <div class="stat-info">
                             <a href="{{ route('articles.index') }}">
                                 <h3>Articles</h3>
@@ -48,7 +48,7 @@
                             <i class="fas fa-box"></i>
                         </div>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card" style="background-color: #FFF7B1;">
                         <div class="stat-info">
                             <a href="{{ route('clients.index') }}">
                                 <h3>Clients</h3>
@@ -60,10 +60,10 @@
                         </div>
                     </div>
                     
-                    <div class="stat-card">
+                    <div class="stat-card" style="background-color: #BAFFAC;">
                         <div class="stat-info">
                             <a href="{{ route('commandes.create') }}">
-                                <h3>factures</h3>
+                                <h3 class="">factures</h3>
                                 <div class="number">{{$commandes->count()}}</div>
                             </a>
                         </div>
@@ -86,7 +86,7 @@
 
                 <!-- 2nd ligne -->
                 <div class="stats-grid">
-                    <div class="stat-card2">
+                    <div class="stat-card2" style="background-color: #FFBC77;">
                         <div class="stat-info">
                             <a href="{{ route('articles.create') }}">
                                 <h3 class="text-white">Nouveau produit</h3>
@@ -97,7 +97,7 @@
                             <i class="fas fa-box"></i>
                         </div>
                     </div>
-                    <div class="stat-card2">
+                    <div class="stat-card2" style="background-color: #EC6206;">
                         <div class="stat-info">
                             <a href="{{ route('mouvements') }}">
                                 <h3 class="text-white">Stock</h3>
@@ -109,7 +109,7 @@
                         </div>
                     </div>
                     
-                    <div class="stat-card2">
+                    <div class="stat-card2" style="background-color: #11C6FF;">
                         <div class="stat-info">
                             <a href="{{ route('bonCommande.create') }}">
                                 <h3 class="text-white">Bon commande</h3>
@@ -135,7 +135,7 @@
 
 
                 <!-- Recent Products Table -->
-                <div class="card">
+                <div class="card" style="border: #088499;">
                     <div class="card-header">
                         <span><i class="fas fa-box" style="color: var(--primary); margin-right: 0.5rem;"></i> Articles récents</span>
                         <a href="{{ route('articles.index') }}" style="color: var(--primary); text-decoration: none; font-weight: 500;">Voir tout →</a>
@@ -145,14 +145,14 @@
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Image</th>
-                                        <th>Code</th>
-                                        <th>Produit</th>
-                                        <th>Catégorie</th>
-                                        <th>Prix</th>
-                                        <th>Stock</th>
-                                        <th>Etiquette</th>
-                                        <th>Statut</th>
+                                        <th style="background-color: #11C6FF;" class="text-white">Image</th>
+                                        <th style="background-color: #11C6FF;" class="text-white">Code</th>
+                                        <th style="background-color: #11C6FF;" class="text-white">Produit</th>
+                                        <th style="background-color: #11C6FF;" class="text-white">Catégorie</th>
+                                        <th style="background-color: #11C6FF;" class="text-white">Prix</th>
+                                        <th style="background-color: #11C6FF;" class="text-white">Stock</th>
+                                        <th style="background-color: #11C6FF;" class="text-white">Etiquette</th>
+                                        <th style="background-color: #11C6FF;" class="text-white">Statut</th>
                                     </tr>
                                 </thead>
                                 <tbody>

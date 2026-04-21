@@ -48,15 +48,15 @@
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Image</th>
-                                        <th>Code</th>
-                                        <th>Produit</th>
-                                        <th>Catégorie</th>
-                                        <th>Prix</th>
-                                        <th>Stock</th>
-                                        <th>Etiquette</th>
-                                        <th>Statut</th>
-                                        <th>Actions</th>
+                                        <th style="background-color: #E5D8FF;">Image</th>
+                                        <th style="background-color: #E5D8FF;">Code</th>
+                                        <th style="background-color: #E5D8FF;">Produit</th>
+                                        <th style="background-color: #E5D8FF;">Catégorie</th>
+                                        <th style="background-color: #E5D8FF;">Prix</th>
+                                        <th style="background-color: #E5D8FF;">Stock</th>
+                                        <th style="background-color: #E5D8FF;">Etiquette</th>
+                                        <th style="background-color: #E5D8FF;">Statut</th>
+                                        <th style="background-color: #E5D8FF;">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>

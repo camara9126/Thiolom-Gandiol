@@ -51,7 +51,7 @@
         }
 
         :root {
-            --primary: #00457F;
+            --primary: #00778B;
             --primary-dark: #2F8EE0;
             --primary-light: #EDF5FA;
             --white: #ffffff;
@@ -139,7 +139,7 @@
 
         .sidebar-nav a:hover, .sidebar-nav a.active {
             background: rgba(255, 255, 255, 0.1);
-            color: var(--white);
+            color:#FF9D1B;
             border-left-color: var(--white);
         }
 
@@ -1082,36 +1082,36 @@
 
                             <!-- Stats Cards -->
                 <div class="stats-grid">
-                    <div class="stat-card">
+                    <div class="stat-card" style="background-color: #3BC72F;">
                         <div class="stat-info">
-                            <h3>Total Recettes</h3>
+                            <h3 class="text-white">Total Recettes</h3>
                             <div class="card-value" id="total-revenus"></div>
                         </div>
                         <div class="stat-icon">
                             <i class="fas fa-arrow-up"></i>
                         </div>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card" style="background-color: red;">
                         <div class="stat-info">
-                            <h3>Total Depenses</h3>
+                            <h3 class="text-white">Total Depenses</h3>
                             <div class="card-value" id="total-depenses">8</div>
                         </div>
                         <div class="stat-icon">
                             <i class="fas fa-arrow-down"></i>
                         </div>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card" style="background-color: #1C8FED;">
                         <div class="stat-info">
-                            <h3>Résultat Net <br> (Bénéfice ce mois)</h3>
+                            <h3 class="text-white">Résultat Net <br> (Bénéfice ce mois)</h3>
                             <div class="card-value positive" id="resultat-net">48</div>
                         </div>
                         <div class="stat-icon">
                             <i class="fas fa-chart-line"></i>
                         </div>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card" style="background-color: #DC1CED;">
                         <div class="stat-info">
-                            <h3>Trésorerie Actuelle <br> (Solde disponible)</h3>
+                            <h3 class="text-white">Trésorerie Actuelle <br> (Solde disponible)</h3>
                             <div class="card-value" id="tresorerie">324</div>
                         </div>
                         <div class="stat-icon">

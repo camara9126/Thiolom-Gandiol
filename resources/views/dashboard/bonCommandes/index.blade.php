@@ -61,15 +61,15 @@
                         <div class="card">
                             <div class="card-body">
 
-                                <table class="table table-bordered table-striped">
+                                <table class="table-responsive">
                                     <thead>
                                         <tr>
-                                            <th>Référence</th>
-                                            <th>Fournisseur</th>
-                                            <th>Date</th>
-                                            <th>Total</th>
-                                            <th>Statut</th>
-                                            <th>Actions</th>
+                                            <th style="background-color: #11C6FF;" class="text-white">Référence</th>
+                                            <th style="background-color: #11C6FF;" class="text-white">Fournisseur</th>
+                                            <th style="background-color: #11C6FF;" class="text-white">Date</th>
+                                            <th style="background-color: #11C6FF;" class="text-white">Total</th>
+                                            <th style="background-color: #11C6FF;" class="text-white">Statut</th>
+                                            <th style="background-color: #11C6FF;" class="text-white">Actions</th>
                                         </tr>
                                     </thead>
 

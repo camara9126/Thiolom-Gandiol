@@ -50,11 +50,11 @@
                             <table class="">
                                 <thead>
                                     <tr>
-                                        <th>Reference</th>
-                                        <th>Date</th>
-                                        <th>Libelle</th>
-                                        <th>Montant</th>
-                                        <th>Statut</th>
+                                        <th style="background-color: #3BC72F;" class="text-white">Reference</th>
+                                        <th style="background-color: #3BC72F;" class="text-white">Date</th>
+                                        <th style="background-color: #3BC72F;" class="text-white">Libelle</th>
+                                        <th style="background-color: #3BC72F;" class="text-white">Montant</th>
+                                        <th style="background-color: #3BC72F;" class="text-white">Statut</th>
                                     </tr>
                                 </thead>
                                 <tbody>

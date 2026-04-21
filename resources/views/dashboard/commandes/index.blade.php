@@ -29,16 +29,16 @@
 
                 <h2>Caisse journaliere</h2>
                 <div class="stats-grid">
-                    <div class="stat-card">
+                    <div class="stat-card" style="background: linear-gradient(#0081A7, #00AFB9) ;">
                         <div class="stat-info">
-                            <h3>Ventes du jour</h3>
-                            <div class="number">{{$ventesJour->count()}}</div>
+                            <h3 class="text-white">Ventes du jour</h3>
+                            <div class="number text-white">{{$ventesJour->count()}}</div>
                         </div>
                         <div class="stat-icon">
                             <i class="fas fa-tags text-info"></i>
                         </div>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card" style="background: linear-gradient(#FF2626, #FFFF26) ;">
                         <div class="stat-info">
                             <h3>Montant Total</h3>
                             <div class="number">{{number_format($total, 0, ',', ' ')}} XOF</div>
@@ -47,16 +47,16 @@
                             <i class="fas fa-money-bill-wave"></i>
                         </div>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card" style="background: linear-gradient(#FF95F4, #FF2626) ;">
                         <div class="stat-info">
-                            <h3>Montant Encaisse</h3>
+                            <h3 class="">Montant Encaisse</h3>
                             <div class="number">{{number_format($totalEncaisse, 0, ',', ' ')}} XOF</div>
                         </div>
                         <div class="stat-icon">
                             <i class="fas fa-money-bill-wave text-warning"></i>
                         </div>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card" style="background: linear-gradient(#00778B, #DFBB2C) ;">
                         <div class="stat-info">
                             <h3>Depenses du jour</h3>
                             <div class="number">{{number_format($depensesJour, 0, ',', ' ')}} XOF</div>
@@ -65,7 +65,7 @@
                             <i class="fas fa-money-bill-wave text-danger"></i>
                         </div>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card" style="background: linear-gradient(#00E1FD, #0040FF) ;">
                         <div class="stat-info">
                             <h3>Montant Restant</h3>
                             <div class="number">{{number_format($totalReste, 0, ',', ' ')}} XOF</div>
@@ -105,16 +105,16 @@
                             <table class="">
                                 <thead>
                                     <tr>
-                                        <th>Reference</th>
-                                        <th>Tiers</th>
+                                        <th style="background-color: #BAFFAC;">Reference</th>
+                                        <th style="background-color: #BAFFAC;">Tiers</th>
                                         <!--<th>Montant TVA</th>-->
-                                        <th>Montant Total</th>
-                                        <th>Montant Payer</th>
-                                        <th>Montant Restant</th>
-                                        <th>Date</th>
-                                        <th>Statut</th>
-                                        <th>Actions</th>
-                                        <th>Facture</th>
+                                        <th style="background-color: #BAFFAC;">Montant Total</th>
+                                        <th style="background-color: #BAFFAC;">Montant Payer</th>
+                                        <th style="background-color: #BAFFAC;">Montant Restant</th>
+                                        <th style="background-color: #BAFFAC;">Date</th>
+                                        <th style="background-color: #BAFFAC;">Statut</th>
+                                        <th style="background-color: #BAFFAC;">Actions</th>
+                                        <th style="background-color: #BAFFAC;">Facture</th>
                                     </tr>
                                 </thead>
                                 <tbody>
