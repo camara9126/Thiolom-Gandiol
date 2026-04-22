@@ -46,7 +46,7 @@ class ProfileController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        return redirect()->route('users')->with('success', 'Utilisateur ajouté avec succès');
+        return redirect()->route('users.index')->with('success', 'Utilisateur ajouté avec succès');
     }
 
 

@@ -9,6 +9,7 @@ use App\Models\Depenses;
 use App\Models\Entreprise;
 use App\Models\Magasin;
 use App\Models\Paiements;
+use App\Models\Recettes;
 use App\Models\Vente;
 use App\Models\VenteItem;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -97,12 +98,13 @@ class VenteController extends Controller
             'statut',
             'articles.*.article_id' => 'required',
             'articles.*.quantite' => 'required|numeric|min:1',
-            'articles.*.prix' => 'required|numeric|min:0',
+            'articles.*.prix_vente' => 'required|numeric|min:0',
+            'montant' => 'required|numeric|min:0'
         ]);
 
 
 
-             //dd($request->all());
+            //dd($request->montant);
             $vente = Vente::create([
                 'client_id' => 1,
                 'reference' => 'VNT-' . time(),
@@ -127,7 +129,7 @@ class VenteController extends Controller
 
             $produit = Article::where('id', $item['article_id'])->lockForUpdate()->firstOrFail(); // verrou stock
             $magasin = Magasin::where('id', $request->magasin_id)->lockForUpdate()->firstOrFail(); // verrou stock
- //dd($magasin);
+            //dd($magasin);
             // Verification de la disponibilite de l'article dans le magasin
             $stock = Article_depot::where('article_id', $produit->id)->where('magasin_id', $magasin->id)->first();
 
@@ -171,20 +173,20 @@ class VenteController extends Controller
                 'article_id' => $item['article_id'],
                 'magasin_id' => $request->magasin_id,
                 'quantite' => $item['quantite'],
-                'prix_unitaire' => $item['prix'],
+                'prix_unitaire' => $item['prix_vente'],
                 'taux_tva' => $entreprise->taux_tva,
-                'montant_tva' => ($item['quantite'] * $item['prix']) * ($entreprise->taux_tva /100 ),
-                'total_ttc' => ($item['quantite'] * $item['prix']) + (($item['quantite'] * $item['prix']) * ($entreprise->taux_tva /100 )),
-                'total' => $item['quantite'] * $item['prix'],
+                'montant_tva' => ($item['quantite'] * $item['prix_vente']) * ($entreprise->taux_tva /100 ),
+                'total_ttc' => ($item['quantite'] * $item['prix_vente']) + (($item['quantite'] * $item['prix_vente']) * ($entreprise->taux_tva /100 )),
+                'total' => $item['quantite'] * $item['prix_vente'],
             ]);
 
             // Mise a jour stock
             $produit->decrement('stock', $item['quantite']);
 
             // Calcule total + total_tva + total_ttc
-            $total += $item['quantite'] *  $item['prix'];
-            $total_tva += ($item['quantite'] * $item['prix']) * ($entreprise->taux_tva /100 );
-            $total_ttc += ($item['quantite'] * $item['prix']) + (($item['quantite'] * $item['prix']) * ($entreprise->taux_tva /100 ));
+            $total += $item['quantite'] *  $item['prix_vente'];
+            $total_tva += ($item['quantite'] * $item['prix_vente']) * ($entreprise->taux_tva /100 );
+            $total_ttc += ($item['quantite'] * $item['prix_vente']) + (($item['quantite'] * $item['prix_vente']) * ($entreprise->taux_tva /100 ));
             
             // Mise a jour total + total_tva + total_ttc
             $vente->update([
@@ -193,10 +195,59 @@ class VenteController extends Controller
                 'total_ttc' => $total_ttc,
             ]);
 
-    }
 
-        return redirect()->route('commandes.index')->with('success','Vente effectue avec success');
-    }
+            
+        }
+        
+            // creation paiement
+            $paiement = $vente;
+
+            $totalPaye = $paiement->paiements()->where('statut','valide')->sum('montant');
+            $reste = $paiement->total_ttc - $totalPaye;
+
+            if ($request->montant > $reste) {
+                return back()->withErrors([
+                    'montant' => 'Le montant dépasse le reste à payer.'
+                ]);
+            }
+
+
+            $paiements= Paiements::create([
+                'vente_id' => $vente->id,
+                'montant' => $request->montant,
+                'mode_paiement' => 'cash',
+                'date_paiement' => now(),
+                'reference' => 'PAY-' . time()
+            ]);
+
+
+            // Mise à jour du statut de la vente
+            $vente = $paiements->vente;
+
+            $totalPaye = $vente->paiements()->where('statut','valide')->sum('montant');
+
+            $vente->statut = $totalPaye == 0 ? 'impayee' : ($totalPaye < $vente->total_ttc ? 'partielle' : 'payee');
+
+            $vente->save();
+
+
+            // 2. Création automatique de la recette
+            if($vente->statut == 'payee') {
+                 Recettes::create([
+                    'user_id' => $request->user()->id,
+                    'paiement_id' => $paiements->id,
+                    'reference' => 'REC-' . now()->timestamp,
+                    'libelle' => 'Paiement vente ' . $vente->reference,
+                    'montant' => $vente->total_ttc,
+                    'date_recette' => now(),
+                    'mode_paiement' => 'cash',
+                    'statut' => 'recu',
+                ]);
+            }
+           
+
+            return redirect()->route('commandes.index')->with('success', 'Vente effectuée avec succès');
+        }
 
     /**
      * Remove the specified resource from storage.
@@ -235,13 +286,10 @@ class VenteController extends Controller
 
 
     // Facture
-    public function facture(Vente $vente)
+    public function caisse($id)
     {
-
-        $vente->load(['client', 'items.produit']);
-
-        $pdf = Pdf::loadView('dashboard.commandes.facture', compact('vente'));
-
-        return $pdf->download('Facture-' . $vente->reference . '.pdf');
+        $caisse= Vente::with('client', 'items', 'paiements')->where('user_id', $id)->get();
+        //dd($caisse);
+        return view('dashboard.commandes.caisse', compact('caisse'));
     }
 }

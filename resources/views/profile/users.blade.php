@@ -54,6 +54,8 @@
                                             <th>Nom</th>
                                             <th>Email</th>
                                             <th>Role</th>
+                                            <th>Statut</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -61,7 +63,19 @@
                                         <tr>
                                             <td>{{$u->name}}</td>
                                             <td>{{$u->email ?? 'Vide'}}</td>
-                                            <td>{{$u->role ?? 'Vide'}}</td>    
+                                            <td>{{$u->role ?? 'Vide'}}</td>
+                                            <td>
+                                                @if($u->isOnline())
+                                                    <span class="badge bg-success">En ligne</span>
+                                                @else
+                                                    <span class="badge bg-danger">Hors ligne</span>
+                                                @endif
+                                            </td> 
+                                            <td>
+                                                <div class="action-buttons">
+                                                    <a href="{{ route('commandes.caisse', $u->id) }}" class="action-btn" title="Afficher"><i class="fas fa-eye"></i></a>
+                                                </div>
+                                            </td>   
                                         </tr>
                                         @empty
                                         <tr>
@@ -108,7 +122,7 @@
                                                     <select class="form-select" name="role" required>
                                                         <option >Selectionner un role</option>
                                                         <option value="admin">Administrateur</option>
-                                                        <option value="gestionnaire de stock">Gestionnaire de stock</option>
+                                                        <option value="gestionnaire_stock">Gestionnaire de stock</option>
                                                         <option value="caissier">Caissier</option>
                                                     </select> 
                                                 </div>

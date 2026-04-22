@@ -58,7 +58,7 @@
                                         <tr>  
                                             <td><strong>{{$c->nom}}</strong></td>
                                             <td>{{$c->description}}</td>
-                                            <td>{{$c->article->count()}}</td>
+                                            <td>{{$c->article->count() ?? '0'}}</td>
                                             <td>
                                                 <div class="action-buttons">
                                                     <a href="{{ route('categorie.show', $c->id) }}" class="action-btn"><i class="fas fa-edit"></i></a>

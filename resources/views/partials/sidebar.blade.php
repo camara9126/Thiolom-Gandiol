@@ -90,8 +90,8 @@
                     <li>
                         <a href="{{ route('commandes.index') }}">
                             <i class="fas fa-shopping-cart"></i>
-                            <span>Caisses</span>
-                            <span class="badge">{{$commandes->count()}}</span>
+                            <span>Point de vente</span>
+                            <span class="badge"></span>
                         </a>
                     </li>
                     <li>
@@ -159,13 +159,14 @@
                             </a>
                         </form>
                     </li>-->
-
+                    
                     <li>
                         <a href="{{ route('users.index') }}">
                             <i class="fas fa-user"></i>
                             <span>Utilisateur</span>
                         </a>
                     </li>
+                  
                 </ul>
             </nav>
         </aside>

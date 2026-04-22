@@ -1,6 +1,4 @@
-</div>
-
-<script>
+    <script>
         // Menu toggle pour mobile
         document.getElementById('menuToggle').addEventListener('click', function() {
             document.getElementById('sidebar').classList.toggle('active');

@@ -159,7 +159,7 @@ class articleController extends Controller
             'fournisseur_id' => 'required|exists:fournisseurs,id',
             'nom' => 'string',
             'description' ,
-            'prix',
+            'prix_vente',
             'image' ,
             'gal_1' ,
             'gal_2' ,

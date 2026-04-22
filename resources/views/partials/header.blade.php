@@ -391,8 +391,8 @@
             background: var(--white);
             border-radius: 1rem;
             box-shadow: var(--shadow);
-            overflow: hidden;
             margin-bottom: 2rem;
+            height: 100%;
         }
 
         .card-header {

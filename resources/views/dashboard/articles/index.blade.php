@@ -75,7 +75,7 @@
                                         </td>
                                         <td>{{$a->nom}}</td>
                                         <td>{{$a->categorie->nom}}</td>
-                                        <td><strong>{{$a->prix}} FCFA</strong></td>
+                                        <td><strong>{{$a->prix_vente}} FCFA</strong></td>
                                         <td>
                                             @if($a->stock_min >= $a->stock)
                                                 <span class="badge bg-danger">Stock faible</span>

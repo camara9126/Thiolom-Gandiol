@@ -27,58 +27,10 @@
             <div class="content">
                 <!-- Page Header -->
 
-                <h2>Caisse journaliere</h2>
-                <div class="stats-grid">
-                    <div class="stat-card" style="background: linear-gradient(#0081A7, #00AFB9) ;">
-                        <div class="stat-info">
-                            <h3 class="text-white">Ventes du jour</h3>
-                            <div class="number text-white">{{$ventesJour->count()}}</div>
-                        </div>
-                        <div class="stat-icon">
-                            <i class="fas fa-tags text-info"></i>
-                        </div>
-                    </div>
-                    <div class="stat-card" style="background: linear-gradient(#FF2626, #FFFF26) ;">
-                        <div class="stat-info">
-                            <h3>Montant Total</h3>
-                            <div class="number">{{number_format($total, 0, ',', ' ')}} XOF</div>
-                        </div>
-                        <div class="stat-icon">
-                            <i class="fas fa-money-bill-wave"></i>
-                        </div>
-                    </div>
-                    <div class="stat-card" style="background: linear-gradient(#FF95F4, #FF2626) ;">
-                        <div class="stat-info">
-                            <h3 class="">Montant Encaisse</h3>
-                            <div class="number">{{number_format($totalEncaisse, 0, ',', ' ')}} XOF</div>
-                        </div>
-                        <div class="stat-icon">
-                            <i class="fas fa-money-bill-wave text-warning"></i>
-                        </div>
-                    </div>
-                    <div class="stat-card" style="background: linear-gradient(#00778B, #DFBB2C) ;">
-                        <div class="stat-info">
-                            <h3>Depenses du jour</h3>
-                            <div class="number">{{number_format($depensesJour, 0, ',', ' ')}} XOF</div>
-                        </div>
-                        <div class="stat-icon">
-                            <i class="fas fa-money-bill-wave text-danger"></i>
-                        </div>
-                    </div>
-                    <div class="stat-card" style="background: linear-gradient(#00E1FD, #0040FF) ;">
-                        <div class="stat-info">
-                            <h3>Montant Restant</h3>
-                            <div class="number">{{number_format($totalReste, 0, ',', ' ')}} XOF</div>
-                        </div>
-                        <div class="stat-icon">
-                            <i class="fas fa-money-bill-wave text-danger"></i>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="card">
                     <div class="card-header">
-                        <span><i class="fas fa-shopping-cart" style="color: var(--primary); margin-right: 0.5rem;"></i>Liste des factures ( {{$ventes->count()}} )</span>
+                        <span><i class="fas fa-shopping-cart" style="color: var(--primary); margin-right: 0.5rem;"></i>Liste des factures ( {{$caisse->count()}} )</span>
                         <a href="{{ route('commandes.create') }}" style="color: var(--primary); text-decoration: none; font-weight: 500;">Nouvelle facture →</a>
                     </div>
                     
@@ -118,7 +70,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($ventes as $v)
+                                    @forelse($caisse as $v)
                                     <tr>
                                         <td>{{$v->reference}}</td>
                                         <td>{{$v->client->nom ?? 'Client supprimee'}}</td>
@@ -163,9 +115,7 @@
                                     @endforelse
                                 </tbody>
                             </table>
-                            <div class="d-flex justify-content-center mt-4">
-                                {{$ventes->links()}}
-                            </div>
+                            
                              <!-- Modal paiement -->
                         <div class="modal fade" id="paiementModal" tabindex="-1">
                             <div class="modal-dialog">

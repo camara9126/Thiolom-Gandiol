@@ -20,6 +20,7 @@ use App\Models\Bon_commande;
 use App\Models\Categorie;
 use App\Models\Client;
 use App\Models\Devis;
+use App\Models\Magasin;
 use App\Models\Mouvement_stock;
 use App\Models\Vente;
 use Illuminate\Support\Facades\Route;
@@ -46,8 +47,11 @@ Route::get('/contact', function () {
 })->name('contact');
 
 Route::get('/test', function () {
+     $clients = Client::latest()->get();
+        $articles = Article::where('statut', true)->latest()->get();
+        $magasins = Magasin::latest()->get();
 
-    return view('test');
+    return view('dashboard.test', compact('clients','articles','magasins'));
 })->name('test');
 
 
@@ -167,6 +171,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('/commandes', VenteController::class);
     Route::get('/commandeSearch', [VenteController::class, 'search'])->name('commandes.search');
+    Route::get('/caisse/{id}', [VenteController::class, 'caisse'])->name('commandes.caisse');
 
     Route::resource('/devis', DevisController::class);
     Route::get('/devisSearch', [DevisController::class, 'search'])->name('devis.search');

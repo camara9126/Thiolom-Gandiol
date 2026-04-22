@@ -57,15 +57,13 @@ class categorieController extends Controller
             $filename = time().$request->file('image')->getClientOriginalName();
             $path = $request->file('image')->storeAs('imgCategories', $filename, 'public');
             $request['image'] = '/storage/' . $path;
-        } else {
-            dd('Aucun fichier image reçu');
         }
 
         // creation du categorie
         $categories= Categorie::create([
             'nom' => $request->nom,
             'description' => $request->description,
-            'image' => $path,
+            'image' => $path ?? null,
         ]);
         // dd($categories);
         return redirect()->route('categorie.index', compact('categories'))->with('success', 'Categorie crée avec success.');
