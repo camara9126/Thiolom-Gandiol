@@ -83,7 +83,7 @@
                                             <select name="articles[0][article_id]" class="form-control produit-select">
                                                 <option value="">Choisir</option>
                                                 @foreach($articles as $article)
-                                                    <option value="{{ $article->id }}" data-prix="{{ $article->prix }}">
+                                                    <option value="{{ $article->id }}" data-prix_vente="{{ $article->prix_vente }}">
                                                         {{ $article->nom }}
                                                     </option>
                                                 @endforeach
@@ -91,7 +91,7 @@
                                         </td>
 
                                         <td>
-                                            <input type="number" name="articles[0][prix]" class="form-control prix" >
+                                            <input type="number" name="articles[0][prix_vente]" class="form-control prix_vente" >
                                         </td>
 
                                         <td>
@@ -134,7 +134,7 @@
                     <select name="articles[${index}][article_id]" class="form-control produit-select">
                         <option value="">Choisir</option>
                         @foreach($articles as $article)
-                            <option value="{{ $article->id }}" data-prix="{{ $article->prix }}">
+                            <option value="{{ $article->id }}" data-prix_vente="{{ $article->prix_vente }}">
                                 {{ $article->nom }}
                             </option>
                         @endforeach
@@ -142,7 +142,7 @@
                 </td>
 
                 <td>
-                    <input type="number" name="articles[${index}][prix]" class="form-control prix" >
+                    <input type="number" name="articles[${index}][prix_vente]" class="form-control prix_vente" >
                 </td>
 
                 <td>
@@ -171,12 +171,12 @@
             }
         });
 
-        // Auto remplir prix
+        // Auto remplir prix_vente
         document.addEventListener('change', function(e){
             if(e.target.classList.contains('produit-select')){
-                let prix = e.target.selectedOptions[0].dataset.prix;
+                let prix_vente = e.target.selectedOptions[0].dataset.prix_vente;
                 let row = e.target.closest('tr');
-                row.querySelector('.prix').value = prix;
+                row.querySelector('.prix_vente').value = prix_vente;
                 calculLigne(row);
             }
         });
@@ -190,10 +190,10 @@
         });
 
         function calculLigne(row){
-            let prix = row.querySelector('.prix').value || 0;
+            let prix_vente = row.querySelector('.prix_vente').value || 0;
             let quantite = row.querySelector('.quantite').value || 0;
 
-            let total = prix * quantite;
+            let total = prix_vente * quantite;
             row.querySelector('.total-ligne').value = total;
 
             calculTotal();

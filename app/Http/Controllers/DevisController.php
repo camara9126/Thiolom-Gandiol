@@ -62,7 +62,7 @@ class DevisController extends Controller
             'articles' => 'required|array',
             'articles.*.article_id' => 'required',
             'articles.*.quantite' => 'required|numeric|min:1',
-            'articles.*.prix' => 'required|numeric|min:0',
+            'articles.*.prix_vente' => 'required|numeric|min:0',
         ]);
 
         // Création du devis
@@ -71,7 +71,6 @@ class DevisController extends Controller
             'client_id' => $request->client_id,
             'total' => 0,
             'statut' => 'en_attente',
-            'entreprise_id' => 1,
             'date_devis' => now(),
             'date_expiration' => now()->addDays(7),
         ]);
@@ -81,13 +80,13 @@ class DevisController extends Controller
         // Enregistrement des produits
         foreach ($request->articles as $item) {
 
-            $ligneTotal = $item['quantite'] * $item['prix'];
+            $ligneTotal = $item['quantite'] * $item['prix_vente'];
 
             Devis_details::create([
                 'devis_id' => $devis->id,
                 'article_id' => $item['article_id'],
                 'quantite' => $item['quantite'],
-                'prix_unitaire' => $item['prix'],
+                'prix_unitaire' => $item['prix_vente'],
                 'total' => $ligneTotal,
             ]);
 
@@ -138,7 +137,7 @@ class DevisController extends Controller
             'articles' => 'required|array',
             'articles.*.article_id' => 'required',
             'articles.*.quantite' => 'required|numeric|min:1',
-            'articles.*.prix' => 'required|numeric|min:0',
+            'articles.*.prix_vente' => 'required|numeric|min:0',
         ]);
 
         $devis= Devis::with('client', 'details')->findOrFail($id);
@@ -152,13 +151,13 @@ class DevisController extends Controller
         // Recreer les nouveaux details
         foreach ($request->articles as $item) {
 
-            $ligneTotal = $item['quantite'] * $item['prix'];
+            $ligneTotal = $item['quantite'] * $item['prix_vente'];
 
             Devis_details::create([
                 'devis_id' => $devis->id,
                 'article_id' => $item['article_id'],
                 'quantite' => $item['quantite'],
-                'prix_unitaire' => $item['prix'],
+                'prix_unitaire' => $item['prix_vente'],
                 'total' => $ligneTotal,
             ]);
 

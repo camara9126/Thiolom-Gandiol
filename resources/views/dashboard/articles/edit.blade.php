@@ -75,7 +75,7 @@
                                         </div>
                                         <div class="col-6">
                                             <label>Prix de vente (FCFA) *</label>
-                                            <input type="number" name="prix" value="{{$article->prix}}" placeholder="Ex: 85000" required>
+                                            <input type="number" name="prix_vente" value="{{$article->prix_vente}}" placeholder="Ex: 85000" required>
                                         </div>
                                     </div>
                                     
