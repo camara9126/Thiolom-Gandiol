@@ -171,6 +171,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('/commandes', VenteController::class);
     Route::get('/commandeSearch', [VenteController::class, 'search'])->name('commandes.search');
+    Route::get('/pdv', [VenteController::class, 'pdv'])->name('commandes.pdv');
     Route::get('/caisse/{id}', [VenteController::class, 'caisse'])->name('commandes.caisse');
 
     Route::resource('/devis', DevisController::class);

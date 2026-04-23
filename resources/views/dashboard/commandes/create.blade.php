@@ -288,10 +288,6 @@
                 <!-- Page Header -->
 
                 <div class="card">
-                    <div class="card-header">
-                        <span><i class="fas fa-box" style="color: var(--primary); margin-right: 0.5rem;"></i>Nouvelle facture</span>
-                        <a href="{{ route('commandes.index') }}" class="btn btn-outline-danger">Annuler</a>
-                    </div>
                     
                     @if(Session::has('success'))
                         <div class="alert alert-success" role="alert">
@@ -316,12 +312,13 @@
                             <form action="{{ route('commandes.store') }}" method="POST" id="venteForm">
                                 @csrf
 
+                                <input type="hidden" name="magasin_id" value="1">
                                 <div class="pos-two-columns">
                                     <!-- COLONNE GAUCHE : Produits + Panier -->
                                     <div class="pos-left">
                                         <div class="pos-card">
                                             <div class="pos-card-header">
-                                                <i class="fas fa-box" style="margin-right: 8px;"></i> Caisserie · Odoo POS
+                                                <i class="fas fa-box" style="margin-right: 8px;"></i> Caisserie · Thiolom Gandiol
                                             </div>
                                             <div class="pos-card-body">
                                                 <!-- Sélection client et dépôt -->
@@ -335,20 +332,14 @@
                                                             @endforeach
                                                         </select>
                                                     </div>
-                                                    <div style="flex: 1;">
-                                                        <label style="font-size: 12px; color: #6c757d;">Dépôt</label>
-                                                        <select name="magasin_id" class="form-control-sm" style="width: 100%;" required>
-                                                            <option value="">-- Sélectionner un dépôt --</option>
-                                                            @foreach($magasins as $m)
-                                                                <option value="{{ $m->id }}">{{ ucfirst($m->nom) }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
                                                     <div style="display: flex; align-items: end;">
-                                                        <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#clientModal" style="padding: 6px 12px;">
-                                                            + Nouveau client
-                                                        </button>
+                                                        <div style="flex: 1;">
+                                                            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#clientModal" style="padding: 6px 12px;">
+                                                                + Nouveau client
+                                                            </button>
+                                                        </div>
                                                     </div>
+                                                    
                                                 </div>
 
                                                 <!-- Produits par catégorie (exemple statique, adaptez selon vos données) -->
@@ -358,20 +349,9 @@
                                                 <div class="product-grid" id="productGridShoes">
                                                     @foreach($articles as $article)
                                                         <div class="product-card" data-id="{{ $article->id }}" data-prix_vente="{{ $article->prix_vente }}" data-nom="{{ $article->nom }}">
-                                                            <div class="product-image"><img src="{{ asset('storage/'.$article->image) }}" width="50"></div>
-                                                            <div class="product-name">{{ $article->nom }}</div>
-                                                            <div class="product-price">{{ number_format($article->prix_vente, 0, ',', ' ') }} CFA</div>
-                                                        </div>
-                                                    @endforeach
-                                                </div>
-
-                                                <div class="category-header">
-                                                    <i class="fas fa-tshirt"></i> Hauts
-                                                </div>
-                                                <div class="product-grid" id="productGridTops">
-                                                    @foreach($articles->where('categorie', 'haut')->take(8) as $article)
-                                                        <div class="product-card" data-id="{{ $article->id }}" data-prix_vente="{{ $article->prix_vente }}" data-nom="{{ $article->nom }}">
-                                                            <div class="product-image">{{ asset('storage/'.$article->image) }}</div>
+                                                            <!--<div class="product-image">
+                                                                <img src="{{ asset('storage/'.$article->image) }}" width="20">
+                                                            </div>-->
                                                             <div class="product-name">{{ $article->nom }}</div>
                                                             <div class="product-price">{{ number_format($article->prix_vente, 0, ',', ' ') }} CFA</div>
                                                         </div>
@@ -437,12 +417,12 @@
                                                     <span>Sous-total</span>
                                                     <span id="subtotal">0</span> CFA
                                                 </div>
-                                                <div class="tax-box">
+                                                <!--<div class="tax-box">
                                                     <div class="summary-line">
                                                         <span>Taxes (TVA 18%)</span>
                                                         <span id="taxAmount">0</span> CFA
                                                     </div>
-                                                </div>
+                                                </div>-->
                                                 <div class="summary-total">
                                                     <span>TOTAL TTC</span>
                                                     <span id="totalGlobal">0</span> CFA
@@ -637,11 +617,10 @@
             totalHT += parseFloat(input.value) || 0;
         });
         
-        let tva = totalHT * 0.18;
+        let tva = totalHT * 0;
         let totalTTC = totalHT + tva;
         
         document.getElementById('subtotal').innerText = totalHT.toLocaleString();
-        document.getElementById('taxAmount').innerText = tva.toLocaleString();
         document.getElementById('totalGlobal').innerText = totalTTC.toLocaleString();
     }
 

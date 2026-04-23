@@ -10,16 +10,18 @@ use App\Models\Entreprise;
 use App\Models\Magasin;
 use App\Models\Paiements;
 use App\Models\Recettes;
+use App\Models\User;
 use App\Models\Vente;
 use App\Models\VenteItem;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class VenteController extends Controller
 {
     public function index(Request $request)
     {
-
+        $user= request()->user();
 
         $ventes = Vente::with('client')->latest()->simplePaginate(10); 
 
@@ -36,7 +38,7 @@ class VenteController extends Controller
         $ventesJour = Vente::whereDate('created_at', $today)->get();
 
 
-        return view('dashboard.commandes.index', compact('ventes','ventesJour','total','totalEncaisse','totalReste','depensesJour'));
+        return view('dashboard.commandes.index', compact('ventes','ventesJour','total','totalEncaisse','totalReste','depensesJour','user'));
     }
 
 
@@ -76,16 +78,37 @@ class VenteController extends Controller
 
         return view('dashboard.commandes.index', compact('ventes', 'search', 'ventesJour','total','totalEncaisse','totalReste','depensesJour'));
     }
-    
 
 
-    public function create()
+    public function pdv(Request $request) {
+        // User connecte
+        $userId= request()->user()->id;
+       
+        $users= User::latest()->get();
+
+        $today = now()->toDateString();
+
+        $total = Vente::with('user')->whereDate('created_at', $today)->where('user_id', $userId)->sum('total');
+ 
+
+        $totalEncaisse = Paiements::with('vente', 'user')->where('statut', 'valide')->whereDate('created_at', $today)->where('user_id', $userId)->sum('montant');
+//dd($totalEncaisse);
+        
+        $ventesJour = Vente::with('user')->whereDate('created_at', $today)->where('user_id', $userId)->get();
+
+
+        return view('dashboard.commandes.pdv',compact('users', 'total', 'ventesJour', 'totalEncaisse'));
+    }
+
+
+    public function create(Request $request)
     {
         $clients = Client::latest()->get();
         $articles = Article::where('statut', true)->latest()->get();
-        $magasins = Magasin::latest()->get();
 
-        return view('dashboard.commandes.create', compact('clients', 'articles','magasins'));
+        $article= $request->pdvSearch;
+
+        return view('dashboard.commandes.create', compact('clients', 'articles', 'article'));
     }
 
 

@@ -28,6 +28,11 @@ class Paiements extends Model
         return $this->belongsTo(Vente::class);
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function recette()
     {
         return $this->hasOne(Recettes::class, 'paiement_id');

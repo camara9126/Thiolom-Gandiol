@@ -39,6 +39,9 @@
                             <span>Tableau de bord</span>
                         </a>
                     </li>
+
+                    <div class="sidebar-divider"></div>
+
                     <li>
                         <a href="{{ route('articles.index') }}">
                             <i class="fas fa-box"></i>
@@ -54,8 +57,6 @@
                         </a>
                     </li>
 
-                    <div class="sidebar-divider"></div>
-
                     <li>
                         <a href="{{ route('fournisseurs.index') }}">
                             <i class="fas fa-truck"></i>
@@ -63,6 +64,33 @@
                             <span class="badge">{{$fournisseurs->count()}}</span>
                         </a>
                     </li>
+
+                    <div class="sidebar-divider"></div>
+
+                    <li>
+                        <a href="{{ route('clients.index') }}">
+                           <i class="fas fa-users"></i>
+                            <span>Client</span>
+                            <span class="badge">{{$clients->count()}}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('commandes.index') }}">
+                           <i class="fas fa-shopping-cart"></i>
+                            <span>Vente</span>
+                            <span class="badge">{{$commandes->count()}}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('commandes.pdv') }}">
+                            <i class="fas fa-shop"></i>
+                            <span>Point de vente</span>
+                            <span class="badge"></span>
+                        </a>
+                    </li>
+
+                    <div class="sidebar-divider"></div>
+                   
                     <li>
                         <a href="{{ route('mouvements') }}">
                             <i class="fas fa-bars-staggered"></i>
@@ -76,24 +104,7 @@
                             <span class="badge">{{$bonCommandes->count()}}</span>
                         </a>
                     </li>
-
-
-                    <div class="sidebar-divider"></div>
-
-                    <li>
-                        <a href="{{ route('clients.index') }}">
-                           <i class="fas fa-users"></i>
-                            <span>Client</span>
-                            <span class="badge">{{$clients->count()}}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('commandes.index') }}">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span>Point de vente</span>
-                            <span class="badge"></span>
-                        </a>
-                    </li>
+                    
                     <li>
                         <a href="{{ route('devis.index') }}">
                             <i class="fas fa-file-invoice"></i>
@@ -101,13 +112,12 @@
                             <span class="badge">{{$devis->count()}}</span>
                         </a>
                     </li>
-
-                    <li>
+                    <!--<li>
                         <a href="{{ route('magasin.index') }}">
                             <i class="fas fa-shop"></i>
                             <span>Magasins</span>
                         </a>
-                    </li>
+                    </li>-->
 
                     <div class="sidebar-divider"></div>
 

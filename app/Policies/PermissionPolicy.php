@@ -14,11 +14,6 @@ class PermissionPolicy
         return in_array($user->role, ['administrateur']);
     }
 
-    // Produits / fournisseurs / stock
-    public function gererStock($user)
-    {
-        return in_array($user->role, ['administrateur', 'gestionnaire_stock']);
-    }
 
     // Client / ventes
     public function gererVentes($user)
