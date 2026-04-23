@@ -55,7 +55,7 @@
 </head>
 <body>
 
-        <img src="{{ public_path('images/logo-blanc.jpeg') }}" style="width: 150px; height: 100px;" alt="Logo entreprise" class="">
+        <img src="{{ public_path('storage/'.$entreprise->logo) }}" style="width: 150px; height: 100px;" alt="Logo entreprise" class="">
         <!--<h1 class="mb-0 text-center">Eco Business Distribution</h1>-->
 <p>
     Ninea : {{ $entreprise->ninea }} <br>

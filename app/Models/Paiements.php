@@ -12,6 +12,7 @@ class Paiements extends Model
     protected $fillable = [
         'vente_id',
         'entreprise_id',
+        'user_id',
         'montant',
         'mode_paiement',
         'reference',

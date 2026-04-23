@@ -237,6 +237,7 @@ class VenteController extends Controller
 
             $paiements= Paiements::create([
                 'vente_id' => $vente->id,
+                'user_id' => request()->user()->id,
                 'montant' => $request->montant,
                 'mode_paiement' => 'cash',
                 'date_paiement' => now(),

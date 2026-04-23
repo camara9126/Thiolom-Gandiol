@@ -24,7 +24,7 @@
     </div>
 
     <div>
-        <img src="{{ public_path('images/logo-blanc.jpeg') }}" width="100">
+            <img src="{{ public_path('storage/'.$entreprise->logo) }}" style="width: 150px; height: 100px;" alt="Logo entreprise" class="">
     </div>
 </div>
 

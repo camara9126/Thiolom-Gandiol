@@ -23,7 +23,7 @@
             <div class="sidebar-header">
                 <h2>
                     @if($entreprise->logo)
-                        <img src="{{asset('storage/'.$entreprise->lgo)}}" width="100" alt="">
+                        <img src="{{asset('storage/'.$entreprise->logo)}}" width="100" alt="">
                     @else
                         {{$entreprise->nom}}
                     @endif
