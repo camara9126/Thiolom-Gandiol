@@ -89,56 +89,58 @@
                         </a>
                     </li>
 
-                    <div class="sidebar-divider"></div>
-                   
-                    <li>
-                        <a href="{{ route('mouvements') }}">
-                            <i class="fas fa-bars-staggered"></i>
-                            <span>Mouvement stock</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('bonCommande.index') }}">
-                            <i class="fas fa-list"></i>
-                            <span>Bon de commande</span>
-                            <span class="badge">{{$bonCommandes->count()}}</span>
-                        </a>
-                    </li>
+                    @if(request()->user()->role == 'administrateur')
+                        <div class="sidebar-divider"></div>
                     
-                    <li>
-                        <a href="{{ route('devis.index') }}">
-                            <i class="fas fa-file-invoice"></i>
-                            <span>Devis</span>
-                            <span class="badge">{{$devis->count()}}</span>
-                        </a>
-                    </li>
-                    <!--<li>
-                        <a href="{{ route('magasin.index') }}">
-                            <i class="fas fa-shop"></i>
-                            <span>Magasins</span>
-                        </a>
-                    </li>-->
+                        <li>
+                            <a href="{{ route('mouvements') }}">
+                                <i class="fas fa-bars-staggered"></i>
+                                <span>Mouvement stock</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('bonCommande.index') }}">
+                                <i class="fas fa-list"></i>
+                                <span>Bon de commande</span>
+                                <span class="badge">{{$bonCommandes->count()}}</span>
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a href="{{ route('devis.index') }}">
+                                <i class="fas fa-file-invoice"></i>
+                                <span>Devis</span>
+                                <span class="badge">{{$devis->count()}}</span>
+                            </a>
+                        </li>
+                        <!--<li>
+                            <a href="{{ route('magasin.index') }}">
+                                <i class="fas fa-shop"></i>
+                                <span>Magasins</span>
+                            </a>
+                        </li>-->
 
-                    <div class="sidebar-divider"></div>
+                        <div class="sidebar-divider"></div>
 
-                    <li>
-                        <a href="{{ route('paiements.index') }}">
-                            <i class="fas fa-money-bill-wave"></i>
-                            <span>Paiements</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('recettes.index') }}">
-                            <i class="fas fa-right-left"></i>
-                            <span>Recettes</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('depenses.index') }}">
-                            <i class="fas fa-arrow-right-from-bracket"></i>
-                            <span>Depenses</span>
-                        </a>
-                    </li>
+                        <li>
+                            <a href="{{ route('paiements.index') }}">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <span>Paiements</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('recettes.index') }}">
+                                <i class="fas fa-right-left"></i>
+                                <span>Recettes</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('depenses.index') }}">
+                                <i class="fas fa-arrow-right-from-bracket"></i>
+                                <span>Depenses</span>
+                            </a>
+                        </li>
+                    @endif
 
                     <div class="sidebar-divider"></div>
 
@@ -170,12 +172,14 @@
                         </form>
                     </li>-->
                     
-                    <li>
-                        <a href="{{ route('users.index') }}">
-                            <i class="fas fa-user"></i>
-                            <span>Utilisateur</span>
-                        </a>
-                    </li>
+                    @if(request()->user()->role == 'administrateur')
+                        <li>
+                            <a href="{{ route('users.index') }}">
+                                <i class="fas fa-user"></i>
+                                <span>Utilisateur</span>
+                            </a>
+                        </li>
+                    @endif
                   
                 </ul>
             </nav>
