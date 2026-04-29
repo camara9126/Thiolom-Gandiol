@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Article;
 use App\Models\Article_depot;
 use App\Models\Categorie;
+use App\Models\Entreprise;
 use App\Models\Fournisseur;
 use App\Models\Magasin;
+use App\Models\Mouvement_stock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -18,8 +20,10 @@ class articleController extends Controller
     public function index()
     {
         $articles= Article::latest()->paginate(10);
+        $categorie= categorie::latest()->get();
+        $magasins = Magasin::latest()->get();
 
-        return view('dashboard.articles.index', compact('articles'));
+        return view('dashboard.articles.index', compact('articles','categorie','magasins'));
     }
 
     /**
@@ -28,6 +32,9 @@ class articleController extends Controller
     public function search(Request $request)
     {
         $search = $request->query('search');
+
+        $categorie= categorie::latest()->get();
+        $magasins = Magasin::latest()->get();
 
         $articles = Article::with('categorie')->when($search, function ($query, $search) {
 
@@ -38,7 +45,7 @@ class articleController extends Controller
 
         })->latest()->paginate(10)->withQueryString(); // 🔑 garde ?search=;
 
-        return view('dashboard.articles.index', compact('articles', 'search'));
+        return view('dashboard.articles.index', compact('articles', 'search','categorie','magasins'));
     }
 
     /**
@@ -59,20 +66,20 @@ class articleController extends Controller
     public function store(Request $request)
     {
          $request->validate([
-            'fournisseur_id' => 'required|exists:fournisseurs,id',
+            'fournisseur_id' => 'exists:fournisseurs,id',
             'nom' => 'required','string',
             'description' => 'nullable',
-            'prix_achat' => 'required',
+            'prix_achat' ,
             'prix_vente' => 'required',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            //'gal_1' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            //'gal_2' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'stock' => 'required',
-            'stock_min' => 'required',
-            'statut' => 'required',
-            'categorie_id' => 'required', 'exists:categorie,id',
+            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'stock' ,
+            'stock_min' ,
+            'magasin_id' ,
+            'categorie_id' => 'exists:categorie,id',
             
         ]);
+
+        $entreprise= Entreprise::findOrFail(1);
        
         // Gestion de l'images principal
         if ($request->hasFile('image')) {
@@ -80,38 +87,23 @@ class articleController extends Controller
             $path = $request->file('image')->storeAs('imgArticles', $filename, 'public');
             $request['image'] = '/storage/' . $path;
         } else {
-            dd('Aucun fichier image reçu');
-        }
-
-        // Gestion des galeries
-        if ($request->hasFile('gal_1')) {
-            $filename = time().$request->file('gal_1')->getClientOriginalName();
-            $gal_1 = $request->file('gal_1')->storeAs('imgArticles', $filename, 'public');
-            $request['gal_1'] = '/storage/' . $gal_1;
-        }
-
-        if ($request->hasFile('gal_2')) {
-            $filename = time().$request->file('gal_2')->getClientOriginalName();
-            $gal_2 = $request->file('gal_2')->storeAs('imgArticles', $filename, 'public');
-            $request['gal_2'] = '/storage/' . $gal_2;
+            $entreprise->logo;
         }
 
         // creation de l'article
         $articles= Article::create([
-            'fournisseur_id' => $request->fournisseur_id,
+            'fournisseur_id' => 1,
             'nom' => $request->nom,
             'description' => $request->description ?? null,
-            'prix_achat' => $request->prix_achat,
+            'prix_achat' => $request->prix_vente,
             'prix_vente' => $request->prix_vente,
             'code' => $this->generateCode(),
             'reference' => 'REF-' . now()->timestamp,
-            //'gal_1' => $gal_1 ?? null,
-            //'gal_2' => $gal_2 ?? null,
-            'stock' => $request->stock,
-            'stock_min' => $request->stock_min,
-            'statut' => $request->statut,
-            'categorie_id' => $request->categorie_id,
-            'image' => $path,
+            'stock' => $request->stock  ?? 100,
+            'stock_min' => 20,
+            'categorie_id' => 1,
+            'magasin_id' => $request->magasin_id ?? 1,
+            'image' => $path ?? $entreprise->logo,
         ]);
 
 
@@ -122,6 +114,15 @@ class articleController extends Controller
             'article_id' => $articles->id,
             'magasin_id' => $magasin->id,
             'stock' => $request->stock,
+        ]);
+
+        // Enregistrement d'un historique de mouvement
+        Mouvement_stock::create([
+            'article_id' => $articles->id,
+            'type' => 'entree',
+            'quantite' => $request->stock ?? 100,
+            'magasin_id' => $request->magasin_id ?? 1,
+            'reference' => 'MVT-' . now()->timestamp,
         ]);
 
         return redirect()->route('articles.index')->with('success', 'Article crée avec success.');

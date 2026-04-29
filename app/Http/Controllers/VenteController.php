@@ -8,8 +8,10 @@ use App\Models\Client;
 use App\Models\Depenses;
 use App\Models\Entreprise;
 use App\Models\Magasin;
+use App\Models\Mouvement_stock;
 use App\Models\Paiements;
 use App\Models\Recettes;
+use App\Models\Session_caisse;
 use App\Models\User;
 use App\Models\Vente;
 use App\Models\VenteItem;
@@ -44,6 +46,8 @@ class VenteController extends Controller
 
     public function search(Request $request)
     {
+        $user= request()->user();
+
         $search = $request->query('search');
 
         $today = now()->toDateString();
@@ -67,37 +71,8 @@ class VenteController extends Controller
 
         })->latest()->paginate(10)->withQueryString(); // 🔑 garde ?search=
 
-        $ventes = Vente::when($search, function ($query, $search) {
 
-                $query->where('reference', 'like', "%{$search}%")->orWhereHas('client', function ($q) use ($search) {
-
-                        $q->where('type', 'like', "%{$search}%");
-                });
-
-        })->latest()->paginate(10)->withQueryString(); // 🔑 garde ?search=
-
-        return view('dashboard.commandes.index', compact('ventes', 'search', 'ventesJour','total','totalEncaisse','totalReste','depensesJour'));
-    }
-
-
-    public function pdv(Request $request) {
-        // User connecte
-        $userId= request()->user()->id;
-       
-        $users= User::latest()->get();
-
-        $today = now()->toDateString();
-
-        $total = Vente::with('user')->whereDate('created_at', $today)->where('user_id', $userId)->sum('total');
- 
-
-        $totalEncaisse = Paiements::with('vente', 'user')->where('statut', 'valide')->whereDate('created_at', $today)->where('user_id', $userId)->sum('montant');
-//dd($totalEncaisse);
-        
-        $ventesJour = Vente::with('user')->whereDate('created_at', $today)->where('user_id', $userId)->get();
-
-
-        return view('dashboard.commandes.pdv',compact('users', 'total', 'ventesJour', 'totalEncaisse'));
+        return view('dashboard.commandes.index', compact('ventes', 'search', 'ventesJour','total','totalEncaisse','totalReste','depensesJour','user'));
     }
 
 
@@ -115,34 +90,16 @@ class VenteController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'client_id' => 'required|exists:clients,id',
-            'magasin_id' => 'required|exists:magasins,id',
+            'client_id' ,
             'articles' => 'required|array|min:1',
-            'statut',
+            'statut' ,
             'articles.*.article_id' => 'required',
             'articles.*.quantite' => 'required|numeric|min:1',
             'articles.*.prix_vente' => 'required|numeric|min:0',
-            'montant' => 'required|numeric|min:0'
+            'montant' => 'numeric|min:0'
         ]);
-
-
-
-            //dd($request->montant);
-            $vente = Vente::create([
-                'client_id' => 1,
-                'reference' => 'VNT-' . time(),
-                'date' => now(),
-                'total' => 0,
-                'total_tva' => 0,
-                'total_ttc' => 0,
-                'statut' => 'impayee',
-                'user_id' => $request->user()->id,
-            ]);
-
-            $total = 0;
-            $total_tva = 0;
-            $total_ttc = 0;
-
+       
+//dd($request->all());
         foreach ($request->articles as $item) {
 
            
@@ -151,7 +108,7 @@ class VenteController extends Controller
             }
 
             $produit = Article::where('id', $item['article_id'])->lockForUpdate()->firstOrFail(); // verrou stock
-            $magasin = Magasin::where('id', $request->magasin_id)->lockForUpdate()->firstOrFail(); // verrou stock
+            $magasin = Magasin::where('id', $produit->magasin_id)->lockForUpdate()->firstOrFail(); // verrou stock
             //dd($magasin);
             // Verification de la disponibilite de l'article dans le magasin
             $stock = Article_depot::where('article_id', $produit->id)->where('magasin_id', $magasin->id)->first();
@@ -185,7 +142,26 @@ class VenteController extends Controller
                 
                 return redirect()->back()->with('danger','Stock insuffisant pour cette article ');
             }
-       
+
+            // Session 
+            $session= Session_caisse::where('user_id', $request->user()->id)->whereNull('closed_at')->first();
+
+            //dd($request->montant);
+            $vente = Vente::create([
+                'client_id' =>  $request->client_id ?? 2,
+                'session_caisse_id' => $session->id,
+                'reference' => 'VNT-' . time(),
+                'date' => now(),
+                'total' => 0,
+                'total_tva' => 0,
+                'total_ttc' => 0,
+                'statut' => 'impayee',
+                'user_id' => $request->user()->id,
+            ]);
+
+            $total = 0;
+            $total_tva = 0;
+            $total_ttc = 0;
 
             // Creation vente item
             $entreprise= Entreprise::findOrFail(1); // Recuperation de la TVA de l'entreprise
@@ -194,7 +170,7 @@ class VenteController extends Controller
             VenteItem::create([
                 'vente_id' => $vente->id,
                 'article_id' => $item['article_id'],
-                'magasin_id' => $request->magasin_id,
+                'magasin_id' => $produit->magasin_id,
                 'quantite' => $item['quantite'],
                 'prix_unitaire' => $item['prix_vente'],
                 'taux_tva' => $entreprise->taux_tva,
@@ -205,6 +181,15 @@ class VenteController extends Controller
 
             // Mise a jour stock
             $produit->decrement('stock', $item['quantite']);
+
+            // Enregistrememt historique stock
+                Mouvement_stock::create([
+                    'article_id' => $produit->id,
+                    'type' => 'sortie',
+                    'quantite' => $item['quantite'],
+                    'magasin_id' => $produit->magasin_id,
+                    'reference' => 'MVT-' . now()->timestamp,
+                ]);
 
             // Calcule total + total_tva + total_ttc
             $total += $item['quantite'] *  $item['prix_vente'];
@@ -217,8 +202,6 @@ class VenteController extends Controller
                 'total_tva' => $total_tva,
                 'total_ttc' => $total_ttc,
             ]);
-
-
             
         }
         
@@ -226,21 +209,14 @@ class VenteController extends Controller
             $paiement = $vente;
 
             $totalPaye = $paiement->paiements()->where('statut','valide')->sum('montant');
-            $reste = $paiement->total_ttc - $totalPaye;
-
-            if ($request->montant > $reste) {
-                return back()->withErrors([
-                    'montant' => 'Le montant dépasse le reste à payer.'
-                ]);
-            }
-
 
             $paiements= Paiements::create([
                 'vente_id' => $vente->id,
                 'user_id' => request()->user()->id,
-                'montant' => $request->montant,
+                'montant' => $vente->total_ttc,
                 'mode_paiement' => 'cash',
                 'date_paiement' => now(),
+                'statut' => 'valide',
                 'reference' => 'PAY-' . time()
             ]);
 
@@ -278,20 +254,11 @@ class VenteController extends Controller
      */
     public function destroy(string $id)
     {
-        $vente= Vente::findOrFail($id);
-        $paiement= Paiements::where('vente_id', $vente->id)->get();
-        //dd($paiement);
-         $vente->destroy($id);
+        $vente= Vente::findOrFail($id);        
+        $vente->destroy($id);
 
-        $paiement->update([
-            'statut' => 'annule',
-            'motif' => 'Annulation manuelle',
-            'annule_par' => request()->user()->id,
-            'annule_le' => now(),
-        ]);
 
-        return redirect()->route('ventes.index')->with('success', ' vente supprimé avec succès');        
-
+        return redirect()->route('commandes.index')->with('success', ' vente supprimé avec succès');        
     }
 
 
@@ -308,12 +275,4 @@ class VenteController extends Controller
         return $pdf->stream('Facture-' . $vente->reference . '.pdf');
     }
 
-
-    // Facture
-    public function caisse($id)
-    {
-        $caisse= Vente::with('client', 'items', 'paiements')->where('user_id', $id)->get();
-        //dd($caisse);
-        return view('dashboard.commandes.caisse', compact('caisse'));
-    }
 }

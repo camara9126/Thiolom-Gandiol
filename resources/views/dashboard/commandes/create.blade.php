@@ -312,7 +312,6 @@
                             <form action="{{ route('commandes.store') }}" method="POST" id="venteForm">
                                 @csrf
 
-                                <input type="hidden" name="magasin_id" value="1">
                                 <div class="pos-two-columns">
                                     <!-- COLONNE GAUCHE : Produits + Panier -->
                                     <div class="pos-left">
@@ -325,7 +324,7 @@
                                                 <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
                                                     <div style="flex: 1;">
                                                         <label style="font-size: 12px; color: #6c757d;">Client</label>
-                                                        <select name="client_id" class="form-control-sm" style="width: 100%;" required>
+                                                        <select name="client_id" class="form-control-sm" style="width: 100%;">
                                                             <option value="">-- Sélectionner un client --</option>
                                                             @foreach($clients as $c)
                                                                 <option value="{{ $c->id }}">{{ ucfirst($c->nom) }}</option>
@@ -344,7 +343,7 @@
 
                                                 <!-- Produits par catégorie (exemple statique, adaptez selon vos données) -->
                                                 <div class="category-header">
-                                                    <i class="fas fa-shoe-prints"></i> Chaussures
+                                                    <i class="fas fa-box"></i> Articles
                                                 </div>
                                                 <div class="product-grid" id="productGridShoes">
                                                     @foreach($articles as $article)
@@ -441,7 +440,7 @@
                                                 <!-- Module client / Paiement -->
                                                 <div class="client-pad">
                                                     <div style="font-weight: 600; margin-bottom: 10px;">👤 Paiement</div>
-                                                    <div class="numpad" id="numpad">
+                                                    <!--<div class="numpad" id="numpad">
                                                         <div class="num-btn" data-value="1">1</div>
                                                         <div class="num-btn" data-value="2">2</div>
                                                         <div class="num-btn" data-value="3">3</div>
@@ -455,14 +454,14 @@
                                                         <div class="num-btn" data-value=".">.</div>
                                                         <div class="num-btn" data-value="clear">⌫</div>
                                                     </div>
-                                                    <input type="text" id="montantPaye" name="montant" class="form-control-sm" placeholder="Montant reçu" style="width: 100%; margin-bottom: 10px;">
+                                                    <input type="text" id="montantPaye" name="montant" class="form-control-sm" placeholder="Montant reçu" style="width: 100%; margin-bottom: 10px;">-->
                                                     
                                                     <div class="action-buttons">
                                                         <a href="{{ route('commandes.index') }}" class="btn-custom btn-secondary-custom" style="text-align: center; text-decoration: none;">Annuler</a>
                                                         <button type="submit" class="btn-custom btn-primary-custom">Valider ✅</button>
                                                     </div>
                                                     <div class="text-muted-small">
-                                                        Activer Windows · Accédez aux paramètres
+                                                       montant calcule automatiquement
                                                     </div>
                                                 </div>
                                             </div>
@@ -642,93 +641,5 @@
         });
     });
 </script>
-    <!-- Fonction Javascript pour Ajout multiple produits -->
-    <!--<script>
-        let index = 1;
 
-        // Ajouter ligne
-        document.getElementById('addRow').addEventListener('click', function () {
-
-            let row = `
-            <tr>
-                <td>
-                    <select name="articles[${index}][article_id]" class="form-control produit-select">
-                        <option value="">Choisir</option>
-                        @foreach($articles as $article)
-                            <option value="{{ $article->id }}" data-prix="{{ $article->prix }}">
-                                {{ $article->nom }}
-                            </option>
-                        @endforeach
-                    </select>
-                </td>
-
-                <td>
-                    <input type="number" name="articles[${index}][prix]" class="form-control prix" >
-                </td>
-
-                <td>
-                    <input type="number" name="articles[${index}][quantite]" class="form-control quantite" value="1">
-                </td>
-
-                <td>
-                    <input type="number" class="form-control total-ligne" readonly>
-                </td>
-
-                <td>
-                    <button type="button" class="btn btn-danger remove">X</button>
-                </td>
-            </tr>
-            `;
-
-            document.querySelector('#table-produits tbody').insertAdjacentHTML('beforeend', row);
-            index++;
-        });
-
-        // Supprimer ligne
-        document.addEventListener('click', function(e){
-            if(e.target.classList.contains('remove')){
-                e.target.closest('tr').remove();
-                calculTotal();
-            }
-        });
-
-        // Auto remplir prix
-        document.addEventListener('change', function(e){
-            if(e.target.classList.contains('produit-select')){
-                let prix = e.target.selectedOptions[0].dataset.prix;
-                let row = e.target.closest('tr');
-                row.querySelector('.prix').value = prix;
-                calculLigne(row);
-            }
-        });
-
-        // Calcul ligne
-        document.addEventListener('input', function(e){
-            if(e.target.classList.contains('quantite')){
-                let row = e.target.closest('tr');
-                calculLigne(row);
-            }
-        });
-
-        function calculLigne(row){
-            let prix = row.querySelector('.prix').value || 0;
-            let quantite = row.querySelector('.quantite').value || 0;
-
-            let total = prix * quantite;
-            row.querySelector('.total-ligne').value = total;
-
-            calculTotal();
-        }
-
-        // Calcul global
-        function calculTotal(){
-            let total = 0;
-
-            document.querySelectorAll('.total-ligne').forEach(function(input){
-                total += parseFloat(input.value) || 0;
-            });
-
-            document.getElementById('total-global').innerText = total.toLocaleString();
-        }
-    </script>-->
 @include('partials.footer')

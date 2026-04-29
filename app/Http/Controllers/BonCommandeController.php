@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Article;
 use App\Models\Bon_commande;
 use App\Models\Bon_commande_details;
+use App\Models\Entreprise;
 use Illuminate\Http\Request;
 use App\Models\Fournisseur;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -159,16 +160,20 @@ class BonCommandeController extends Controller
 
         return back()->with('success', 'Stock mis à jour, commande reçue');
     }
+
+    
     // Facture
     public function facture($id)
     {
+        $entreprise= Entreprise::findOrFail(1);
+
         $articles= Article::latest()->get();
 
         $bonCommande = Bon_commande::with('fournisseur', 'details')->findOrFail($id);
 
         $bonCommande->load(['fournisseur', 'details']);
 //dd($devis);
-        $pdf = Pdf::loadView('dashboard.bonCommandes.facture', compact('bonCommande'));
+        $pdf = Pdf::loadView('dashboard.bonCommandes.facture', compact('bonCommande', 'entreprise'));
 
         return $pdf->stream ('Facture-' . $bonCommande->reference . '.pdf');
     }

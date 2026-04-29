@@ -15,6 +15,7 @@ class Vente extends Model
         'user_id',
         'total_tva',
         'total_ttc',
+        'session_caisse_id',
     ];
 
      public function items()

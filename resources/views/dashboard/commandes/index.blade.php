@@ -160,15 +160,16 @@
                                 <thead>
                                     <tr>
                                         <th style="background-color: #BAFFAC;">Reference</th>
-                                        <th style="background-color: #BAFFAC;">Client</th>
+                                        <!--<th style="background-color: #BAFFAC;">Client</th>-->
                                         <!--<th>Montant TVA</th>-->
                                         <th style="background-color: #BAFFAC;">Montant Total</th>
                                         <th style="background-color: #BAFFAC;">Montant Payer</th>
                                         <th style="background-color: #BAFFAC;">Montant Restant</th>
                                         <th style="background-color: #BAFFAC;">Date</th>
                                         <th style="background-color: #BAFFAC;">Statut</th>
-                                        <th style="background-color: #BAFFAC;">Actions</th>
+                                        <!--<th style="background-color: #BAFFAC;">Actions</th>-->
                                         <th style="background-color: #BAFFAC;">Facture</th>
+                                        <th style="background-color: #BAFFAC;">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -176,7 +177,7 @@
                                         @forelse($ventes as $v)
                                             <tr>
                                                 <td>{{$v->reference}}</td>
-                                                <td>{{$v->client->nom ?? 'Client supprimee'}}</td>
+                                                <!--<td>{{$v->client->nom ?? 'Client supprimee'}}</td>-->
                                                 <!--<td>{{number_format($v->total_tva, 0, ',',' ')}} XOF</td>-->
                                                 <td>{{number_format($v->total_ttc, 0, ',',' ')}} XOF</td>
                                                 <td>{{number_format($v->montant_paye, 0, ',', ' ')}} XOF</td>
@@ -191,7 +192,7 @@
                                                         <span class="status-badge badge bg-danger">{{$v->statut}}</span>
                                                     @endif
                                                 </td>
-                                                <td>
+                                                <!--<td>
                                                     @if($v->montant_restant == 0)
                                                         <button type="button" class="btn btn-secondary">
                                                                 Payée
@@ -200,15 +201,20 @@
                                                     <button type="button" class="btn btn-success" data-bs-toggle="modal" data-id="{{$v->id}}" data-bs-target="#paiementModal">Payer
                                                     </button>
                                                     @endif
+                                                </td>-->
+                                                <td>
+                                                    <a href="{{route('commandes.show', $v->id)}}" class="btn btn-outline-warning" title="afficher la facture">
+                                                        <i class="fa fa-eye text-warning"></i>
+                                                    </a>
                                                 </td>
                                                 <td>
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <a href="{{route('commandes.show', $v->id)}}" class="btn btn-outline-warning mr-2" title="afficher la facture">
-                                                                <i class="fa fa-eye text-warning"></i>
-                                                            </a>
-                                                        </div>
-                                                    </div>
+                                                    <form action="{{route('commandes.destroy', $v->id)}}" type="button" method="post" onsubmit="return confirm   ('Supprimer ?')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-outline-danger">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </form>
                                                 </td>
                                             </tr>
                                         @empty

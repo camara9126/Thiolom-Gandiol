@@ -14,6 +14,7 @@ use App\Http\Controllers\PaiementController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RapportController;
 use App\Http\Controllers\RecetteController;
+use App\Http\Controllers\SessionCaisseController;
 use App\Http\Controllers\VenteController;
 use App\Models\Article;
 use App\Models\Bon_commande;
@@ -171,9 +172,11 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('/commandes', VenteController::class);
     Route::get('/commandeSearch', [VenteController::class, 'search'])->name('commandes.search');
-    Route::get('/pdv', [VenteController::class, 'pdv'])->name('commandes.pdv');
-    Route::get('/caisse/{id}', [VenteController::class, 'caisse'])->name('commandes.caisse');
-
+    
+    Route::get('/pdv', [SessionCaisseController::class, 'pdv'])->name('commandes.pdv');
+    Route::get('/ouvrirCaisse', [SessionCaisseController::class, 'ouvrirCaisse'])->name('ouvrirCaisse');
+    Route::get('/fermerCaisse', [SessionCaisseController::class, 'fermerCaisse'])->name('fermerCaisse');
+    
     Route::resource('/devis', DevisController::class);
     Route::get('/devisSearch', [DevisController::class, 'search'])->name('devis.search');
 

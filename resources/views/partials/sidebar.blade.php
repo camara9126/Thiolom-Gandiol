@@ -113,12 +113,12 @@
                                 <span class="badge">{{$devis->count()}}</span>
                             </a>
                         </li>
-                        <!--<li>
+                        <li>
                             <a href="{{ route('magasin.index') }}">
-                                <i class="fas fa-shop"></i>
+                                <i class="fas fa-building"></i>
                                 <span>Magasins</span>
                             </a>
-                        </li>-->
+                        </li>
 
                         <div class="sidebar-divider"></div>
 

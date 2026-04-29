@@ -273,6 +273,8 @@ class DevisController extends Controller
     // Facture
     public function facture($id)
     {
+        $entreprise= Entreprise::findOrFail(1);
+
 
         $articles= Article::latest()->get();
 
@@ -280,7 +282,7 @@ class DevisController extends Controller
 
         $devis->load(['client', 'details']);
 //dd($devis);
-        $pdf = Pdf::loadView('dashboard.devis.facture', compact('devis'));
+        $pdf = Pdf::loadView('dashboard.devis.facture', compact('devis', 'entreprise'));
 
         return $pdf->stream ('Facture-' . $devis->reference . '.pdf');
     }

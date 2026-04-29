@@ -11,10 +11,20 @@
                     <i class="fas fa-bars"></i>
                 </button>
 
+                <div class="tabs-navigation mb-4" id="tabsNav">
+                    <a href="{{ route('ouvrirCaisse') }}" class="tab-btn ">Ouvrir la session</a>
+                    <!--<button class="tab-btn" data-tab="orders">Commandes</button>
+                    <button class="tab-btn" data-tab="menu">Menu</button>
+                    <button class="tab-btn" data-tab="customers">Clients</button>
+                    <button class="tab-btn" data-tab="inventory">Inventaire</button>-->
+                </div>
+                
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
                     <input type="text" placeholder="Rechercher...">
                 </div>
+
+                
                 
                 @include('partials.userMenu')
             </nav>
@@ -27,10 +37,10 @@
                     <div>
                         <!--<button class="btn-outline" style="margin-right: 0.5rem;">
                             <i class="fas fa-download"></i> Exporter
-                        </button>
-                        <a href="" class="btn-primary">
-                            <i class="fas fa-shop"></i>Boutique
-                        </a>-->
+                        </button>-->
+                        <a href="{{ route('ouvrirCaisse') }}" class="btn-primary">
+                            <i class="fas fa-shop"></i>Ouvrir la session
+                        </a>
                     </div>
                 </div>
 
@@ -132,9 +142,23 @@
                         </div>
                     </div>
                 </div>
+ 
 
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Ventes mensuelles</h5>
+                         <select class="form-select form-select-sm w-auto">
+                            <option>{{$annee}}</option> 
+                        </select>
+                    </div>
+                    <div class="card body">
+                        <div class="chart-container">
+                            <canvas id="ordersChart"></canvas>
+                        </div>
+                    </div>
+                </div>
 
-                <!-- Recent Products Table -->
+                 <!-- Recent Products Table -->
                 <div class="card" style="border: #088499;">
                     <div class="card-header">
                         <span><i class="fas fa-box" style="color: var(--primary); margin-right: 0.5rem;"></i> Articles récents</span>
@@ -182,21 +206,6 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">Ventes mensuelles</h5>
-                         <select class="form-select form-select-sm w-auto">
-                            <option>{{$annee}}</option> 
-                        </select>
-                    </div>
-                    <div class="card body">
-                        <div class="chart-container">
-                            <canvas id="ordersChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-                
 
             </div>
         </main>

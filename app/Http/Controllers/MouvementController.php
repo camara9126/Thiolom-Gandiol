@@ -45,7 +45,7 @@ class MouvementController extends Controller
             'article_id' => 'required|exists:articles,id',
             'quantite' => 'required|integer|min:1',
             'type' => 'required',
-            'magasin' =>'required',
+            'magasin_id' =>'required',
         ]);
 
         $article = Article::findOrFail($request->article_id);
@@ -54,6 +54,7 @@ class MouvementController extends Controller
             'article_id' => $article->id,
             'type' => $request->type,
             'quantite' => $request->quantite,
+            'magasin_id' => $request->magasin_id,
             'reference' => 'MVT-' . now()->timestamp,
         ]);
 
