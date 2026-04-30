@@ -82,6 +82,13 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{{ route('commandes.factures') }}">
+                           <i class="fas fa-file-invoice"></i>
+                            <span>Factures</span>
+                            <span class="badge"></span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ route('commandes.pdv') }}">
                             <i class="fas fa-shop"></i>
                             <span>Point de vente</span>
@@ -108,7 +115,7 @@
                         
                         <li>
                             <a href="{{ route('devis.index') }}">
-                                <i class="fas fa-file-invoice"></i>
+                                <i class="fas fa-receipt"></i>
                                 <span>Devis</span>
                                 <span class="badge">{{$devis->count()}}</span>
                             </a>

@@ -60,16 +60,44 @@
                                 @csrf
 
                                 <!-- FOURNISSEUR -->
-                                <div class="mb-3">
-                                    <label>Fournisseur</label>
-                                    <select name="fournisseur_id" class="form-control" required>
-                                        <option value="">-- Choisir un fournisseur --</option>
-                                        @foreach($fournisseurs as $fournisseur)
-                                            <option value="{{ $fournisseur->id }}">{{ $fournisseur->nom }}</option>
-                                        @endforeach
-                                    </select>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="mb-3">
+                                            <label>Fournisseur</label>
+                                            <select name="fournisseur_id" class="form-control" required>
+                                                <option value="">-- Choisir un fournisseur --</option>
+                                                @foreach($fournisseurs as $fournisseur)
+                                                    <option value="{{ $fournisseur->id }}">{{ $fournisseur->nom }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="mt-4 mb-2">
+                                            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#fournisseurModal" style="padding: 6px 12px;">
+                                                + Nouveau fournisseur
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
 
+                                <!-- INFO TRANSPORTEUR -->
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <div class="mb-2">
+                                            <label>Nom du chauffeur</label>
+                                            <input type="text" name="nom" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="mb-2">
+                                            <label for="">Matricule</label>
+                                            <input type="text" name="matricule" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                
                                 <!-- TABLE articles -->
                                 <table class="" id="table-articles">
                                     <thead>
@@ -131,6 +159,47 @@
                                     Enregistrer
                                 </button>
                             </form>
+
+                            <!-- Nouveau fournisseur -->
+                            <div class="modal fade" id="fournisseurModal" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <form method="post" action="{{route('fournisseurs.store')}}">
+                                        @csrf
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Nouveau fournisseur</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label>Nom du fournisseur</label>
+                                                    <input type="text" name="nom" class="form-control" required>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label>Téléphone</label>
+                                                    <input type="text" name="telephone" class="form-control">
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label>Email</label>
+                                                    <input type="email" name="email" class="form-control">
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label>Adresse</label>
+                                                    <textarea name="adresse" id=""></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-primary">Enregistrer</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
 
 

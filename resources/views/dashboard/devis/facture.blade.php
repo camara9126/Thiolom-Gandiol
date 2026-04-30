@@ -33,9 +33,11 @@
 </div>
 
 <!-- CLIENT -->
-<h4>Client</h4>
-<p>Nom : {{ $devis->client->nom ?? '-' }}</p>
-<p>Téléphone : {{ $devis->client->telephone ?? '-' }}</p>
+@if($devis->client->nom !== 'Inconnu')
+    <h4>Client</h4>
+    <p>Nom : {{ $devis->client->nom ?? '-' }}</p>
+    <p>Téléphone : {{ $devis->client->telephone ?? '-' }}</p>
+@endif
 
 <!-- TABLE -->
 <table>

@@ -8,6 +8,11 @@ use App\Models\Devis;
 use App\Models\Client;
 use App\Models\Devis_details;
 use App\Models\Entreprise;
+use App\Models\Magasin;
+use App\Models\Mouvement_stock;
+use App\Models\Paiements;
+use App\Models\Recettes;
+use App\Models\Session_caisse;
 use App\Models\Vente;
 use App\Models\VenteItem;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -58,7 +63,7 @@ class DevisController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'client_id' => 'required',
+            'client_id' ,
             'articles' => 'required|array',
             'articles.*.article_id' => 'required',
             'articles.*.quantite' => 'required|numeric|min:1',
@@ -68,7 +73,7 @@ class DevisController extends Controller
         // Création du devis
         $devis = Devis::create([
             'reference' => 'DEV-' . strtoupper(Str::random(6)),
-            'client_id' => $request->client_id,
+            'client_id' => $request->client_id ?? 2,
             'total' => 0,
             'statut' => 'en_attente',
             'date_devis' => now(),
@@ -133,7 +138,7 @@ class DevisController extends Controller
     {
 
         $request->validate([
-            'client_id' => 'required',
+            'client_id' ,
             'articles' => 'required|array',
             'articles.*.article_id' => 'required',
             'articles.*.quantite' => 'required|numeric|min:1',
@@ -219,9 +224,17 @@ class DevisController extends Controller
     public function convertir(Request $request, $id)
     {
         $devis = Devis::with('client', 'details')->findOrFail($id);
-
+       
+        // Vérifier si le devis est déjà converti
+            if ($devis->converti_en_vente) {
+                return redirect()->back()->with('success', 'Ce devis a déjà été converti en vente.');
+            } 
+        // Session 
+         $session= Session_caisse::where('user_id', request()->user()->id)->whereNull('closed_at')->first();
+         
         // Créer la vente
         $vente = Vente::create([
+            'session_caisse_id' => $session->id,
             'reference' => 'VNT-' . time(),
             'date' => now(),
             'client_id' => $devis->client_id,
@@ -239,7 +252,10 @@ class DevisController extends Controller
         // Ajouter les produits
         foreach ($devis->details as $detail) {
 
-         $entreprise= Entreprise::findOrFail(1); // Recuperation de la TVA de l'entreprise
+        $produit = Article::where('id', $detail->article_id)->lockForUpdate()->firstOrFail(); // verrou stock
+        $magasin = Magasin::where('id', $produit->magasin_id)->lockForUpdate()->firstOrFail(); // verrou stock
+
+        $entreprise= Entreprise::findOrFail(1); // Recuperation de la TVA de l'entreprise
 
             VenteItem::create([
                 'vente_id' => $vente->id,
@@ -252,10 +268,22 @@ class DevisController extends Controller
                 'total' => $detail['quantite'] * $detail['prix_unitaire'],
             ]);
 
+            // Mise a jour stock
+            $produit->decrement('stock', $detail['quantite']);
+
+            // Enregistrememt historique stock
+                Mouvement_stock::create([
+                    'article_id' => $produit->id,
+                    'type' => 'sortie',
+                    'quantite' => $detail['quantite'],
+                    'magasin_id' => $produit->magasin_id,
+                    'reference' => 'MVT-' . now()->timestamp,
+                ]);
+
              // Calcule total + total_tva + total_ttc
             $total += $detail['quantite'] *  $detail['prix_unitaire'];
             $total_tva += ($detail['quantite'] * $detail['prix_unitaire']) * ($entreprise->taux_tva /100 );
-            $total_ttc += ($detail['quantite'] * $detail['prix_unitaire']) + (($detail['quantite'] * $detail['prix_unitaire']) * ($entreprise->taux_tva /100 ));
+            $total_ttc += $detail['quantite'] *  $detail['prix_unitaire'] + ($detail['quantite'] * $detail['prix_unitaire']) * ($entreprise->taux_tva /100 );
 
              // Mise a jour total + total_tva + total_ttc
             $vente->update([
@@ -265,6 +293,46 @@ class DevisController extends Controller
             ]);
             
         }
+
+         // creation paiement
+            $paiement = $vente;
+
+            $totalPaye = $paiement->paiements()->where('statut','valide')->sum('montant');
+
+            $paiements= Paiements::create([
+                'vente_id' => $vente->id,
+                'user_id' => request()->user()->id,
+                'montant' => $vente->total_ttc,
+                'mode_paiement' => 'cash',
+                'date_paiement' => now(),
+                'statut' => 'valide',
+                'reference' => 'PAY-' . time()
+            ]);
+
+
+            // Mise à jour du statut de la vente
+            $vente = $paiements->vente;
+
+            $totalPaye = $vente->paiements()->where('statut','valide')->sum('montant');
+
+            $vente->statut = $totalPaye == 0 ? 'impayee' : ($totalPaye < $vente->total_ttc ? 'partielle' : 'payee');
+
+            $vente->save();
+
+
+            // 2. Création automatique de la recette
+            if($vente->statut == 'payee') {
+                 Recettes::create([
+                    'user_id' => $request->user()->id,
+                    'paiement_id' => $paiements->id,
+                    'reference' => 'REC-' . now()->timestamp,
+                    'libelle' => 'Paiement vente ' . $vente->reference,
+                    'montant' => $vente->total_ttc,
+                    'date_recette' => now(),
+                    'mode_paiement' => 'cash',
+                    'statut' => 'recu',
+                ]);
+            }
 
         return redirect()->route('commandes.index', $vente->id)->with('success', 'Devis converti en vente');
     }

@@ -86,7 +86,12 @@
                                     @endforelse
                                 </tbody>
                             </table>
+                        </div>
+                         
+                        <div class="d-flex justify-content-center mt-4">
+                            {{$mouvements->links()}}
                         </div> 
+                        
                          @if ($errors->any())
                             <div class="alert alert-danger">
                                 <ul>

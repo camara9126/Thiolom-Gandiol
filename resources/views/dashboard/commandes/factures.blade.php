@@ -30,8 +30,8 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <span><i class="fas fa-shopping-cart" style="color: var(--primary); margin-right: 0.5rem;"></i>Liste des factures ( {{$caisse->count()}} )</span>
-                        <a href="{{ route('commandes.create') }}" style="color: var(--primary); text-decoration: none; font-weight: 500;">Nouvelle facture →</a>
+                        <span><i class="fas fa-shopping-cart" style="color: var(--primary); margin-right: 0.5rem;"></i>Liste des factures ( {{$factures->count()}} )</span>
+                        
                     </div>
                     
                     @if(Session::has('success'))
@@ -65,12 +65,12 @@
                                         <th style="background-color: #BAFFAC;">Montant Restant</th>
                                         <th style="background-color: #BAFFAC;">Date</th>
                                         <th style="background-color: #BAFFAC;">Statut</th>
-                                        <th style="background-color: #BAFFAC;">Actions</th>
+                                        <!--<th style="background-color: #BAFFAC;">Actions</th>-->
                                         <th style="background-color: #BAFFAC;">Facture</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($caisse as $v)
+                                    @forelse($factures as $v)
                                     <tr>
                                         <td>{{$v->reference}}</td>
                                         <td>{{$v->client->nom ?? 'Client supprimee'}}</td>
@@ -88,7 +88,7 @@
                                                 <span class="status-badge badge bg-danger">{{$v->statut}}</span>
                                             @endif
                                         </td>
-                                        <td>
+                                        <!--<td>
                                             @if($v->montant_restant == 0)
                                                 <button type="button" class="btn btn-secondary">
                                                         Payée
@@ -97,7 +97,7 @@
                                             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-id="{{$v->id}}" data-bs-target="#paiementModal">Payer
                                             </button>
                                             @endif
-                                        </td>
+                                        </td>-->
                                         <td>
                                             <div class="row">
                                                 <div class="col-md-6">

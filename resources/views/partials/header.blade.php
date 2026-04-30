@@ -9,6 +9,7 @@
     $articles= Article::latest()->get();
     $clients= Client::latest()->get();
     $commandes= Vente::latest()->get();
+    $factures= Vente::latest()->get();
     // Alert sotck
     $alerte = article::produitsEnAlerte()->count();
 ?>

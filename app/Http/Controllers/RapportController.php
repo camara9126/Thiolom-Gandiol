@@ -148,18 +148,18 @@ class RapportController extends Controller
 
 
             // Top article mois
-            $monthToparticles = DB::table('vente_items')->join('articles', 'vente_items.article_id', '=', 'articles.id')->select('articles.nom as article',
+            $monthTopArticles = DB::table('vente_items')->join('articles', 'vente_items.article_id', '=', 'articles.id')->select('articles.nom as article',
                         DB::raw('SUM(vente_items.total_ttc) as total'))->whereMonth('vente_items.created_at', now()->month)->groupBy('articles.nom')->orderByDesc('total')->limit(10)->get();
 
-                $categories = $monthToparticles->pluck('article');
-                $amounts = $monthToparticles->pluck('total');
+                $categories = $monthTopArticles->pluck('article')->toArray();
+                $amounts = $monthTopArticles->pluck('total')->toArray();
 
                 
             // Top article annee
-            $yearToparticles = DB::table('vente_items')->join('articles', 'vente_items.article_id', '=', 'articles.id')->select('articles.nom as article', DB::raw('SUM(vente_items.total_ttc) as total'))->whereYear('vente_items.created_at', now()->year)->groupBy('articles.nom')->orderByDesc('total')->limit(10)->get();
+            $yearTopArticles = DB::table('vente_items')->join('articles', 'vente_items.article_id', '=', 'articles.id')->select('articles.nom as article', DB::raw('SUM(vente_items.total_ttc) as total'))->whereYear('vente_items.created_at', now()->year)->groupBy('articles.nom')->orderByDesc('total')->limit(10)->get();
 
-            $yearCategories = $yearToparticles->pluck('articles');
-            $yearAmounts = $yearToparticles->pluck('total');
+            $yearCategories = $yearTopArticles->pluck('article')->toArray();
+            $yearAmounts = $yearTopArticles->pluck('total')->toArray();
 
         return view('dashboard.rapports', compact('entreprise','monthlyData','quarterlyData','yearlyData','categories', 'amounts','yearAmounts','yearCategories'));
     }

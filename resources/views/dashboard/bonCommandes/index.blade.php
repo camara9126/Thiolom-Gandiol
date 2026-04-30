@@ -99,7 +99,7 @@
                                                     <!-- Voir -->
                                                     <a href="{{ route('bonCommande.show', $bc->id) }}" 
                                                     class="btn btn-sm btn-info">
-                                                        Voir
+                                                        &nbsp;Voir&nbsp;
                                                     </a>
 
                                                     <!-- Envoyer -->
@@ -114,7 +114,7 @@
                                                     @if($bc->statut == 'envoye')
                                                         <a href="{{ route('bonCommande.recevoir', $bc->id) }}" 
                                                         class="btn btn-sm btn-success">
-                                                            Reçu
+                                                            &nbsp;Reçu&nbsp;
                                                         </a>
                                                     @endif
 

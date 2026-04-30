@@ -13,6 +13,8 @@ class Bon_commande extends Model
         'date_commande',
         'note',
         'statut',
+        'nom',
+        'matricule',
     ];
 
      public function fournisseur()

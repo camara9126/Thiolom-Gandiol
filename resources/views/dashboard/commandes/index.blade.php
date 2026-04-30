@@ -27,8 +27,9 @@
             <div class="content">
                 <!-- Page Header -->
 
-                <h2>Caisse journaliere</h2>
+                
                 @if($user->role == 'administrateur')
+                    <h2>Caisse journaliere (administrateur)</h2> 
                     <div class="stats-grid">
                         <div class="stat-card" style="background: linear-gradient(#0081A7, #00AFB9) ;">
                             <div class="stat-info">
@@ -57,33 +58,14 @@
                                 <i class="fas fa-money-bill-wave text-warning"></i>
                             </div>
                         </div>
-                        @if($depensesJour > 0)
-                            <div class="stat-card" style="background: linear-gradient(#00778B, #DFBB2C) ;">
-                                <div class="stat-info">
-                                    <h3>Depenses du jour</h3>
-                                    <div class="number">{{number_format($depensesJour, 0, ',', ' ')}} XOF</div>
-                                </div>
-                                <div class="stat-icon">
-                                    <i class="fas fa-money-bill-wave text-danger"></i>
-                                </div>
-                            </div>
-                            <div class="stat-card" style="background: linear-gradient(#00E1FD, #0040FF) ;">
-                                <div class="stat-info">
-                                    <h3>Montant Restant</h3>
-                                    <div class="number">{{number_format($totalReste, 0, ',', ' ')}} XOF</div>
-                                </div>
-                                <div class="stat-icon">
-                                    <i class="fas fa-money-bill-wave text-danger"></i>
-                                </div>
-                            </div>
-                        @endif
-                    </div>
+                    </div>                
                 @else
+                    <h2>Caisse journaliere (caissier(e))</h2> 
                     <div class="stats-grid">
                         <div class="stat-card" style="background: linear-gradient(#0081A7, #00AFB9) ;">
                             <div class="stat-info">
                                 <h3 class="text-white">Ventes du jour</h3>
-                                <div class="number text-white">{{$ventesJour->where('user_id', $user->id)->count()}}</div>
+                                <div class="number text-white">{{$session->nombre_ventes}}</div>
                             </div>
                             <div class="stat-icon">
                                 <i class="fas fa-tags text-info"></i>
@@ -92,7 +74,7 @@
                         <div class="stat-card" style="background: linear-gradient(#FF2626, #FFFF26) ;">
                             <div class="stat-info">
                                 <h3>Montant Total</h3>
-                                <div class="number">{{number_format($total, 0, ',', ' ')}} XOF</div>
+                                <div class="number">{{number_format($session->total_ventes, 0, ',', ' ')}} XOF</div>
                             </div>
                             <div class="stat-icon">
                                 <i class="fas fa-money-bill-wave"></i>
@@ -101,39 +83,19 @@
                         <div class="stat-card" style="background: linear-gradient(#FF95F4, #FF2626) ;">
                             <div class="stat-info">
                                 <h3 class="">Montant Encaisse</h3>
-                                <div class="number">{{number_format($totalEncaisse, 0, ',', ' ')}} XOF</div>
+                                <div class="number">{{number_format($session->total_encaisse, 0, ',', ' ')}} XOF</div>
                             </div>
                             <div class="stat-icon">
                                 <i class="fas fa-money-bill-wave text-warning"></i>
                             </div>
                         </div>
-                        @if($depensesJour > 0)
-                            <div class="stat-card" style="background: linear-gradient(#00778B, #DFBB2C) ;">
-                                <div class="stat-info">
-                                    <h3>Depenses du jour</h3>
-                                    <div class="number">{{number_format($depensesJour, 0, ',', ' ')}} XOF</div>
-                                </div>
-                                <div class="stat-icon">
-                                    <i class="fas fa-money-bill-wave text-danger"></i>
-                                </div>
-                            </div>
-                            <div class="stat-card" style="background: linear-gradient(#00E1FD, #0040FF) ;">
-                                <div class="stat-info">
-                                    <h3>Montant Restant</h3>
-                                    <div class="number">{{number_format($totalReste, 0, ',', ' ')}} XOF</div>
-                                </div>
-                                <div class="stat-icon">
-                                    <i class="fas fa-money-bill-wave text-danger"></i>
-                                </div>
-                            </div>
-                            @endif
                     </div>
                 @endif                    
 
                 <div class="card">
                     <div class="card-header">
                         <span><i class="fas fa-shopping-cart" style="color: var(--primary); margin-right: 0.5rem;"></i>Liste des factures ( {{$ventes->count()}} )</span>
-                        <a href="{{ route('commandes.create') }}" style="color: var(--primary); text-decoration: none; font-weight: 500;">Nouvelle facture →</a>
+                        <a href="{{ route('commandes.create') }}" style="color: var(--primary); text-decoration: none; font-weight: 500;">Nouvelle vente →</a>
                     </div>
                     
                     @if(Session::has('success'))
@@ -168,7 +130,7 @@
                                         <th style="background-color: #BAFFAC;">Date</th>
                                         <th style="background-color: #BAFFAC;">Statut</th>
                                         <!--<th style="background-color: #BAFFAC;">Actions</th>-->
-                                        <th style="background-color: #BAFFAC;">Facture</th>
+                                        <th style="background-color: #BAFFAC;">Ticket de caisse</th>
                                         <th style="background-color: #BAFFAC;">Action</th>
                                     </tr>
                                 </thead>
@@ -203,8 +165,8 @@
                                                     @endif
                                                 </td>-->
                                                 <td>
-                                                    <a href="{{route('commandes.show', $v->id)}}" class="btn btn-outline-warning" title="afficher la facture">
-                                                        <i class="fa fa-eye text-warning"></i>
+                                                    <a href="{{route('commandes.ticket', $v->id)}}" class="btn btn-warning" title="Imprimer le ticket de caisse">
+                                                        Imprimer
                                                     </a>
                                                 </td>
                                                 <td>
@@ -226,7 +188,7 @@
                                         @forelse($ventes->where('user_id', $user->id) as $v)
                                             <tr>
                                                 <td>{{$v->reference}}</td>
-                                                <td>{{$v->client->nom ?? 'Client supprimee'}}</td>
+                                                <!--<td>{{$v->client->nom ?? 'Client supprimee'}}</td>-->
                                                 <!--<td>{{number_format($v->total_tva, 0, ',',' ')}} XOF</td>-->
                                                 <td>{{number_format($v->total_ttc, 0, ',',' ')}} XOF</td>
                                                 <td>{{number_format($v->montant_paye, 0, ',', ' ')}} XOF</td>
@@ -241,7 +203,7 @@
                                                         <span class="status-badge badge bg-danger">{{$v->statut}}</span>
                                                     @endif
                                                 </td>
-                                                <td>
+                                                <!--<td>
                                                     @if($v->montant_restant == 0)
                                                         <button type="button" class="btn btn-secondary">
                                                                 Payée
@@ -250,15 +212,24 @@
                                                     <button type="button" class="btn btn-success" data-bs-toggle="modal" data-id="{{$v->id}}" data-bs-target="#paiementModal">Payer
                                                     </button>
                                                     @endif
-                                                </td>
+                                                </td>-->
                                                 <td>
                                                     <div class="row">
                                                         <div class="col-md-6">
-                                                            <a href="{{route('commandes.show', $v->id)}}" class="btn btn-outline-warning mr-2" title="afficher la facture">
-                                                                <i class="fa fa-eye text-warning"></i>
+                                                            <a href="{{route('commandes.ticket', $v->id)}}" class="btn btn-warning mr-2" title="Imprimer le ticket de caisse">
+                                                                Imprimer
                                                             </a>
                                                         </div>
                                                     </div>
+                                                </td>
+                                                <td>
+                                                    <form action="{{route('commandes.destroy', $v->id)}}" type="button" method="post" onsubmit="return confirm   ('Supprimer ?')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-outline-danger">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </form>
                                                 </td>
                                             </tr>
                                         @empty

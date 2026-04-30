@@ -38,8 +38,8 @@
                         <!--<button class="btn-outline" style="margin-right: 0.5rem;">
                             <i class="fas fa-download"></i> Exporter
                         </button>-->
-                        <a href="{{ route('ouvrirCaisse') }}" class="btn-primary">
-                            <i class="fas fa-shop"></i>Ouvrir la session
+                        <a href="{{ route('articles.import.page') }}" class="btn-primary">
+                            <i class="fas fa-shop"></i>Importer le fichier articles
                         </a>
                     </div>
                 </div>
@@ -175,7 +175,6 @@
                                         <th style="background-color: #11C6FF;" class="text-white">Catégorie</th>
                                         <th style="background-color: #11C6FF;" class="text-white">Prix</th>
                                         <th style="background-color: #11C6FF;" class="text-white">Stock</th>
-                                        <th style="background-color: #11C6FF;" class="text-white">Etiquette</th>
                                         <th style="background-color: #11C6FF;" class="text-white">Statut</th>
                                     </tr>
                                 </thead>
@@ -195,9 +194,8 @@
                                         </td>
                                         <td>{{$a->nom}}</td>
                                         <td>{{$a->categorie->nom}}</td>
-                                        <td><strong>{{$a->prix}} FCFA</strong></td>
+                                        <td><strong>{{$a->prix_vente}} FCFA</strong></td>
                                         <td><span class="badge-success">{{$a->stock}} en stock</span></td>
-                                        <td>{{$a->etiquette ?? 'Pas d"etiquette'}}</td>
                                         <td><span class="badge-{{$a->statut ? 'success' : 'warning'}}">{{$a->statut ? 'Publié' : 'En attente'}}</span></td>
                                     </tr>
                                     @endforeach

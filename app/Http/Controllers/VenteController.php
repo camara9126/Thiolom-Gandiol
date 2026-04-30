@@ -25,22 +25,30 @@ class VenteController extends Controller
     {
         $user= request()->user();
 
+        // Session Administrateur
+        $today = now()->toDateString();
+        
         $ventes = Vente::with('client')->latest()->simplePaginate(10); 
-
-       $today = now()->toDateString();
 
         $total = Vente::whereDate('created_at', $today)->sum('total');
 
         $depensesJour = Depenses::where('statut', 'payee')->whereDate('created_at', $today)->sum('montant');
 
-        $totalEncaisse = ((Paiements::with('vente')->where('statut', 'valide')->whereDate('created_at', $today)->sum('montant')) - ($depensesJour));
-
-        $totalReste = $totalEncaisse - $depensesJour;
+        $totalEncaisse = Vente::with('client')->get()->sum('montant_paye');
         
         $ventesJour = Vente::whereDate('created_at', $today)->get();
 
+        // Session Caisse
+        $session= Session_caisse::where('user_id', $user->id)->whereNull('closed_at')->first();
+        $vente= Vente::where('session_caisse_id', $session->id)->get();
 
-        return view('dashboard.commandes.index', compact('ventes','ventesJour','total','totalEncaisse','totalReste','depensesJour','user'));
+        $session->update([
+            'nombre_ventes' => $vente->count(),
+            'total_ventes' => $vente->sum('total'),
+            'total_encaisse' => $vente->sum('montant_paye'),
+        ]);
+
+        return view('dashboard.commandes.index', compact('ventes','ventesJour','total','totalEncaisse','depensesJour','user','session'));
     }
 
 
@@ -73,6 +81,15 @@ class VenteController extends Controller
 
 
         return view('dashboard.commandes.index', compact('ventes', 'search', 'ventesJour','total','totalEncaisse','totalReste','depensesJour','user'));
+    }
+
+
+    // Liste de factures
+    public function facture()
+    {
+        $factures = Vente::with('client')->latest()->simplePaginate(10); 
+
+        return view('dashboard.commandes.factures', compact('factures'));
     }
 
 
@@ -144,7 +161,7 @@ class VenteController extends Controller
             }
 
             // Session 
-            $session= Session_caisse::where('user_id', $request->user()->id)->whereNull('closed_at')->first();
+            $session= Session_caisse::where('user_id', request()->user()->id)->whereNull('closed_at')->first();
 
             //dd($request->montant);
             $vente = Vente::create([
@@ -261,7 +278,8 @@ class VenteController extends Controller
         return redirect()->route('commandes.index')->with('success', ' vente supprimé avec succès');        
     }
 
-
+    
+    // Facture PDF
     public function show($id)
     {
 
@@ -270,9 +288,24 @@ class VenteController extends Controller
 //dd($vente);
         $vente->load(['client', 'items', 'paiements']);
 
-        $pdf = Pdf::loadView('dashboard.commandes.facture', compact('vente', 'entreprise'));
+        $pdf = Pdf::loadView('dashboard.commandes.PDF', compact('vente', 'entreprise'));
 
         return $pdf->stream('Facture-' . $vente->reference . '.pdf');
+    }
+
+    // Ticket de caisse
+    public function ticket($id)
+    {
+
+        $entreprise= Entreprise::findOrFail(1);
+        $vente= Vente::with('client', 'items', 'paiements')->findOrFail($id);
+        //dd($vente);
+        $vente->load(['client', 'items', 'paiements']);
+
+        $pdf = Pdf::loadView('dashboard.commandes.ticket', compact('vente', 'entreprise'))
+                ->setPaper([0, 0, 226.77, 600]);
+
+        return $pdf->stream('Ticket-' . $vente->reference . '.pdf');
     }
 
 }

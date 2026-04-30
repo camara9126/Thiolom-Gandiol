@@ -33,10 +33,25 @@
     <h2>BON DE COMMANDE</h2>
 </div>
 
-<!-- FOURNISSEUR -->
-<h4>Fournisseur</h4>
-<p>Nom : {{ $bonCommande->fournisseur->nom ?? '-' }}</p>
-<p>Téléphone : {{ $bonCommande->fournisseur->telephone ?? '-' }}</p>
+ <hr>
+<!-- FOURNISSEUUR - CHAUFFEUR -->
+    <div class="row">
+    <div class="col-6">
+        <div class="mb-4">
+            <h5>Fournisseur</h5>
+            <p>Nom Complet : {{ strtoupper($bonCommande->fournisseur->nom) }}</p>
+            <p>Téléphone : {{ $bonCommande->fournisseur->telephone ?? '-' }}</p>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="mb-4">
+            <h5>Chauffeur</h5>
+            <p>Nom Complet : {{ strtoupper($bonCommande->nom) }}</p>
+            <p>Matricule : {{ $bonCommande->matricule ?? '-' }}</p>
+        </div>
+    </div>
+    </div>
+<hr>
 
 <!-- TABLE -->
 <table>

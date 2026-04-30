@@ -69,13 +69,14 @@
 
 <hr>
 
-<p>
-    <b>Type client :</b> {{ strtoupper($vente->client->type) ?? '' }}<br>
-    {{ $vente->client->nom }}<br>
-    {{ $vente->client->telephone ?? '' }} <br>
-    {{ $vente->client->adresse ?? '' }} <br>
-</p>
-
+@if($vente->client->nom !== 'Client comptoir')
+    <p>
+        <b>Client :</b><br>
+        {{ $vente->client->nom }}<br>
+        {{ $vente->client->telephone ?? '' }} <br>
+        {{ $vente->client->adresse ?? '' }} <br>
+    </p>
+@endif
 <br>
 
 <table>

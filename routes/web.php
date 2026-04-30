@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\articleController;
+use App\Http\Controllers\ArticleImportController;
 use App\Http\Controllers\BonCommandeController;
 use App\Http\Controllers\categorieController;
 use App\Http\Controllers\ClientController;
@@ -130,6 +131,10 @@ Route::middleware('auth')->group(function () {
     // Route Article
     Route::resource('/articles', articleController::class);
 
+    // Route Importation fichier articles - excel
+    Route::get('/import', [ArticleImportController::class, 'index'])->name('articles.import.page');
+    Route::post('/import', [ArticleImportController::class, 'import'])->name('articles.import');
+
     // Recheche article par Admin
     Route::get('/asearch', [articleController::class, 'search'])->name('article.search');
 
@@ -171,6 +176,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/clientSearch', [ClientController::class, 'search'])->name('clients.search');
 
     Route::resource('/commandes', VenteController::class);
+    Route::get('/factures', [VenteController::class, 'facture'])->name('commandes.factures');
+    Route::get('/ticket/{id}', [VenteController::class, 'ticket'])->name('commandes.ticket');
     Route::get('/commandeSearch', [VenteController::class, 'search'])->name('commandes.search');
     
     Route::get('/pdv', [SessionCaisseController::class, 'pdv'])->name('commandes.pdv');

@@ -1246,7 +1246,7 @@
             categories: @json($categories),
             amounts: @json($amounts),
             colors: ['#4caf50', '#2196f3', '#ff9800', '#f44336', 
-                     '#9c27b0', '#009688', '#ff5722', '#e91e63']
+                     '#9c27b0', '#009688', '#ff5722', '#e91e63'],
         };
 
         // ============================================
@@ -1256,7 +1256,8 @@
        const expensesDistributionYear = {
             categories: @json($yearCategories),
             amounts: @json($yearAmounts),
-             
+             colors: ['#4caf50', '#2196f3', '#ff9800', '#f44336', 
+                     '#9c27b0', '#009688', '#ff5722', '#e91e63'],
         };
 
         // ============================================

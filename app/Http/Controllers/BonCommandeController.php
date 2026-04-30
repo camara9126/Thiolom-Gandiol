@@ -63,6 +63,8 @@ class BonCommandeController extends Controller
             'articles.*.quantite' => 'required|numeric|min:1',
             'articles.*.prix_vente' => 'required|numeric|min:0',
             'note' => 'nullable',
+            'nom' => 'nullable',
+            'matricule' => 'nullable',
         ]);
 
         // Création du bon de commande
@@ -73,6 +75,8 @@ class BonCommandeController extends Controller
             'statut' => 'en_attente',
             'date_commande' => now(),
             'note' => $request->note ?? 'null',
+            'nom' => $request->nom ?? 'null',
+            'matricule' => $request->matricule ?? 'null',
         ]);
 
         $total = 0;

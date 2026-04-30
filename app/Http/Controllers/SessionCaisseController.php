@@ -2,33 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Paiements;
 use App\Models\Session_caisse;
-use App\Models\Sessions_caisse;
 use App\Models\User;
 use App\Models\Vente;
-use Illuminate\Http\Request;
 
 class SessionCaisseController extends Controller
 {
 
     // Point de vente
-    public function pdv(Request $request) {
+    public function pdv() {
 
         // Tous les Users
         $users= User::latest()->get();
         $userId= request()->user()->id;
 
-        $session= Session_caisse::where('user_id', $userId)->first();
+        $session= Session_caisse::where('user_id', $userId)->whereNull('closed_at')->first();
 
-        $ventes= Vente::where('session_caisse_id', $session->id)->get();
-
-        $session->update([
-            'closed_at' => now(),
-            'nombre_ventes' => $ventes->count(),
-            'total_ventes' => $ventes->sum('total'),
-            'total_encaisse' => $ventes->sum('montant_paye'),
-        ]);
 
         return view('dashboard.commandes.pdv',compact('users','session'));
     }
@@ -49,9 +38,10 @@ class SessionCaisseController extends Controller
                 'opened_at' => now()
             ]);
             
-            return redirect()->route('commandes.index');
+            return redirect()->route('commandes.index')->with('success', 'Caisse ouverte !');
         }
-        return back()->with('success', 'session deja ouverte');
+
+        return back()->with('success', 'Caisse deja ouverte');
     }
 
 
@@ -72,7 +62,7 @@ class SessionCaisseController extends Controller
         $session->update([
             'closed_at' => now(),
             'nombre_ventes' => $ventes->count(),
-            'total_ventes' => $ventes->sum('total'),
+            'total_ventes' => $ventes->sum('total_ttc'),
             'total_encaisse' => $ventes->sum('montant_paye'),
         ]);
         //dd($session);

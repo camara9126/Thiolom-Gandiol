@@ -72,9 +72,9 @@
                                                 @endif
                                             </td> 
                                             <td>
-                                                <div class="action-buttons">
-                                                    <a href="{{ route('commandes.caisse', $u->id) }}" class="action-btn" title="Afficher"><i class="fas fa-eye"></i></a>
-                                                </div>
+                                                <!--<div class="action-buttons">
+                                                    <a href="{{ route('commandes.pdv', $u->id) }}" class="action-btn" title="Afficher"><i class="fas fa-eye"></i></a>
+                                                </div>-->
                                             </td>   
                                         </tr>
                                         @empty

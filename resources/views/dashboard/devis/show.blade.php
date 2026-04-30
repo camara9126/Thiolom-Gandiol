@@ -73,9 +73,11 @@
 
                             <!-- CLIENT -->
                             <div class="mb-4">
-                                <h5>Client</h5>
-                                <p>Nom : {{ $devis->client->nom }}</p>
-                                <p>Téléphone : {{ $devis->client->telephone ?? '-' }}</p>
+                                @if($devis->client->nom !== 'Inconnu')
+                                    <h5>Client</h5>
+                                    <p>Nom : {{ $devis->client->nom }}</p>
+                                    <p>Téléphone : {{ $devis->client->telephone ?? '-' }}</p>
+                                @endif
                             </div>
 
                             <!-- TABLE PRODUITS -->

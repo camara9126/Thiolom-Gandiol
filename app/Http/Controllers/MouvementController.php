@@ -22,6 +22,7 @@ class MouvementController extends Controller
     public function search(Request $request)
     {
         $search = $request->query('search');
+        
         $articles= Article::latest()->get();
         $magasins= Magasin::latest()->get();
 

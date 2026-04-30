@@ -64,19 +64,31 @@
                                     @if($bonCommande->statut == 'en_attente')
                                         <span class="badge bg-warning">En attente</span>
                                     @elseif($bonCommande->statut == 'envoye')
-                                        <span class="badge bg-success">Envoye</span>
+                                        <span class="badge bg-info">Envoye</span>
                                     @else
-                                        <span class="badge bg-danger">Recu</span>
+                                        <span class="badge bg-success">Recu</span>
                                     @endif
                                 </p>
                             </div>
-
-                            <!-- FOURNISSEUUR -->
-                            <div class="mb-4">
-                                <h5>Fournisseur</h5>
-                                <p>Nom : {{ $bonCommande->fournisseur->nom }}</p>
-                                <p>Téléphone : {{ $bonCommande->fournisseur->telephone ?? '-' }}</p>
-                            </div>
+                            <hr>
+                            <!-- FOURNISSEUUR - CHAUFFEUR -->
+                             <div class="row">
+                                <div class="col-6">
+                                    <div class="mb-4">
+                                        <h5>Fournisseur</h5>
+                                        <p>Nom Complet : {{ strtoupper($bonCommande->fournisseur->nom) }}</p>
+                                        <p>Téléphone : {{ $bonCommande->fournisseur->telephone ?? '-' }}</p>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="mb-4">
+                                        <h5>Chauffeur</h5>
+                                        <p>Nom Complet : {{ strtoupper($bonCommande->nom) }}</p>
+                                        <p>Matricule : {{ $bonCommande->matricule ?? '-' }}</p>
+                                    </div>
+                                </div>
+                             </div>
+                            <hr>
 
                             <!-- TABLE PRODUITS -->
                             <table class="">
