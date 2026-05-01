@@ -126,7 +126,6 @@
                         </a>
                     </li>
 
-                    <div class="sidebar-divider"></div>
                     @if(request()->user()->role == 'administrateur')
                         <li>
                             <a href="{{ route('paiements.index') }}">

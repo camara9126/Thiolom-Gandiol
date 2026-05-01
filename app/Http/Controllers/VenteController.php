@@ -54,7 +54,7 @@ class VenteController extends Controller
             'total_encaisse' => $vente->sum('montant_paye'),
         ]);
 
-        return view('dashboard.commandes.index', compact('ventes','ventesJour','total','totalEncaisse','depensesJour','user','session'));
+        return view('dashboard.commandes.index', compact('ventes','vente','ventesJour','total','totalEncaisse','depensesJour','user','session'));
     }
 
 
@@ -64,19 +64,30 @@ class VenteController extends Controller
 
         $search = $request->query('search');
 
+        // Session Administrateur
         $today = now()->toDateString();
-
+        
         $total = Vente::whereDate('created_at', $today)->sum('total');
 
         $depensesJour = Depenses::where('statut', 'payee')->whereDate('created_at', $today)->sum('montant');
 
-        $totalEncaisse = ((Paiements::with('vente')->where('statut', 'valide')->whereDate('created_at', $today)->sum('montant')) - ($depensesJour));
-
-        $totalReste = $totalEncaisse - $depensesJour;
+        $totalEncaisse = Vente::with('client')->get()->sum('montant_paye');
         
         $ventesJour = Vente::whereDate('created_at', $today)->get();
 
-        $ventes = Vente::when($search, function ($query, $search) {
+        // Session Caisse
+        $session= Session_caisse::where('user_id', $user->id)->whereNull('closed_at')->first();
+
+        // Verification Ouverture session
+        if(!$session) {
+            return redirect()->route('commandes.pdv')->with('success', 'Aucun session ouverte');
+        }
+
+        $ventes= Vente::with('client')->latest()->simplePaginate(10); 
+
+        
+
+        $vente = Vente::where('session_caisse_id', $session->id)->when($search, function ($query, $search) {
 
                 $query->where('reference', 'like', "%{$search}%")->orWhereHas('client', function ($q) use ($search) {
 
@@ -85,8 +96,13 @@ class VenteController extends Controller
 
         })->latest()->paginate(10)->withQueryString(); // 🔑 garde ?search=
 
+        $session->update([
+            'nombre_ventes' => $vente->count(),
+            'total_ventes' => $vente->sum('total'),
+            'total_encaisse' => $vente->sum('montant_paye'),
+        ]);
 
-        return view('dashboard.commandes.index', compact('ventes', 'search', 'ventesJour','total','totalEncaisse','totalReste','depensesJour','user'));
+        return view('dashboard.commandes.index', compact('ventes','vente', 'search', 'ventesJour','total','totalEncaisse','depensesJour','user', 'session'));
     }
 
 

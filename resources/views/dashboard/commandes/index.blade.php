@@ -15,7 +15,7 @@
                     <i class="fas fa-search"></i>
                     <form method="get" action="{{route('commandes.search')}}" class="form-inline">
                         
-                        <input type="text" name="search"  placeholder="Recherche facture...">                                                   
+                        <input type="text" name="search"  placeholder="Recherche vente...">                                                   
                             
                     </form>
                 </div>
@@ -185,7 +185,7 @@
                                             </tr>
                                         @endforelse
                                     @else
-                                        @forelse($ventes->where('user_id', $user->id) as $v)
+                                        @forelse($vente as $v)
                                             <tr>
                                                 <td>{{$v->reference}}</td>
                                                 <!--<td>{{$v->client->nom ?? 'Client supprimee'}}</td>-->
@@ -240,9 +240,6 @@
                                     @endif
                                 </tbody>
                             </table>
-                            <div class="d-flex justify-content-center mt-4">
-                                {{$ventes->links()}}
-                            </div>
                              <!-- Modal paiement -->
                         <div class="modal fade" id="paiementModal" tabindex="-1">
                             <div class="modal-dialog">

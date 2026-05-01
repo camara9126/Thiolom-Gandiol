@@ -219,7 +219,7 @@ class articleController extends Controller
         }
 
         //dd($request);
-        // creation de l'article
+        // mise a jour de l'article
         $article->update([
             'nom' => $request->nom,
             'fournisseur_id' => $request->fournisseur_id ?? 1,
@@ -228,8 +228,8 @@ class articleController extends Controller
             'prix_vente' => $request->prix_vente,
             'designation' => $request->designation ?? null,
             'stock' => $request->stock  ?? 100,
-            'stock_min' => 20,
-            'categorie_id' => 1,
+            'stock_min' => $request->stock_min  ?? 20,
+            'categorie_id' => $request->categorie_id ?? 1,
             'magasin_id' => $request->magasin_id ?? 1,
             'image' => $path ?? $article->image,
         ]);

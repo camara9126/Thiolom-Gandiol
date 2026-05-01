@@ -228,6 +228,25 @@
                                                 <input type="text" name="prix_vente" id="price" class="form-control">
                                             </div>
 
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label>Categorie</label>
+                                                        <select name="article_id" class="form-control">
+                                                            @foreach($categorie as $m)
+                                                                <option value="{{ $m->id }}">{{ $m->nom }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>                                                    
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label>Stock minimum</label>
+                                                        <input type="text" name="stock_min" class="form-control">
+                                                    </div>         
+                                                </div>
+                                            </div>
+
                                             <div class="mb-3">
                                                 <label>Description</label>
                                                 <textarea name="description" id="description" class="form-control"></textarea>
