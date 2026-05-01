@@ -19,7 +19,7 @@ class articleController extends Controller
      */
     public function index()
     {
-        $articles= Article::latest()->paginate(10);
+        $articles= Article::latest()->paginate(50);
         $categorie= categorie::latest()->get();
         $magasins = Magasin::latest()->get();
 
