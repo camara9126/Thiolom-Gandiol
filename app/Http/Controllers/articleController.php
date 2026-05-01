@@ -157,7 +157,7 @@ class articleController extends Controller
         $article= Article::findorFail($id);
 
         $request->validate([
-            'fournisseur_id' => 'required|exists:fournisseurs,id',
+            'fournisseur_id' => 'exists:fournisseurs,id',
             'nom' => 'string',
             'description' ,
             'prix_vente',
@@ -222,17 +222,15 @@ class articleController extends Controller
         // creation de l'article
         $article->update([
             'nom' => $request->nom,
-            'fournisseur_id' => $request->fournisseur_id,
+            'fournisseur_id' => $request->fournisseur_id ?? 1,
             'description' => $request->description ?? null,
-            'prix_achat' => $request->prix_achat,
+            'prix_achat' => $request->prix_vente,
+            'prix_vente' => $request->prix_vente,
             'designation' => $request->designation ?? null,
-            'gal_1' => $gal_1 ?? $article->gal_1,
-            'gal_2' => $gal_2 ?? $article->gal_2,
-            'stock' => $request->stock,
-            'stock_min' => $request->stock_min,
-            'statut' => $request->statut,
-            'etiquette' => $request->etiquette ?? null,
-            'categorie_id' => $request->categorie_id,
+            'stock' => $request->stock  ?? 100,
+            'stock_min' => 20,
+            'categorie_id' => 1,
+            'magasin_id' => $request->magasin_id ?? 1,
             'image' => $path ?? $article->image,
         ]);
 

@@ -204,6 +204,8 @@
                                         <div class="modal-body">
 
                                             <input type="hidden" name="id" id="article_id">
+                                            <input type="hidden" name="categorie_id" id="categorie_id">
+                                            <input type="hidden" name="magasin_id" id="magasin_id">
 
                                             <div class="mb-3">
                                                 <label>Image</label>
@@ -260,8 +262,8 @@
                 const description = button.getAttribute('data-description');
                 const stock = button.getAttribute('data-stock');
                 const image = button.getAttribute('data-image');
-                const categorie_id = button.getAttribute('data-categorie_id');
-                const magasin_id = button.getAttribute('data-magasin_id');
+                const categorie_id = button.getAttribute('data-categorie');
+                const magasin_id = button.getAttribute('data-magasin');
                 
                 // Remplir le formulaire
                 modal.querySelector('#article_id').value = id;
