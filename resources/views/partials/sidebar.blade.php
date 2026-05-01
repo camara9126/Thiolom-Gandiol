@@ -95,40 +95,39 @@
                             <span class="badge"></span>
                         </a>
                     </li>
-
-                    @if(request()->user()->role == 'administrateur')
-                        <div class="sidebar-divider"></div>
                     
-                        <li>
-                            <a href="{{ route('mouvements') }}">
-                                <i class="fas fa-bars-staggered"></i>
-                                <span>Mouvement stock</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('bonCommande.index') }}">
-                                <i class="fas fa-list"></i>
-                                <span>Bon de commande</span>
-                                <span class="badge"></span>
-                            </a>
-                        </li>
-                        
-                        <li>
-                            <a href="{{ route('devis.index') }}">
-                                <i class="fas fa-receipt"></i>
-                                <span>Devis</span>
-                                <span class="badge"></span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('magasin.index') }}">
-                                <i class="fas fa-building"></i>
-                                <span>Magasins</span>
-                            </a>
-                        </li>
+                    <div class="sidebar-divider"></div>
+                
+                    <li>
+                        <a href="{{ route('mouvements') }}">
+                            <i class="fas fa-bars-staggered"></i>
+                            <span>Mouvement stock</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('bonCommande.index') }}">
+                            <i class="fas fa-list"></i>
+                            <span>Bon de commande</span>
+                            <span class="badge"></span>
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="{{ route('devis.index') }}">
+                            <i class="fas fa-receipt"></i>
+                            <span>Devis</span>
+                            <span class="badge"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('magasin.index') }}">
+                            <i class="fas fa-building"></i>
+                            <span>Magasins</span>
+                        </a>
+                    </li>
 
-                        <div class="sidebar-divider"></div>
-
+                    <div class="sidebar-divider"></div>
+                    @if(request()->user()->role == 'administrateur')
                         <li>
                             <a href="{{ route('paiements.index') }}">
                                 <i class="fas fa-money-bill-wave"></i>
@@ -168,16 +167,6 @@
                             <span>Paramètres</span>
                         </a>
                     </li>
-                    
-                    <!--<li>
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <a href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">
-                                <i class="fas fa-sign-out-alt"></i>
-                                <span>Déconnexion</span>
-                            </a>
-                        </form>
-                    </li>-->
                     
                     @if(request()->user()->role == 'administrateur')
                         <li>
