@@ -12,8 +12,8 @@
                 </button>
 
                 <div class="tabs-navigation mb-4" id="tabsNav">
-                    <a href="{{ route('ouvrirCaisse') }}" class="tab-btn ">Ouvrir la session</a>
-                    <!--<button class="tab-btn" data-tab="orders">Commandes</button>
+                    <!--<a href="{{ route('ouvrirCaisse') }}" class="tab-btn ">Ouvrir la session</a>
+                    <button class="tab-btn" data-tab="orders">Commandes</button>
                     <button class="tab-btn" data-tab="menu">Menu</button>
                     <button class="tab-btn" data-tab="customers">Clients</button>
                     <button class="tab-btn" data-tab="inventory">Inventaire</button>-->

@@ -57,6 +57,7 @@
                             <table class="">
                                 <thead>
                                     <tr>
+                                        <th style="background-color: #BAFFAC;">ID Facture</th>
                                         <th style="background-color: #BAFFAC;">Reference</th>
                                         <th style="background-color: #BAFFAC;">Client</th>
                                         <!--<th>Montant TVA</th>-->
@@ -72,6 +73,7 @@
                                 <tbody>
                                     @forelse($factures as $v)
                                     <tr>
+                                        <td>F-{{$v->id}}</td>
                                         <td>{{$v->reference}}</td>
                                         <td>{{$v->client->nom ?? 'Client supprimee'}}</td>
                                         <!--<td>{{number_format($v->total_tva, 0, ',',' ')}} XOF</td>-->
@@ -99,12 +101,9 @@
                                             @endif
                                         </td>-->
                                         <td>
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <a href="{{route('commandes.show', $v->id)}}" class="btn btn-outline-warning mr-2" title="afficher la facture">
-                                                        <i class="fa fa-eye text-warning"></i>
-                                                    </a>
-                                                </div>
+                                            <a href="{{route('commandes.show', $v->id)}}" class="btn btn-warning mr-2" title="afficher la facture">
+                                                        <i class="fas fa-file-alt"></i>&nbsp;Afficher
+                                            </a>
                                             </div>
                                         </td>
                                     </tr>

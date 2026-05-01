@@ -46,14 +46,14 @@
                         <a href="{{ route('articles.index') }}">
                             <i class="fas fa-box"></i>
                             <span>Articles</span>
-                            <span class="badge">{{$articles->count()}}</span>
+                            <span class="badge"></span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('categorie.index') }}">
                             <i class="fas fa-tags"></i>
                             <span>Catégories</span>
-                            <span class="badge">{{$categories->count()}}</span>
+                            <span class="badge"></span>
                         </a>
                     </li>
 
@@ -61,7 +61,7 @@
                         <a href="{{ route('fournisseurs.index') }}">
                             <i class="fas fa-truck"></i>
                             <span>Fournisseurs</span>
-                            <span class="badge">{{$fournisseurs->count()}}</span>
+                            <span class="badge"></span>
                         </a>
                     </li>
 
@@ -70,15 +70,15 @@
                     <li>
                         <a href="{{ route('clients.index') }}">
                            <i class="fas fa-users"></i>
-                            <span>Client</span>
-                            <span class="badge">{{$clients->count()}}</span>
+                            <span>Clients</span>
+                            <span class="badge"></span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('commandes.index') }}">
                            <i class="fas fa-shopping-cart"></i>
                             <span>Vente</span>
-                            <span class="badge">{{$commandes->count()}}</span>
+                            <span class="badge"></span>
                         </a>
                     </li>
                     <li>
@@ -109,7 +109,7 @@
                             <a href="{{ route('bonCommande.index') }}">
                                 <i class="fas fa-list"></i>
                                 <span>Bon de commande</span>
-                                <span class="badge">{{$bonCommandes->count()}}</span>
+                                <span class="badge"></span>
                             </a>
                         </li>
                         
@@ -117,7 +117,7 @@
                             <a href="{{ route('devis.index') }}">
                                 <i class="fas fa-receipt"></i>
                                 <span>Devis</span>
-                                <span class="badge">{{$devis->count()}}</span>
+                                <span class="badge"></span>
                             </a>
                         </li>
                         <li>

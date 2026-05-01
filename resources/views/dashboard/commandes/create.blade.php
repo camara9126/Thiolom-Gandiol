@@ -307,7 +307,7 @@
                                     @endforeach
                                 </div>
                             @endif
-                            <h2 class="text-center mb-3">Nouvelle facture</h2>
+                            <h2 class="text-center mb-3">Nouvelle vente</h2>
                             <br>
                             <form action="{{ route('commandes.store') }}" method="POST" id="venteForm">
                                 @csrf

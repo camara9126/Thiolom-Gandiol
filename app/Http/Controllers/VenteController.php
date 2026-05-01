@@ -40,6 +40,12 @@ class VenteController extends Controller
 
         // Session Caisse
         $session= Session_caisse::where('user_id', $user->id)->whereNull('closed_at')->first();
+
+        // Verification Ouverture session
+        if(!$session) {
+            return redirect()->route('commandes.pdv')->with('success', 'Aucun session ouverte');
+        }
+
         $vente= Vente::where('session_caisse_id', $session->id)->get();
 
         $session->update([
