@@ -14,65 +14,10 @@ use Illuminate\Support\Facades\DB;
 class RapportController extends Controller
 {
      // Calcule des rapport
-    public function rapports(Request $request)
+    public function rapports()
     {
 
         $entreprise = Entreprise::findOrFail(1);
-
-        /* Changement de mois */ 
-        $mois = $request->mois ?? now()->month;
-        $annee = $request->annee ?? now()->year;
-
-
-        /* 1️⃣ Commandes par mois */
-        $commandesParJour = Vente::selectRaw('DAY(created_at) jour, COUNT(*) total')->whereMonth('created_at', $mois)->whereYear('created_at', $annee)->groupBy('jour')->orderBy('jour')->get();
-
-        $commandesMoisLabels = $commandesParJour->pluck('jour');
-        $commandesMoisData = $commandesParJour->pluck('total');
-
-
-        /* 2️⃣ Chiffre d’affaires par mois */
-        $caParMois = Recettes::selectRaw('MONTH(created_at) as mois, SUM(montant) as total')->whereMonth('created_at', $mois)->whereYear('created_at', $annee)->where('statut', 'recu')->groupBy('mois')->orderBy('mois')->get();
-
-        $caLabels = $caParMois->pluck('mois')->map(fn ($m)=>
-            Carbon::create()->month($m)->translatedFormat('M')
-        );
-        $caData = $caParMois->pluck('total');
-
-
-        /* 3️⃣ Top articles du mois */
-        $toparticles = VenteItem::selectRaw('article_id, SUM(quantite) as total')->whereMonth('created_at', $mois)->whereYear('created_at', $annee)->groupBy('article_id')->orderByDesc('total')->with('article:id,nom')->limit(5)->get();
-
-        $toparticlesLabels = $toparticles->pluck('article.nom');
-        $toparticlesData = $toparticles->pluck('total');
-
-
-        /* 4️⃣ Statut des commandes */
-        $statutCommandes = Vente::selectRaw('statut, COUNT(*) as total')->whereMonth('created_at', $mois)->whereYear('created_at', $annee)->groupBy('statut')->get();
-
-        $statutLabels = $statutCommandes->pluck('statut');
-        $statutData = $statutCommandes->pluck('total');
-
-
-               /* Changement de mois */ 
-        $mois = $request->mois ?? now()->month;
-        $annee = $request->annee ?? now()->year;
-
-
-        /* 1️⃣ Commandes par mois */
-        $commandesParJour = Vente::selectRaw('DAY(created_at) jour, COUNT(*) total')->whereMonth('created_at', $mois)->whereYear('created_at', $annee)->groupBy('jour')->orderBy('jour')->get();
-
-        $commandesMoisLabels = $commandesParJour->pluck('jour');
-        $commandesMoisData = $commandesParJour->pluck('total');
-
-        /* 2️⃣ Top articles du mois */
-        $toparticles = VenteItem::selectRaw('article_id, SUM(quantite) as total')->whereMonth('created_at', $mois)->whereYear('created_at', $annee)->groupBy('article_id')->orderByDesc('total')->with('article:id,nom')->limit(5)->get();
-
-        $toparticlesLabels = $toparticles->pluck('article.nom');
-        $toparticlesData = $toparticles->pluck('total');
-
-
-        // ===== 2em SECTION SUR LES DEPENSES ET RECETTES =====
 
             // ===== MENSUEL =====
 
