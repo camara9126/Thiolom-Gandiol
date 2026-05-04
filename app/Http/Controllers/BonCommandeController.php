@@ -40,6 +40,18 @@ class BonCommandeController extends Controller
 
     }
 
+
+    // Recherche bon
+    public function bonSearch(Request $request)
+    {
+        $query = $request->q;
+
+        $articles = Article::where('nom', 'LIKE', "%{$query}%")->limit(50)->get();
+
+        return response()->json($articles);
+    }
+
+
     /**
      * Formulaire création
      */
@@ -176,7 +188,7 @@ class BonCommandeController extends Controller
         $bonCommande = Bon_commande::with('fournisseur', 'details')->findOrFail($id);
 
         $bonCommande->load(['fournisseur', 'details']);
-//dd($devis);
+        //dd($devis);
         $pdf = Pdf::loadView('dashboard.bonCommandes.facture', compact('bonCommande', 'entreprise'));
 
         return $pdf->stream ('Facture-' . $bonCommande->reference . '.pdf');

@@ -46,6 +46,17 @@ class DevisController extends Controller
         return view('dashboard.devis.index', compact('devis','search'));
     }
 
+
+    // Recherche devis
+    public function devisSearch(Request $request)
+    {
+        $query = $request->q;
+
+        $articles = Article::where('nom', 'LIKE', "%{$query}%")->limit(50)->get();
+
+        return response()->json($articles);
+    }
+
     /**
      * Formulaire création
      */

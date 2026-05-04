@@ -81,7 +81,7 @@ class MagasinController extends Controller
     public function liste($id)
     {
         $magasin= Magasin::findOrFail($id);
-        $articles= $magasin->article()->withPivot('stock')->latest()->paginate(10);
+        $articles= $magasin->article()->withPivot('stock')->latest()->paginate(50);
 
         return view('dashboard.magasin.listeArticle', compact('magasin','articles'));
     }

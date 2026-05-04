@@ -13,7 +13,7 @@
 
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
-                    <form method="get" action="{{route('commandes.search')}}" class="form-inline">
+                    <form method="get" action="{{route('fournisseurs.search')}}" class="form-inline">
                         
                         <input type="text" name="search"  placeholder="Recherche facture...">                                                   
                             
@@ -31,7 +31,7 @@
                 <div class="card">
                     <div class="card-header">
                         <span><i class="fas fa-shopping-cart" style="color: var(--primary); margin-right: 0.5rem;"></i>Liste des factures ( {{$factures->count()}} )</span>
-                        
+                        <a href="{{ route('fournisseurs.index') }}" class="btn btn-outline-danger">Retour</a>
                     </div>
                     
                     @if(Session::has('success'))
@@ -71,38 +71,38 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($factures as $v)
+                                    @forelse($factures as $f)
                                     <tr>
-                                        <td>Facture-{{$v->id}}</td>
-                                        <td>{{$v->reference}}</td>
-                                        <td>{{$v->client->nom ?? 'Client supprimee'}}</td>
-                                        <!--<td>{{number_format($v->total_tva, 0, ',',' ')}} XOF</td>-->
-                                        <td>{{number_format($v->total_ttc, 0, ',',' ')}} XOF</td>
-                                        <td>{{number_format($v->montant_paye, 0, ',', ' ')}} XOF</td>
-                                        <td>{{number_format($v->montant_restant, 0, ',',' ')}} XOF</td>
-                                        <td>{{$v->created_at->format('d/m/y')}}</td>
+                                        <td>Facture-{{$f->id}}</td>
+                                        <td>{{$f->reference}}</td>
+                                        <td>{{$f->client->nom ?? 'Client supprimee'}}</td>
+                                        <!--<td>{{number_format($f->total_tva, 0, ',',' ')}} XOF</td>-->
+                                        <td>{{number_format($f->total_ttc, 0, ',',' ')}} XOF</td>
+                                        <td>{{number_format($f->montant_paye, 0, ',', ' ')}} XOF</td>
+                                        <td>{{number_format($f->montant_restant, 0, ',',' ')}} XOF</td>
+                                        <td>{{$f->created_at->format('d/m/y')}}</td>
                                         <td>
-                                            @if($v->statut == 'payee')
-                                                <span class="status-badge badge bg-success">{{$v->statut}}</span>
-                                            @elseif($v->statut == 'partielle')
-                                                <span class="status-badge badge bg-info">{{$v->statut}}</span>
+                                            @if($f->statut == 'payee')
+                                                <span class="status-badge badge bg-success">{{$f->statut}}</span>
+                                            @elseif($f->statut == 'partielle')
+                                                <span class="status-badge badge bg-info">{{$f->statut}}</span>
                                             @else
-                                                <span class="status-badge badge bg-danger">{{$v->statut}}</span>
+                                                <span class="status-badge badge bg-danger">{{$f->statut}}</span>
                                             @endif
                                         </td>
                                         <!--<td>
-                                            @if($v->montant_restant == 0)
+                                            @if($f->montant_restant == 0)
                                                 <button type="button" class="btn btn-secondary">
                                                         Payée
                                                 </button>
                                             @else
-                                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-id="{{$v->id}}" data-bs-target="#paiementModal">Payer
+                                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-id="{{$f->id}}" data-bs-target="#paiementModal">Payer
                                             </button>
                                             @endif
                                         </td>-->
                                         <td>
-                                            <a href="{{route('commandes.show', $v->id)}}" class="btn btn-warning mr-2" title="afficher la facture">
-                                                        <i class="fas fa-file-alt"></i>&nbsp;Afficher
+                                            <a href="{{route('fournisseurs.pdf', $f->id)}}" class="btn btn-warning mr-2" title="afficher la facture">
+                                                    <i class="fas fa-file-alt"></i>&nbsp;Afficher
                                             </a>
                                             </div>
                                         </td>
@@ -113,8 +113,7 @@
                                         </tr>
                                     @endforelse
                                 </tbody>
-                            </table>
-                        
+                            </table>                 
                         </div>
                     </div>
                 </div>

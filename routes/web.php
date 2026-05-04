@@ -156,6 +156,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::resource('/bonCommande', BonCommandeController::class);
     Route::get('/bonCommandeSearch', [BonCommandeController::class, 'search'])->name('bonCommande.search');
+    Route::get('/bonSearch', [BonCommandeController::class, 'bonSearch'])->name('bon.search');
 
     Route::get('bonCommande/{id}/envoyer', [BonCommandeController::class, 'envoyer'])->name('bonCommande.envoyer');
     Route::get('bonCommande/{id}/recevoir', [BonCommandeController::class, 'recevoir'])->name('bonCommande.recevoir');
@@ -163,22 +164,26 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('/fournisseurs', FournisseurController::class);
     Route::get('/fournisseurSearch', [FournisseurController::class, 'search'])->name('fournisseurs.search');
+    Route::get('/fournisseurFacture/{id}', [FournisseurController::class, 'factures'])->name('fournisseurs.factures');
+    Route::get('/fournisseurPDF/{id}', [FournisseurController::class, 'pdf'])->name('fournisseurs.pdf');
 
 
 });
 
-// Route pour transferer les donnees clients et fournisseurs dans la table Tiers
 
-// Routes Tiers(client/fournisseur), Devis et Commandes
+// Routes Clients, Devis et Commandes
 Route::middleware('auth')->group(function () {
 
     Route::resource('/clients', ClientController::class);
     Route::get('/clientSearch', [ClientController::class, 'search'])->name('clients.search');
 
     Route::resource('/commandes', VenteController::class);
+    Route::get('/commandeSearch', [VenteController::class, 'search'])->name('commandes.search');
+    // Route pour recherche article dans caisse
+    Route::get('/caisseSearch', [VenteController::class, 'caisseSearch'])->name('caisse.search');
+
     Route::get('/factures', [VenteController::class, 'facture'])->name('commandes.factures');
     Route::get('/ticket/{id}', [VenteController::class, 'ticket'])->name('commandes.ticket');
-    Route::get('/commandeSearch', [VenteController::class, 'search'])->name('commandes.search');
     
     Route::get('/pdv', [SessionCaisseController::class, 'pdv'])->name('commandes.pdv');
     Route::get('/ouvrirCaisse', [SessionCaisseController::class, 'ouvrirCaisse'])->name('ouvrirCaisse');
@@ -186,13 +191,14 @@ Route::middleware('auth')->group(function () {
     
     Route::resource('/devis', DevisController::class);
     Route::get('/devisSearch', [DevisController::class, 'search'])->name('devis.search');
+    Route::get('/devSearch', [DevisController::class, 'devisSearch'])->name('dev.search');
+
 
     Route::get('/devis/{devis}/facture', [DevisController::class, 'facture'])->name('devis.facture');
 
     Route::get('/devis/{devis}/valider', [DevisController::class, 'valider'])->name('devis.valider');
     Route::get('/devis/{devis}/refuser', [DevisController::class, 'refuser'])->name('devis.refuser');
     Route::get('/devis/{devis}/convertir', [DevisController::class, 'convertir'])->name('devis.convertir');
-    //Route::post('/client', [MouvementController::class, 'stock']);
 
 });
 

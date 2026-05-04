@@ -43,7 +43,7 @@ class articleController extends Controller
                         $q->where('nom', 'like', "%{$search}%");
                 });
 
-        })->latest()->paginate(10)->withQueryString(); // 🔑 garde ?search=;
+        })->latest()->paginate(50)->withQueryString(); // 🔑 garde ?search=;
 
         return view('dashboard.articles.index', compact('articles', 'search','categorie','magasins'));
     }

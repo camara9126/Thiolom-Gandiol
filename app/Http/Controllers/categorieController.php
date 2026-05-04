@@ -90,7 +90,29 @@ class categorieController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $categorie= Categorie::findOrFail($id);
+        
+        $request->validate([
+            'nom' => 'string',
+            'description' ,
+            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        // Gestion des l'images
+        if ($request->hasFile('image')) {
+            $filename = time().$request->file('image')->getClientOriginalName();
+            $path = $request->file('image')->storeAs('imgCategories', $filename, 'public');
+            $request['image'] = '/storage/' . $path;
+        } 
+
+        // creation du categorie
+        $categorie->update([
+            'nom' => $request->nom,
+            'description' => $request->description,
+            'image' => $path ?? $categorie->image,
+        ]);
+        // dd($categories);
+        return redirect()->route('categorie.index', compact('categorie'))->with('success', 'Categorie modifiée avec success.');
     }
 
     /**

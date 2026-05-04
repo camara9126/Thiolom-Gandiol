@@ -320,6 +320,7 @@
                                                 <i class="fas fa-box" style="margin-right: 8px;"></i> Caisserie · Thiolom Gandiol
                                             </div>
                                             <div class="pos-card-body">
+                                                
                                                 <!-- Sélection client et dépôt -->
                                                 <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
                                                     <div style="flex: 1;">
@@ -338,6 +339,20 @@
                                                             </button>
                                                         </div>
                                                     </div>
+
+                                                    <!-- Recherche article -->
+                                                    <div style="flex: 1;">
+                                                        <label style="font-size: 12px; color: #6c757d;">Recherche</label>
+                                                        <input type="text" id="search" class="form-control" placeholder="rechercher article...">
+                                                    </div>
+                                                        
+                                                </div>
+
+                                                <!-- Produit recherchee -->
+                                                <div class="category-header">
+                                                    <i class="fas fa-box"></i> Resultat recherche
+                                                </div>
+                                                <div class="list-group" id="results">
                                                     
                                                 </div>
 
@@ -510,7 +525,7 @@
                 </div>
 
 
-                <script>
+<script>
     let rowIndex = 1;
 
     // Ajout produit via clic sur carte produit
@@ -642,4 +657,72 @@
     });
 </script>
 
+<!--Recheche Article-->
+<script>
+    document.getElementById('search').addEventListener('keyup', function() {
+
+        let query = this.value;
+
+        if (query.length < 2) return;
+
+        fetch(`/caisseSearch?q=${query}`)
+            .then(res => res.json())
+            .then(data => {
+
+                let results = document.getElementById('results');
+                results.innerHTML = '';
+
+                data.forEach(article => {
+                    results.innerHTML += `
+                        <a href="#" class="list-group-item" onclick="selectArticle(${article.id}, '${article.nom}', ${article.prix_vente})">
+                            ${article.nom} - ${article.prix_vente} FCFA
+                        </a>
+                    `;
+                });
+            });
+    });
+</script>
+
+<script>
+    function selectArticle(id, nom, prix_vente) {
+        console.log("Produit sélectionné :", nom);
+        
+        // Chercher une ligne vide ou la première ligne avec un select vide
+        let selectElement = document.querySelector('#panierRows select');
+        let existingRow = null;
+        
+        // Vérifier s'il existe une ligne avec un select vide
+        if(selectElement && selectElement.value === "") {
+            // Remplir la première ligne vide
+            let row = selectElement.closest('tr');
+            selectElement.value = id;
+            row.querySelector('.prix_vente').value = prix_vente;
+            row.querySelector('.quantite').value = 1;
+            calculLigne(row);
+        } else {
+            // Vérifier si le produit existe déjà dans le panier
+            let existingProductRow = null;
+            document.querySelectorAll('.produit-select').forEach(select => {
+                if(select.value == id) {
+                    existingProductRow = select.closest('tr');
+                }
+            });
+            
+            if(existingProductRow) {
+                // Si le produit existe déjà, augmenter la quantité
+                let qteInput = existingProductRow.querySelector('.quantite');
+                let nouvelleQte = (parseFloat(qteInput.value) || 0) + 1;
+                qteInput.value = nouvelleQte;
+                calculLigne(existingProductRow);
+            } else {
+                // Ajouter une nouvelle ligne avec le produit
+                addNewRow(id, prix_vente);
+            }
+        }
+        
+        // Masquer les résultats après la sélection
+        document.getElementById('results').innerHTML = '';
+        document.getElementById('search').value = '';
+    }
+</script>
 @include('partials.footer')

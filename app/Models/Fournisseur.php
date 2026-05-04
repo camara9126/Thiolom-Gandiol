@@ -17,4 +17,8 @@ class Fournisseur extends Model
     public function article() {
         return $this->hasMany(Article::class);
     }
+
+    public function bonCommande() {
+        return $this->hasMany(Bon_Commande::class);
+    }
 }

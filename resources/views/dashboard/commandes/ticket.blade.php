@@ -18,7 +18,7 @@
             align-items: center;
             min-height: 100vh;
             font-family: 'Courier New', 'Monaco', 'Lucida Console', monospace;
-            padding: 20px;
+            padding: 3px;
         }
 
         .ticket {
@@ -110,6 +110,7 @@
             width: 100%;
             font-size: 11px;
             border-collapse: collapse;
+            padding: 3px 0;
         }
 
         .items-table th, 
@@ -154,7 +155,7 @@
         <!-- En-tête -->
         <div class="text-center">
             <div class="text-small">BOUTIQUE THIOLOM GANDIOL</div>
-            <div class="text-small">Tel: {{ $entreprise->telephone }} | {{ $entreprise->ninea }}</div>
+            <div class="text-small">Tel: {{ $entreprise->telephone }} | Ninea : {{ $entreprise->ninea }}</div>
             <div class="dotted-line"></div>
             <div class="text-small text-bold">Servi par: {{strtoupper($vente->user->name)}}</div>
         </div>
@@ -166,23 +167,24 @@
             <thead>
                 <tr>
                     <th>Désignation</th>
-                    <th>Qté</th>
+                    <!--<th>Quantité</th>-->
                     <th>Prix</th>
                     <th>Total</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($vente->items as $item)
                     <tr>
                         <td>{{ $item->article->nom }}</td>
-                        <td>{{ $item->quantite }}</td>
-                        <td>{{ number_format($item->prix_unitaire, 0, ',', ' ') }} FCFA</td>
-                        <td>{{ number_format($item->total, 0, ',', ' ') }} FCFA</td>
+                        <!--<td>{{ $item->quantite }}</td>-->
+                        <td>{{ number_format($item->prix_unitaire, 0, ',', ' ') }} CFA</td>
+                        <td>{{ number_format($item->total_ttc, 0, ',', ' ') }} CFA</td>
                     </tr>
                 @endforeach
                 <tr>
-                    <td colspan="3" style="text-align:right; font-weight:bold;">SOUS-TOTAL</td>
-                    <td style="font-weight:bold;">{{ number_format($item->total_ttc, 0, ',', ' ') }} FCFA</td>
+                    <td colspan="1" style="text-align:right; font-weight:bold;">SOUS-TOTAL</td>
+                    <td style="font-weight:bold;">{{ number_format($vente->total_ttc, 0, ',', ' ') }} CFA</td>
                 </tr>
             </tbody>
         </table>
@@ -208,7 +210,7 @@
         <!-- Infos commande -->
         <div class="text-center">
             <div class="text-bold">Commande <b>{{ $vente->reference }}</b></div>
-            <div class="text-small"><?= date('d-m-Y') ?></div>
+            <div class="text-small">{{ date('d/m/Y H:i:s') }}</div>
         </div>
 
        
@@ -217,7 +219,7 @@
         <div class="footer-message">
             <div class="dashed-line"></div>
             <p>MERCI DE VOTRE VISITE</p>
-            <p class="text-xxs" style="margin-top: 8px;">Ticket généré le {{ date('d/m/Y H:i:s') }}</p>
+            <!--<p class="text-xxs" style="margin-top: 8px;">Ticket généré le {{ date('d/m/Y H:i:s') }}</p>-->
         </div>
     </div>
 

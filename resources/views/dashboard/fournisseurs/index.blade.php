@@ -52,6 +52,8 @@
                                     <thead>
                                         <tr>
                                             <th>Nom</th>
+                                            <th>Articles</th>
+                                            <th>Facture</th>
                                             <th>Telephone</th>
                                             <th>Email</th>
                                             <th>Adresse</th>
@@ -63,6 +65,8 @@
                                         @forelse($fournisseurs as $f)
                                         <tr>
                                             <td>{{$f->nom}}</td>
+                                            <td><a href="{{ route('fournisseurs.show', $f) }}">{{$f->article->count()}}</a></td>
+                                            <td><a href="{{ route('fournisseurs.factures', $f) }}">{{$f->bonCommande->count()}}</a></td>
                                             <td>{{$f->telephone ?? 'Vide'}}</td>
                                             <td>{{$f->email ?? 'Vide'}}</td>
                                             <td>{{$f->adresse ?? 'Vide'}}</td>

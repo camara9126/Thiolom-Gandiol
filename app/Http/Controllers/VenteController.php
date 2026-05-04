@@ -36,7 +36,7 @@ class VenteController extends Controller
 
         $totalEncaisse = Vente::with('client')->get()->sum('montant_paye');
         
-        $ventesJour = Vente::whereDate('created_at', $today)->get();
+        $ventesJour = Vente::whereDate('created_at', $today)->latest()->get();
 
         // Session Caisse
         $session= Session_caisse::where('user_id', $user->id)->whereNull('closed_at')->first();
@@ -46,7 +46,7 @@ class VenteController extends Controller
             return redirect()->route('commandes.pdv')->with('success', 'Aucun session ouverte');
         }
 
-        $vente= Vente::where('session_caisse_id', $session->id)->get();
+        $vente= Vente::where('session_caisse_id', $session->id)->latest()->whereDate('created_at', $today)->get();
 
         $session->update([
             'nombre_ventes' => $vente->count(),
@@ -105,6 +105,16 @@ class VenteController extends Controller
         return view('dashboard.commandes.index', compact('ventes','vente', 'search', 'ventesJour','total','totalEncaisse','depensesJour','user', 'session'));
     }
 
+    // Recherche caisse
+    public function caisseSearch(Request $request)
+    {
+        $query = $request->q;
+
+        $articles = Article::where('nom', 'LIKE', "%{$query}%")->limit(50)->get();
+
+        return response()->json($articles);
+    }
+
 
     // Liste de factures
     public function facture()
@@ -137,8 +147,30 @@ class VenteController extends Controller
             'articles.*.prix_vente' => 'required|numeric|min:0',
             'montant' => 'numeric|min:0'
         ]);
-       
-//dd($request->all());
+
+        // Session 
+        $session= Session_caisse::where('user_id', request()->user()->id)->whereNull('closed_at')->first();
+
+        // Creation vente item
+        $entreprise= Entreprise::findOrFail(1); // Recuperation de la TVA de l'entreprise
+
+            //dd($request->montant);
+            $vente = Vente::create([
+                'client_id' =>  $request->client_id ?? 2,
+                'session_caisse_id' => $session->id,
+                'reference' => 'VNT-' . time(),
+                'date' => now(),
+                'total' => 0,
+                'total_tva' => 0,
+                'total_ttc' => 0,
+                'statut' => 'impayee',
+                'user_id' => request()->user()->id,
+            ]);
+
+            $total = 0;
+            $total_tva = 0;
+            $total_ttc = 0;
+        //dd($request->all());
         foreach ($request->articles as $item) {
 
            
@@ -182,28 +214,7 @@ class VenteController extends Controller
                 return redirect()->back()->with('danger','Stock insuffisant pour cette article ');
             }
 
-            // Session 
-            $session= Session_caisse::where('user_id', request()->user()->id)->whereNull('closed_at')->first();
-
-            //dd($request->montant);
-            $vente = Vente::create([
-                'client_id' =>  $request->client_id ?? 2,
-                'session_caisse_id' => $session->id,
-                'reference' => 'VNT-' . time(),
-                'date' => now(),
-                'total' => 0,
-                'total_tva' => 0,
-                'total_ttc' => 0,
-                'statut' => 'impayee',
-                'user_id' => $request->user()->id,
-            ]);
-
-            $total = 0;
-            $total_tva = 0;
-            $total_ttc = 0;
-
-            // Creation vente item
-            $entreprise= Entreprise::findOrFail(1); // Recuperation de la TVA de l'entreprise
+            
 
             
             VenteItem::create([
@@ -286,7 +297,9 @@ class VenteController extends Controller
            
 
             return redirect()->route('commandes.index')->with('success', 'Vente effectuée avec succès');
-        }
+    }
+
+
 
     /**
      * Remove the specified resource from storage.

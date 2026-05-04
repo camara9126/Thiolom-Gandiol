@@ -120,13 +120,10 @@
 
                             <!-- ACTIONS -->
                             <div class="mt-4 d-flex gap-2">
-
-                                @if($bonCommande->statut == 'en_attente')
                                    
-                                     <a href="{{ route('bonCommande.facture', $bonCommande->id) }}" class="btn btn-info">
-                                        Generer la facture
-                                    </a>
-                                @endif
+                                <a href="{{ route('bonCommande.facture', $bonCommande->id) }}" class="btn btn-info">
+                                    Afficher la facture
+                                </a>
                             </div>
                     </div>
                 </div>

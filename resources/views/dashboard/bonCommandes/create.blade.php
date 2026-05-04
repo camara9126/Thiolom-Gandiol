@@ -61,7 +61,7 @@
 
                                 <!-- FOURNISSEUR -->
                                 <div class="row">
-                                    <div class="col-6">
+                                    <div class="col-4">
                                         <div class="mb-3">
                                             <label>Fournisseur</label>
                                             <select name="fournisseur_id" class="form-control" required>
@@ -73,17 +73,25 @@
                                         </div>
 
                                     </div>
-                                    <div class="col-6">
+                                    <div class="col-2">
                                         <div class="mt-4 mb-2">
                                             <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#fournisseurModal" style="padding: 6px 12px;">
                                                 + Nouveau fournisseur
                                             </button>
                                         </div>
                                     </div>
+                                    <div class="col-6">
+                                        <div class="mt-4 mb-2">
+                                            <input type="text" id="search" class="form-control" placeholder="rechercher article...">
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!-- INFO TRANSPORTEUR -->
                                 <div class="row mb-3">
+                                    <div class="list-group" id="results">
+                                                    
+                                    </div>
                                     <div class="col-6">
                                         <div class="mb-2">
                                             <label>Nom du chauffeur</label>
@@ -205,94 +213,195 @@
 
 <script>
 
-        let index = 1;
+    let index = 1;
 
-        // Ajouter ligne
-        document.getElementById('addRow').addEventListener('click', function () {
+    // Ajouter ligne
+    document.getElementById('addRow').addEventListener('click', function () {
 
-            let row = `
-            <tr>
-                <td>
-                    <select name="articles[${index}][article_id]" class="form-control article-select">
-                        <option value="">Choisir</option>
-                        @foreach($articles as $article)
-                            <option value="{{ $article->id }}" data-prix_vente="{{ $article->prix_vente }}">
-                                {{ $article->nom }}
-                            </option>
-                        @endforeach
-                    </select>
-                </td>
+        let row = `
+        <tr>
+            <td>
+                <select name="articles[${index}][article_id]" class="form-control article-select">
+                    <option value="">Choisir</option>
+                    @foreach($articles as $article)
+                        <option value="{{ $article->id }}" data-prix_vente="{{ $article->prix_vente }}">
+                            {{ $article->nom }}
+                        </option>
+                    @endforeach
+                </select>
+            </td>
 
-                <td>
-                    <input type="number" name="articles[${index}][prix_vente]" class="form-control prix_vente">
-                </td>
+            <td>
+                <input type="number" name="articles[${index}][prix_vente]" class="form-control prix_vente">
+            </td>
 
-                <td>
-                    <input type="number" name="articles[${index}][quantite]" class="form-control quantite" value="1">
-                </td>
+            <td>
+                <input type="number" name="articles[${index}][quantite]" class="form-control quantite" value="1">
+            </td>
 
-                <td>
-                    <input type="number" class="form-control total-ligne" readonly>
-                </td>
+            <td>
+                <input type="number" class="form-control total-ligne" readonly>
+            </td>
 
-                <td>
-                    <button type="button" class="btn btn-danger remove">X</button>
-                </td>
-            </tr>
-            `;
+            <td>
+                <button type="button" class="btn btn-danger remove">X</button>
+            </td>
+        </tr>
+        `;
 
-            document.querySelector('#table-articles tbody').insertAdjacentHTML('beforeend', row);
-            index++;
-        });
+        document.querySelector('#table-articles tbody').insertAdjacentHTML('beforeend', row);
+        index++;
+    });
 
-        // Supprimer ligne
-        document.addEventListener('click', function(e){
-            if(e.target.classList.contains('remove')){
-                e.target.closest('tr').remove();
-                calculTotal();
-            }
-        });
-
-        // Auto prix_vente
-        document.addEventListener('change', function(e){
-            if(e.target.classList.contains('article-select')){
-                let prix_vente = e.target.selectedOptions[0].dataset.prix_vente || 0;
-                let row = e.target.closest('tr');
-
-                row.querySelector('.prix_vente').value = prix_vente;
-                calculLigne(row);
-            }
-        });
-
-        // Calcul ligne
-        document.addEventListener('input', function(e){
-            if(e.target.classList.contains('quantite') || e.target.classList.contains('prix_vente')){
-                let row = e.target.closest('tr');
-                calculLigne(row);
-            }
-        });
-
-        function calculLigne(row){
-            let prix_vente = row.querySelector('.prix_vente').value || 0;
-            let quantite = row.querySelector('.quantite').value || 0;
-
-            let total = prix_vente * quantite;
-
-            row.querySelector('.total-ligne').value = total;
-
+    // Supprimer ligne
+    document.addEventListener('click', function(e){
+        if(e.target.classList.contains('remove')){
+            e.target.closest('tr').remove();
             calculTotal();
         }
+    });
 
-        // Calcul global
-        function calculTotal(){
-            let total = 0;
+    // Auto prix_vente
+    document.addEventListener('change', function(e){
+        if(e.target.classList.contains('article-select')){
+            let prix_vente = e.target.selectedOptions[0].dataset.prix_vente || 0;
+            let row = e.target.closest('tr');
 
-            document.querySelectorAll('.total-ligne').forEach(function(input){
-                total += parseFloat(input.value) || 0;
-            });
-
-            document.getElementById('total-global').innerText = total.toLocaleString();
+            row.querySelector('.prix_vente').value = prix_vente;
+            calculLigne(row);
         }
+    });
 
+    // Calcul ligne
+    document.addEventListener('input', function(e){
+        if(e.target.classList.contains('quantite') || e.target.classList.contains('prix_vente')){
+            let row = e.target.closest('tr');
+            calculLigne(row);
+        }
+    });
+
+    function calculLigne(row){
+        let prix_vente = row.querySelector('.prix_vente').value || 0;
+        let quantite = row.querySelector('.quantite').value || 0;
+
+        let total = prix_vente * quantite;
+
+        row.querySelector('.total-ligne').value = total;
+
+        calculTotal();
+    }
+
+    // Calcul global
+    function calculTotal(){
+        let total = 0;
+
+        document.querySelectorAll('.total-ligne').forEach(function(input){
+            total += parseFloat(input.value) || 0;
+        });
+
+        document.getElementById('total-global').innerText = total.toLocaleString();
+    }
+
+</script>
+
+<!-- Recherche article -->
+<script>
+    document.getElementById('search').addEventListener('keyup', function() {
+
+        let query = this.value;
+
+        if (query.length < 2) return;
+
+        fetch(`/bonSearch?q=${query}`)
+            .then(res => res.json())
+            .then(data => {
+
+                let results = document.getElementById('results');
+                results.innerHTML = '';
+
+                data.forEach(article => {
+                    results.innerHTML += `
+                        <a href="#" class="list-group-item" onclick="selectArticle(${article.id}, '${article.nom}', ${article.prix_vente})">
+                            ${article.nom} - ${article.prix_vente} FCFA
+                        </a>
+                    `;
+                });
+            });
+    });
+</script>
+
+<script>
+    function selectArticle(id, nom, prix_vente) {
+        console.log("Produit sélectionné :", nom);
+        
+        // Chercher une ligne vide
+        let selectElement = document.querySelector('#table-articles select');
+        
+        if(selectElement && selectElement.value === "") {
+            // Remplir la première ligne vide
+            let row = selectElement.closest('tr');
+            selectElement.value = id;
+            row.querySelector('.prix_vente').value = prix_vente;
+            row.querySelector('.quantite').value = 1;
+            calculLigne(row);
+        } else {
+            // Vérifier si le produit existe déjà
+            let existingProductRow = null;
+            document.querySelectorAll('.article-select').forEach(select => {
+                if(select.value == id) {
+                    existingProductRow = select.closest('tr');
+                }
+            });
+            
+            if(existingProductRow) {
+                // Augmenter la quantité
+                let qteInput = existingProductRow.querySelector('.quantite');
+                let nouvelleQte = (parseFloat(qteInput.value) || 0) + 1;
+                qteInput.value = nouvelleQte;
+                calculLigne(existingProductRow);
+            } else {
+                // Ajouter une nouvelle ligne manuellement
+                let row = `
+                    <tr>
+                        <td>
+                            <select name="articles[${index}][article_id]" class="form-control article-select">
+                                <option value="">Choisir</option>
+                                @foreach($articles as $article)
+                                    <option value="{{ $article->id }}" data-prix_vente="{{ $article->prix_vente }}">
+                                        {{ $article->nom }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </td>
+                        <td>
+                            <input type="number" name="articles[${index}][prix_vente]" class="form-control prix_vente" value="${prix_vente}">
+                        </td>
+                        <td>
+                            <input type="number" name="articles[${index}][quantite]" class="form-control quantite" value="1">
+                        </td>
+                        <td>
+                            <input type="number" class="form-control total-ligne" readonly>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger remove">X</button>
+                        </td>
+                    </tr>
+                `;
+                
+                document.querySelector('#table-articles tbody').insertAdjacentHTML('beforeend', row);
+                
+                let newRow = document.querySelector('#table-articles tbody tr:last-child');
+                let select = newRow.querySelector('.article-select');
+                select.value = id;
+                calculLigne(newRow);
+                
+                index++;
+            }
+        }
+        
+        // Nettoyer
+        document.getElementById('results').innerHTML = '';
+        document.getElementById('search').value = '';
+    }
 </script>
 @include('partials.footer')

@@ -29,8 +29,8 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <span><i class="fas fa-box" style="color: var(--primary); margin-right: 0.5rem;"></i>Liste des articles du depot ( {{$articles->count()}} )</span>
-                        <a href="{{ route('magasin.index') }}" type="button" class="btn btn-outline-danger">
+                        <span><i class="fas fa-box" style="color: var(--primary); margin-right: 0.5rem;"></i>Liste des articles de ce fournisseur ( {{$articles->count()}} )</span>
+                        <a href="{{ route('fournisseurs.index') }}" type="button" class="btn btn-outline-danger">
                             Retour
                         </a>
                     </div>
@@ -76,7 +76,7 @@
                                         </td>
                                         <td>{{$a->nom}}</td>
                                         <td>{{$a->categorie->nom}}</td>
-                                        <td><strong>{{$a->prix}} FCFA</strong></td>
+                                        <td><strong>{{$a->prix_vente}} FCFA</strong></td>
                                         <td>
                                             @if($a->stock_min >= $a->stock)
                                                 <span class="badge bg-danger">Stock faible</span>
