@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Fournisseur;
 use App\Models\Article;
-use App\Models\Bon_Commande;
+use App\Models\Bon_commande;
 use App\Models\Entreprise;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -112,7 +112,7 @@ class FournisseurController extends Controller
     public function factures($id)
     {
         //dd($id);
-        $factures= Bon_Commande::where('fournisseur_id', $id)->latest()->paginate(50);
+        $factures= Bon_commande::where('fournisseur_id', $id)->latest()->paginate(50);
 
         return view('dashboard.fournisseurs.factures', compact('factures'));
     }
