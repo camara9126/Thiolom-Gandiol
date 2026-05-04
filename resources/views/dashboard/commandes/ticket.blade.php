@@ -170,7 +170,6 @@
                     <!--<th>Quantité</th>-->
                     <th>Prix</th>
                     <th>Total</th>
-                    <th></th>
                 </tr>
             </thead>
             <tbody>

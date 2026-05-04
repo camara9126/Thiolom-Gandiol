@@ -241,8 +241,13 @@ class DevisController extends Controller
                 return redirect()->back()->with('success', 'Ce devis a déjà été converti en vente.');
             } 
         // Session 
-         $session= Session_caisse::where('user_id', request()->user()->id)->whereNull('closed_at')->first();
+        $session= Session_caisse::where('user_id', request()->user()->id)->whereNull('closed_at')->first();
          
+        // Verification Ouverture session
+        if(!$session) {
+            return redirect()->back()->with('success', 'Vous n\'est pas autorisé !');
+        }
+
         // Créer la vente
         $vente = Vente::create([
             'session_caisse_id' => $session->id,

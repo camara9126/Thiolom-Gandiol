@@ -124,6 +124,11 @@
                                 <a href="{{ route('bonCommande.facture', $bonCommande->id) }}" class="btn btn-info">
                                     Afficher la facture
                                 </a>
+                                @if($bonCommande->statut == 'recu')
+                                    <a href="{{ route('bonCommande.achat', $bonCommande->id) }}" class="btn btn-success">
+                                        Convertir en Achat 
+                                    </a>
+                                @endif
                             </div>
                     </div>
                 </div>

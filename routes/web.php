@@ -161,6 +161,7 @@ Route::middleware('auth')->group(function () {
     Route::get('bonCommande/{id}/envoyer', [BonCommandeController::class, 'envoyer'])->name('bonCommande.envoyer');
     Route::get('bonCommande/{id}/recevoir', [BonCommandeController::class, 'recevoir'])->name('bonCommande.recevoir');
     Route::get('bonCommande/{id}/facture', [BonCommandeController::class, 'facture'])->name('bonCommande.facture');
+    Route::get('bonCommande/{id}/achat', [BonCommandeController::class, 'achat'])->name('bonCommande.achat');
 
     Route::resource('/fournisseurs', FournisseurController::class);
     Route::get('/fournisseurSearch', [FournisseurController::class, 'search'])->name('fournisseurs.search');

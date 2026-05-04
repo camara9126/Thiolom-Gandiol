@@ -33,15 +33,16 @@
 
             <nav class="sidebar-nav">
                 <ul>
-                    <li>
-                        <a href="{{ route('dashboard') }}" class="">
-                            <i class="fas fa-chart-pie"></i>
-                            <span>Tableau de bord</span>
-                        </a>
-                    </li>
+                    @if(request()->user()->role == 'administrateur')
+                        <li>
+                            <a href="{{ route('dashboard') }}" class="">
+                                <i class="fas fa-chart-pie"></i>
+                                <span>Tableau de bord</span>
+                            </a>
+                        </li> 
 
-                    <div class="sidebar-divider"></div>
-
+                        <div class="sidebar-divider"></div>
+                    @endif
                     <li>
                         <a href="{{ route('articles.index') }}">
                             <i class="fas fa-box"></i>
@@ -145,19 +146,15 @@
                                 <span>Depenses</span>
                             </a>
                         </li>
-                    @endif
-
-                    <div class="sidebar-divider"></div>
-
-                    <li>
-                        <a href="{{ route('rapports') }}">
-                            <i class="fas fa-chart-bar"></i>
-                            <span>Rapports</span>
-                        </a>
-                    </li>
-
                     
-
+                        <li>
+                            <a href="{{ route('rapports') }}">
+                                <i class="fas fa-chart-bar"></i>
+                                <span>Rapports</span>
+                            </a>
+                        </li>
+                    
+                    @endif
                     <div class="sidebar-divider"></div>
 
                     <li>
