@@ -162,7 +162,7 @@ class DevisController extends Controller
         $devis->details()->delete();
 
         $total = 0;
-//dd($devis);
+        //dd($request->articles);
 
         // Recreer les nouveaux details
         foreach ($request->articles as $item) {
