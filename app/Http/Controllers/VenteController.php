@@ -28,7 +28,7 @@ class VenteController extends Controller
         // Session Administrateur
         $today = now()->toDateString();
         
-        $ventes = Vente::with('client')->latest()->simplePaginate(10); 
+        $ventes = Vente::with('client')->latest()->simplePaginate(50); 
 
         $total = Vente::whereDate('created_at', $today)->sum('total');
 
@@ -83,7 +83,7 @@ class VenteController extends Controller
             return redirect()->route('commandes.pdv')->with('success', 'Aucun session ouverte');
         }
 
-        $ventes= Vente::with('client')->latest()->simplePaginate(10); 
+        $ventes= Vente::with('client')->latest()->simplePaginate(50); 
 
         
 

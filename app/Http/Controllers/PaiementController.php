@@ -14,7 +14,7 @@ class PaiementController extends Controller
      */
     public function index(Request $request)
     {
-        $paiements = Paiements::with('vente.client')->latest()->simplePaginate(10); 
+        $paiements = Paiements::with('vente.client')->latest()->simplePaginate(50); 
 
         return view('dashboard.paiements.index', compact('paiements'));
     }
@@ -31,7 +31,7 @@ class PaiementController extends Controller
                         $q->where('nom', 'like', "%{$search}%");
                 });
 
-        })->latest()->paginate(10)->withQueryString(); // 🔑 garde ?search=;
+        })->latest()->paginate(50)->withQueryString(); // 🔑 garde ?search=;
 
         return view('dashboard.paiements.index', compact('paiements', 'search'));
     }

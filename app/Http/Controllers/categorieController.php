@@ -12,7 +12,7 @@ class categorieController extends Controller
      */
     public function index()
     {
-        $categorie= Categorie::latest()->simplePaginate(10);
+        $categorie= Categorie::latest()->simplePaginate(50);
         return view('dashboard.categories.index', compact('categorie'));
     }
 
@@ -28,7 +28,7 @@ class categorieController extends Controller
 
                 $query->where('nom', 'like', "%{$search}%");
 
-        })->latest()->paginate(10)->withQueryString(); // 🔑 garde ?search=;
+        })->latest()->paginate(50)->withQueryString(); // 🔑 garde ?search=;
 
         return view('dashboard.categories.index', compact('categorie', 'search'));
     }

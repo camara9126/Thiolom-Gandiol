@@ -10,7 +10,7 @@ class RecetteController extends Controller
 {
      public function index(Request $request)
     {
-        $recettes = Recettes::latest()->simplePaginate(10);
+        $recettes = Recettes::latest()->simplePaginate(50);
 
         $paiements = Paiements::where('statut', 'valide')->with('vente.client')->orderBy('created_at', 'desc')->get();
 
@@ -31,7 +31,7 @@ class RecetteController extends Controller
                         $q->where('reference', 'like', "%{$search}%");
                 });
 
-        })->latest()->paginate(10)->withQueryString(); // 🔑 garde ?search=;
+        })->latest()->paginate(50)->withQueryString(); // 🔑 garde ?search=;
 
         return view('dashboard.recettes.index', compact('paiements','recettes', 'search'));
     }

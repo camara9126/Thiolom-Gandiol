@@ -12,7 +12,7 @@ class MouvementController extends Controller
 {
 
     public function index() {
-        $mouvements= Mouvement_stock::with('article')->latest()->paginate(10);
+        $mouvements= Mouvement_stock::with('article')->latest()->paginate(50);
         $articles= Article::latest()->get();
         $magasins= Magasin::latest()->get();
 
@@ -33,7 +33,7 @@ class MouvementController extends Controller
                         $q->where('nom', 'like', "%{$search}%");
                 });
 
-        })->latest()->paginate(10)->withQueryString(); // 🔑 garde ?search=
+        })->latest()->paginate(50)->withQueryString(); // 🔑 garde ?search=
 
         return view('dashboard.mouvementStock.index', compact('mouvements','articles','search','magasins'));
 

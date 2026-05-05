@@ -62,8 +62,8 @@
                                         <th style="background-color: #BAFFAC;">Client</th>
                                         <!--<th>Montant TVA</th>-->
                                         <th style="background-color: #BAFFAC;">Montant Total</th>
-                                        <th style="background-color: #BAFFAC;">Montant Payer</th>
-                                        <th style="background-color: #BAFFAC;">Montant Restant</th>
+                                        <!--<th style="background-color: #BAFFAC;">Montant Payer</th>-->
+                                        <!--<th style="background-color: #BAFFAC;">Montant Restant</th>-->
                                         <th style="background-color: #BAFFAC;">Date</th>
                                         <th style="background-color: #BAFFAC;">Statut</th>
                                         <!--<th style="background-color: #BAFFAC;">Actions</th>-->
@@ -75,19 +75,19 @@
                                     <tr>
                                         <td>Facture-{{$f->id}}</td>
                                         <td>{{$f->reference}}</td>
-                                        <td>{{$f->client->nom ?? 'Client supprimee'}}</td>
+                                        <td>{{$f->client->nom ?? '-'}}</td>
                                         <!--<td>{{number_format($f->total_tva, 0, ',',' ')}} XOF</td>-->
-                                        <td>{{number_format($f->total_ttc, 0, ',',' ')}} XOF</td>
-                                        <td>{{number_format($f->montant_paye, 0, ',', ' ')}} XOF</td>
-                                        <td>{{number_format($f->montant_restant, 0, ',',' ')}} XOF</td>
+                                        <td>{{number_format($f->total, 0, ',',' ')}} XOF</td>
+                                        <!--<td>{{number_format($f->montant_paye, 0, ',', ' ')}} XOF</td>-->
+                                        <!--<td>{{number_format($f->montant_restant, 0, ',',' ')}} XOF</td>-->
                                         <td>{{$f->created_at->format('d/m/y')}}</td>
                                         <td>
-                                            @if($f->statut == 'payee')
-                                                <span class="status-badge badge bg-success">{{$f->statut}}</span>
-                                            @elseif($f->statut == 'partielle')
+                                            @if($f->statut == 'en_attente')
+                                                <span class="status-badge badge bg-warning">{{$f->statut}}</span>
+                                            @elseif($f->statut == 'envoye')
                                                 <span class="status-badge badge bg-info">{{$f->statut}}</span>
                                             @else
-                                                <span class="status-badge badge bg-danger">{{$f->statut}}</span>
+                                                <span class="status-badge badge bg-success">{{$f->statut}}</span>
                                             @endif
                                         </td>
                                         <!--<td>

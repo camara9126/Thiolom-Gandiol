@@ -10,7 +10,7 @@ class ClientController extends Controller
     public function index(Request $request)
     {
 
-        $clients = Client::latest()->paginate(10);
+        $clients = Client::latest()->paginate(50);
 
         return view('dashboard.clients.index', compact('clients'));
     }
@@ -23,7 +23,7 @@ class ClientController extends Controller
 
                 $query->where('nom', 'like', "%{$search}%");
 
-        })->latest()->paginate(10)->withQueryString(); // 🔑 garde ?search=;
+        })->latest()->paginate(50)->withQueryString(); // 🔑 garde ?search=;
 
         return view('dashboard.clients.index', compact('clients','search'));
     }

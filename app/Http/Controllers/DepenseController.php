@@ -12,7 +12,7 @@ class DepenseController extends Controller
     public function index(Request $request)
     {
 
-        $depenses = Depenses::latest()->simplePaginate(10);
+        $depenses = Depenses::latest()->simplePaginate(50);
 
         return view('dashboard.depenses.index', compact('depenses'));
     }
@@ -26,7 +26,7 @@ class DepenseController extends Controller
 
                 $query->where('reference', 'like', "%{$search}%");
 
-        })->latest()->paginate(10)->withQueryString(); // 🔑 garde ?search=;
+        })->latest()->paginate(50)->withQueryString(); // 🔑 garde ?search=;
 
         return view('dashboard.depenses.index', compact('categories','depenses', 'search'));
     }
@@ -49,7 +49,6 @@ class DepenseController extends Controller
             'description' => $request->description,
             'montant' => $request->montant,
             'date_depense' => $request->date_depense,
-            'categorie_depense_id' => $request->categorie_depense_id,
             'mode_paiement' => $request->mode_paiement,
         ]);
 

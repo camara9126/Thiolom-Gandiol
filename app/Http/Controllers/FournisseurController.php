@@ -18,7 +18,7 @@ class FournisseurController extends Controller
     {
 
 
-        $fournisseurs = Fournisseur::latest()->paginate(10);
+        $fournisseurs = Fournisseur::with('bonCommande')->latest()->paginate(50);
 
         return view('dashboard.fournisseurs.index', compact('fournisseurs'));
     }
@@ -35,7 +35,7 @@ class FournisseurController extends Controller
                         $q->where('telephone', 'like', "%{$search}%");
                 });
 
-        })->latest()->paginate(10)->withQueryString(); // 🔑 garde ?search=
+        })->latest()->paginate(50)->withQueryString(); // 🔑 garde ?search=
 
         return view('dashboard.fournisseurs.index', compact('fournisseurs','search'));
 
@@ -112,7 +112,7 @@ class FournisseurController extends Controller
     public function factures($id)
     {
         //dd($id);
-        $factures= Bon_commande::where('fournisseur_id', $id)->latest()->paginate(50);
+        $factures= Bon_commande::where('fournisseur_id', $id)->where('statut', 'recu')->latest()->paginate(50);
 
         return view('dashboard.fournisseurs.factures', compact('factures'));
     }

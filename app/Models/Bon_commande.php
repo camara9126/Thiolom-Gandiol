@@ -15,6 +15,7 @@ class Bon_commande extends Model
         'statut',
         'nom',
         'matricule',
+        'converti_en_achat',
     ];
 
      public function fournisseur()

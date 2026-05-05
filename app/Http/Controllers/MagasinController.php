@@ -13,7 +13,7 @@ class MagasinController extends Controller
      */
     public function index()
     {
-        $magasins= Magasin::with('stock')->latest()->paginate(10);
+        $magasins= Magasin::with('stock')->latest()->paginate(50);
 
         return view('dashboard.magasin.index', compact('magasins'));
     }
@@ -32,7 +32,7 @@ class MagasinController extends Controller
                         $q->where('article_id', 'like', "%{$search}%");
                 });
 
-        })->latest()->paginate(10)->withQueryString(); // 🔑 garde ?search=;
+        })->latest()->paginate(50)->withQueryString(); // 🔑 garde ?search=;
 
         return view('dashboard.magasin.index', compact('magasins', 'search'));
     }

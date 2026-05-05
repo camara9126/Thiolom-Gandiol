@@ -119,7 +119,7 @@
                                     <a href="{{ route('devis.refuser', $devis->id) }}" class="btn btn-danger">
                                         Refuser
                                     </a>
-                                     <a href="{{ route('devis.facture', $devis->id) }}" class="btn btn-info">
+                                    <a href="{{ route('devis.facture', $devis->id) }}" class="btn btn-info">
                                         Generer la facture
                                     </a>
                                 @endif
@@ -127,6 +127,9 @@
                                 @if($devis->statut == 'valide')
                                     <a href="{{ route('devis.convertir', $devis->id) }}" class="btn btn-info">
                                         Convertir en vente
+                                    </a>
+                                    <a href="{{ route('devis.facture', $devis->id) }}" class="btn btn-warning">
+                                        Generer la facture
                                     </a>
                                 @elseif($devis->statut == 'refuse')
                                     <form action="{{route('devis.destroy', $devis->id)}}" type="button" method="post" onsubmit="return confirm('Supprimer ?')">

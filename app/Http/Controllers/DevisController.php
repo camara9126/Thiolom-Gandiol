@@ -25,7 +25,7 @@ class DevisController extends Controller
      */
     public function index()
     {
-        $devis = Devis::with('client')->latest()->paginate(10);
+        $devis = Devis::with('client')->latest()->paginate(50);
         return view('dashboard.devis.index', compact('devis'));
     }
 
@@ -41,7 +41,7 @@ class DevisController extends Controller
                         $q->where('nom', 'like', "%{$search}%");
                 });
 
-        })->latest()->paginate(10)->withQueryString(); // 🔑 garde ?search=;
+        })->latest()->paginate(50)->withQueryString(); // 🔑 garde ?search=;
 
         return view('dashboard.devis.index', compact('devis','search'));
     }
@@ -269,7 +269,6 @@ class DevisController extends Controller
         foreach ($devis->details as $detail) {
 
         $produit = Article::where('id', $detail->article_id)->lockForUpdate()->firstOrFail(); // verrou stock
-        $magasin = Magasin::where('id', $produit->magasin_id)->lockForUpdate()->firstOrFail(); // verrou stock
 
         $entreprise= Entreprise::findOrFail(1); // Recuperation de la TVA de l'entreprise
 
@@ -309,6 +308,11 @@ class DevisController extends Controller
             ]);
             
         }
+
+        // Mise a jour Devis
+        $devis->update([
+            'converti_en_vente' => 1
+        ]);
 
          // creation paiement
             $paiement = $vente;

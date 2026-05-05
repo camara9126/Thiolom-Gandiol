@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\Article_depot;
 use App\Models\Bon_commande;
 use App\Models\Bon_commande_details;
+use App\Models\Depenses;
 use App\Models\Entreprise;
 use Illuminate\Http\Request;
 use App\Models\Fournisseur;
@@ -38,7 +39,7 @@ class BonCommandeController extends Controller
                         $q->where('nom', 'like', "%{$search}%");
                 });
 
-        })->latest()->paginate(10)->withQueryString(); // 🔑 garde ?search=
+        })->latest()->paginate(50)->withQueryString(); // 🔑 garde ?search=
 
         return view('dashboard.bonCommandes.index', compact('bonCommandes','search'));
 
@@ -182,49 +183,41 @@ class BonCommandeController extends Controller
     }
 
 
-        /**
+    /**
      * Convertir bon commande en vente
      */
     public function achat($id)
     {
         $bonCommande = Bon_commande::with('fournisseur', 'details.article')->where('statut', 'recu')->findOrFail($id);
-        //dd($bonCommande);
-        // Session 
-        $session= Session_caisse::where('user_id', request()->user()->id)->whereNull('closed_at')->first();
-         
-        // Verification Ouverture session
-        if(!$session) {
-            return redirect()->back()->with('success', 'Vous n\'est pas autorisé !');
-        }
+
+        // Vérifier si le bon de commande est déjà converti
+        if ($bonCommande->converti_en_achat) {
+            return redirect()->back()->with('success', 'Ce bon de commande a déjà été converti en vente.');
+        } 
+
+        // Récupérer uniquement les articles du bon de commande
+        $articlesBonCommande = $bonCommande->details;
 
 
         // Ajouter les produits
-       foreach ($bonCommande->details as $detail) {
+       foreach ($articlesBonCommande as $detail) {
     
-            // Récupération du produit original (si vous voulez copier ses propriétés)
-            $produitOriginal = Article::find($detail->article_id);
-            
-            if (!$produitOriginal) {
+            // Récupération de l'article original 
+            $article = Article::where('id', $detail->article_id)->lockForUpdate()->firstOrFail();
+           
+            if (!$article) {
                 continue; // Passer à l'article suivant si non trouvé
             }
-            
-            $magasin = Magasin::where('id', $produitOriginal->magasin_id)->lockForUpdate()->firstOrFail();
-            $entreprise = Entreprise::findOrFail(1);
-            
-            // Création du nouvel article basé sur le détail du bon de commande
-            $article = Article::create([
-                'fournisseur_id' => $bonCommande->fournisseur_id,
-                'nom' => $detail->nom ?? $produitOriginal->nom, // Utilisez $detail->nom si disponible
-                'description' => $detail->description ?? $produitOriginal->description ?? $detail->nom,
-                'prix_achat' => $detail->prix_achat ?? $produitOriginal->prix_achat ?? 0,
-                'prix_vente' => $detail->prix_vente ?? $produitOriginal->prix_vente ?? 0,
-                'code' => $this->generateCode(),
-                'reference' => 'REF-' . now()->timestamp . '-' . $detail->id,
-                'stock' => $detail->quantite ?? 100,
-                'stock_min' => 20,
-                'categorie_id' => $detail->categorie_id ?? $produitOriginal->categorie_id ?? 1,
-                'magasin_id' => $detail->magasin_id ?? $magasin->id ?? 1,
-                'image' => $path ?? $entreprise->logo ?? null,
+                        
+            // Ajouter la quantité au stock existant
+            $ancienStock = $article->stock;
+            $nouvelleQuantite = $ancienStock + $detail->quantite;
+    
+            $article->update([
+                'stock' => $nouvelleQuantite,
+                'prix_achat' => $detail->prix_achat ?? $article->prix_achat,
+                'prix_vente' => $detail->prix_vente ?? $article->prix_vente, 
+                'fournisseur_id' => $bonCommande->fournisseur_id, 
             ]);
             
             // Si vous voulez créer aussi un mouvement de stock entrant
@@ -233,32 +226,44 @@ class BonCommandeController extends Controller
                 'type' => 'entree',
                 'quantite' => $detail->quantite,
                 'magasin_id' => $article->magasin_id,
-                'reference' => 'BC-' . $bonCommande->reference . '-ENTREE',
-                'date_mouvement' => now(),
-            ]);
-
-
-
-            // Creation de l'article dans le depot
-            Article_depot::create([
-                'article_id' => $article->id,
-                'magasin_id' => $magasin->id,
-                'stock' => $detail['quantite'],
-            ]);
-
-            // Enregistrement d'un historique de mouvement
-            Mouvement_stock::create([
-                'article_id' => $article->id,
-                'type' => 'entree',
-                'quantite' => $detail['quantite'] ?? 100,
-                'magasin_id' => $magasin->id ?? 1,
                 'reference' => 'MVT-' . now()->timestamp,
             ]);
 
-     
+
+            // Mettre à jour le stock dans Article_depot 
+            $articleDepot = Article_depot::where('article_id', $article->id)->where('magasin_id', $article->magasin_id)->first();
+            
+            if ($articleDepot) {
+                $articleDepot->increment('stock', $detail->quantite);
+            } else {
+                Article_depot::create([
+                    'article_id' => $article->id,
+                    'magasin_id' => $article->magasin_id,
+                    'stock' => $detail->quantite
+                ]);
+            }
+           
         }
 
-        return redirect()->route('articles.index')->with('success', 'Bon de commande converti en vente');
+        $entreprise= Entreprise::findOrFail(1); 
+
+        Depenses::create([
+            'entreprise_id' => $entreprise->id,
+            'user_id' => request()->user()->id,
+            'reference' => 'DEP-' . now()->timestamp,
+            'libelle' => 'Rréapprovisionnement - '. $bonCommande->reference,
+            'description' => 'Rréapprovisionnement a partir du Bon de Commande',
+            'montant' => $bonCommande->total,
+            'date_depense' => now(),
+            'mode_paiement' => 'cash',
+        ]);
+
+        // Mise a jour Bon de commande
+        $bonCommande->update([
+            'converti_en_achat' => 1
+        ]);
+
+       return redirect()->back()->with('success', 'Les articles ont été réapprovisionnés avec succès');
     }
 
     
