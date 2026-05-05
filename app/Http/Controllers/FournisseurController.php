@@ -127,7 +127,7 @@ class FournisseurController extends Controller
 
         $bonCommande->load(['fournisseur', 'details']);
         //dd($devis);
-        $pdf = Pdf::loadView('dashboard.fournisseurs.pdf', compact('bonCommande', 'entreprise'));
+        $pdf = Pdf::loadView('dashboard.fournisseurs.PDF', compact('bonCommande', 'entreprise'));
 
         return $pdf->stream ('Facture-' . $bonCommande->reference . '.pdf');
     }
