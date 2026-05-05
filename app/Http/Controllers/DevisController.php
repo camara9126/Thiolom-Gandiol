@@ -153,7 +153,7 @@ class DevisController extends Controller
             'articles' => 'required|array',
             'articles.*.article_id' => 'required',
             'articles.*.quantite' => 'required|numeric|min:1',
-            'articles.*.prix_vente' => 'required|numeric|min:0',
+            'articles.*.prix_vente' => 'numeric|min:0',
         ]);
 
         $devis= Devis::with('client', 'details')->findOrFail($id);

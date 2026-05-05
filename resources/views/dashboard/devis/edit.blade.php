@@ -71,7 +71,7 @@
                                 <thead>
                                     <tr>
                                         <th>Produit</th>
-                                        <th>Prix</th>
+                                        <th>prix</th>
                                         <th>Quantité</th>
                                         <th>Total</th>
                                         <th>Action</th>
@@ -82,9 +82,9 @@
                                     <tr>
                                         <td>
                                             <select name="articles[{{$index}}][article_id]" class="form-control produit-select">
-                                                <option value="{{$detail->article->id}}" data-prix="{{ $detail->article->prix }}">{{$detail->article->nom}}</option>
+                                                <option value="{{$detail->article->id}}" data-prix_vente="{{ $detail->article->prix_vente }}">{{$detail->article->nom}}</option>
                                                 @foreach($articles as $article)
-                                                    <option value="{{ $article->id }}" data-prix="{{ $article->prix }}">
+                                                    <option value="{{ $article->id }}" data-prix_vente="{{ $article->prix_vente }}">
                                                         {{ $article->nom }}
                                                     </option>
                                                 @endforeach
@@ -92,7 +92,7 @@
                                         </td>
 
                                         <td>
-                                            <input type="number" name="articles[{{$index}}][prix]" value="{{$detail->prix_unitaire}}" class="form-control prix" >
+                                            <input type="number" name="articles[{{$index}}][prix_vente]" value="{{$detail->prix_unitaire}}" class="form-control prix_vente" >
                                         </td>
 
                                         <td>
@@ -135,9 +135,9 @@
             <tr>
                 <td>
                     <select name="articles[${index}][article_id]" class="form-control produit-select">
-                        <option value="{{$detail->article->id}}" data-prix="{{ $detail->article->prix }}>{{$detail->article->nom}}</option>
+                        <option value="{{$detail->article->id}}" data-prix_vente="{{ $detail->article->prix_vente }}>{{$detail->article->nom}}</option>
                         @foreach($articles as $article)
-                            <option value="{{ $article->id }}" data-prix="{{ $article->prix }}">
+                            <option value="{{ $article->id }}" data-prix_vente="{{ $article->prix_vente }}">
                                 {{ $article->nom }}
                             </option>
                         @endforeach
@@ -145,7 +145,7 @@
                 </td>
 
                 <td>
-                    <input type="number" name="articles[${index}][prix]" value="{{$detail->prix_unitaire}}" class="form-control prix" >
+                    <input type="number" name="articles[${index}][prix_vente]" value="{{$detail->prix_unitaire}}" class="form-control prix_vente" >
                 </td>
 
                 <td>
@@ -175,12 +175,12 @@
             }
         });
 
-        // Auto remplir prix
+        // Auto remplir prix_vente
         document.addEventListener('change', function(e){
             if(e.target.classList.contains('produit-select')){
-                let prix = e.target.selectedOptions[0].dataset.prix;
+                let prix_vente = e.target.selectedOptions[0].dataset.prix_vente;
                 let row = e.target.closest('tr');
-                row.querySelector('.prix').value = prix;
+                row.querySelector('.prix_vente').value = prix_vente;
                 calculLigne(row);
             }
         });
@@ -194,10 +194,10 @@
         });
 
         function calculLigne(row){
-            let prix = row.querySelector('.prix').value || 0;
+            let prix_vente = row.querySelector('.prix_vente').value || 0;
             let quantite = row.querySelector('.quantite').value || 0;
 
-            let total = prix * quantite;
+            let total = prix_vente * quantite;
             row.querySelector('.total-ligne').value = total;
 
             calculTotal();
