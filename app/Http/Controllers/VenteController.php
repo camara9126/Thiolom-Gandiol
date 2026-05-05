@@ -119,9 +119,22 @@ class VenteController extends Controller
     // Liste de factures
     public function facture()
     {
+         // Session Administrateur
+        $today = now()->toDateString();
+        
+        $user= request()->user();
+
+        $total = Vente::whereDate('created_at', $today)->sum('total');
+
+        $depensesJour = Depenses::where('statut', 'payee')->whereDate('created_at', $today)->sum('montant');
+
+        $totalEncaisse = Vente::with('client')->get()->sum('montant_paye');
+        
+        $ventesJour = Vente::whereDate('created_at', $today)->get();
+
         $factures = Vente::with('client')->latest()->simplePaginate(10); 
 
-        return view('dashboard.commandes.factures', compact('factures'));
+        return view('dashboard.commandes.factures', compact('factures','today','depensesJour','totalEncaisse','ventesJour','total','user'));
     }
 
 

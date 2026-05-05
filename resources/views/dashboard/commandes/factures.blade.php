@@ -44,6 +44,39 @@
                         </div>
                     @endif
 
+                @if($user->role == 'administrateur')
+                    <h2>Caisse journaliere (administrateur)</h2> 
+                    <div class="stats-grid">
+                        <div class="stat-card" style="background: linear-gradient(#0081A7, #00AFB9) ;">
+                            <div class="stat-info">
+                                <h3 class="text-white">Ventes du jour</h3>
+                                <div class="number text-white">{{$ventesJour->count()}}</div>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-tags text-info"></i>
+                            </div>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(#FF2626, #FFFF26) ;">
+                            <div class="stat-info">
+                                <h3>Montant Total</h3>
+                                <div class="number">{{number_format($total, 0, ',', ' ')}} XOF</div>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                        </div>
+                        <!--<div class="stat-card" style="background: linear-gradient(#FF95F4, #FF2626) ;">
+                            <div class="stat-info">
+                                <h3 class="">Montant Encaisse</h3>
+                                <div class="number">{{number_format($totalEncaisse, 0, ',', ' ')}} XOF</div>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-money-bill-wave text-warning"></i>
+                            </div>
+                        </div>-->
+                    </div>  
+                @endif
+
                     <div class="card-body">
                          @if ($errors->any())
                             <div style="color: red; margin-bottom: 10px;">
