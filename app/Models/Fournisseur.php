@@ -19,6 +19,6 @@ class Fournisseur extends Model
     }
 
     public function bonCommande() {
-        return $this->hasMany(Bon_Commande::class);
+        return $this->hasMany(Bon_commande::class);
     }
 }

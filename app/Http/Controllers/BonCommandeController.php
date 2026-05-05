@@ -179,7 +179,7 @@ class BonCommandeController extends Controller
             'statut' => 'recu'
         ]);
 
-        return back()->with('success', 'Stock mis à jour, commande reçue');
+        return back()->with('success', 'Bon de Commande reçue');
     }
 
 
