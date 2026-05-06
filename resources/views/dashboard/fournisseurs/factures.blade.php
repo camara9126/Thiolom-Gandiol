@@ -59,7 +59,7 @@
                                     <tr>
                                         <th style="background-color: #BAFFAC;">ID Facture</th>
                                         <th style="background-color: #BAFFAC;">Reference</th>
-                                        <th style="background-color: #BAFFAC;">Client</th>
+                                        <th style="background-color: #BAFFAC;">Fournisseur</th>
                                         <!--<th>Montant TVA</th>-->
                                         <th style="background-color: #BAFFAC;">Montant Total</th>
                                         <!--<th style="background-color: #BAFFAC;">Montant Payer</th>-->
@@ -75,7 +75,7 @@
                                     <tr>
                                         <td>Facture-{{$f->id}}</td>
                                         <td>{{$f->reference}}</td>
-                                        <td>{{$f->client->nom ?? '-'}}</td>
+                                        <td>{{$f->fournisseur->nom ?? '-'}}</td>
                                         <!--<td>{{number_format($f->total_tva, 0, ',',' ')}} XOF</td>-->
                                         <td>{{number_format($f->total, 0, ',',' ')}} XOF</td>
                                         <!--<td>{{number_format($f->montant_paye, 0, ',', ' ')}} XOF</td>-->

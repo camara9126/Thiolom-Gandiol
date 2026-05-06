@@ -152,7 +152,7 @@
         <!-- En-tête -->
         <div class="text-center">
             <div class="text-small">BOUTIQUE THIOLOM GANDIOL</div>
-            <div class="text-small">Tel: {{ $entreprise->telephone }} | Ninea : {{ $entreprise->ninea }}</div>
+            <div class="text-small">Tel: {{ $entreprise->telephone }} / {{ $entreprise->tel2 }} | Fixe : {{ $entreprise->telfixe }}</div>
             <div class="dotted-line"></div>
             <div class="text-small text-bold">Servi par: {{strtoupper($vente->user->name)}}</div>
         </div>
@@ -171,7 +171,7 @@
                     </tr>
                 @endforeach
                 <tr>
-                    <td colspan="1" style="text-align:right; font-weight:bold;">SOMME</td>
+                    <td  style="text-align:right; font-weight:bold;">SOMME : </td>
                     <td style="font-weight:bold;">{{ number_format($vente->total_ttc, 0, ',', ' ') }} CFA</td>
                 </tr>
             </thead>
@@ -185,7 +185,7 @@
 
         <!-- Infos commande -->
         <div class="text-center">
-            <div class="text-bold">Commande <b>{{ $vente->reference }}</b></div>
+            <div class="text-bold">Commande: <b> {{ $vente->reference }}</b></div>
             <div class="text-small">{{ date('d/m/Y H:i:s') }}</div>
         </div>
 

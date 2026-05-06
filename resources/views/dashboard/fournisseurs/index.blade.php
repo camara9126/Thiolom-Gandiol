@@ -68,7 +68,7 @@
                                         <tr>
                                             <td>{{$f->nom}}</td>
                                             <td><a href="{{ route('fournisseurs.show', $f) }}">{{$f->article->count()}}</a></td>
-                                            <td><a href="{{ route('fournisseurs.factures', $f) }}">{{$f->bonCommande->where('statut', 'recu')->count()}}</a></td>
+                                            <td><a href="{{ route('fournisseurs.factures', $f) }}">{{$f->achat->count()}}</a></td>
                                             <td>{{$f->telephone ?? 'Vide'}}</td>
                                             <td>{{$f->email ?? 'Vide'}}</td>
                                             <td>{{$f->adresse ?? 'Vide'}}</td>

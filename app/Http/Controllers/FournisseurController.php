@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Achat;
 use App\Models\Fournisseur;
 use App\Models\Article;
 use App\Models\Bon_commande;
@@ -18,7 +19,7 @@ class FournisseurController extends Controller
     {
 
 
-        $fournisseurs = Fournisseur::with('bonCommande')->latest()->paginate(50);
+        $fournisseurs = Fournisseur::with('achat')->latest()->paginate(50);
 
         return view('dashboard.fournisseurs.index', compact('fournisseurs'));
     }
@@ -112,7 +113,7 @@ class FournisseurController extends Controller
     public function factures($id)
     {
         //dd($id);
-        $factures= Bon_commande::where('fournisseur_id', $id)->where('statut', 'recu')->latest()->paginate(50);
+        $factures= Achat::where('fournisseur_id', $id)->where('statut', 'recu')->latest()->paginate(50);
 
         return view('dashboard.fournisseurs.factures', compact('factures'));
     }
