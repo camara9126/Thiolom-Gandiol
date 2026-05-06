@@ -1,161 +1,311 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Facture N° {{ $vente->reference }}</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
+    <title>Facture {{ $vente->reference }}</title>
     <style>
-        body { font-family: DejaVu Sans; font-size: 12px; }
-        table { width:100%; border-collapse: collapse; }
-        th, td { border:1px solid #000; padding:5px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        th { background:#f2f2f2; }
-        /* Pied de page */
-        .invoice-footer {
-            background-color: #2c3e50;
-            color: white;
-            padding: 20px 30px;
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 12px;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .facture-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+        }
+
+        /* En-tête */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #333;
+        }
+
+        .entreprise-name {
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .entreprise-slogan {
+            font-size: 11px;
+            font-style: italic;
+            margin-bottom: 5px;
+        }
+
+        .entreprise-infos {
+            font-size: 10px;
+            line-height: 1.3;
+        }
+
+        /* Infos facture */
+        .info-bar {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
+            margin-bottom: 20px;
+            font-size: 11px;
         }
-        
-        .footer-left {
-            display: flex;
-            flex-direction: column;
+
+        .info-left {
+            text-align: left;
         }
-        
-        .footer-right {
+
+        .info-right {
             text-align: right;
         }
 
-        .status-paid {
-            background-color: #2ecc71;
-            color: white;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-weight: 600;
-            display: inline-block;
-            justify-content: center;
+        .facture-number {
+            font-weight: bold;
+            font-size: 14px;
         }
-        
+
+        /* Client */
+        .client-section {
+            margin-bottom: 25px;
+            text-align: right;
+        }
+
+        .client-label {
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        /* Tableau */
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .items-table th {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 10px 8px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 11px;
+        }
+
+        .items-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+            font-size: 11px;
+        }
+
+        .items-table td:first-child,
+        .items-table td:nth-child(3),
+        .items-table td:nth-child(4) {
+            text-align: right;
+        }
+
+        .items-table td:nth-child(2) {
+            text-align: left;
+        }
+
+        /* Totaux */
+        .totals-section {
+            margin-top: 20px;
+            text-align: right;
+            border-top: 1px solid #ddd;
+            padding-top: 15px;
+        }
+
+        .total-line {
+            margin-bottom: 5px;
+            font-size: 12px;
+        }
+
+        .total-ttc {
+            font-size: 16px;
+            font-weight: bold;
+            color: red;
+            margin-top: 10px;
+        }
+
+        /* Signature */
+        .signature {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+        }
+
+        .signature-left {
+            text-align: left;
+        }
+
+        .signature-right {
+            text-align: right;
+        }
+
+        /* Pied de page */
+        .footer {
+            margin-top: 30px;
+            padding-top: 10px;
+            border-top: 1px solid #ccc;
+            font-size: 9px;
+            text-align: center;
+            color: #777;
+        }
+
+        .payment-info {
+            margin-top: 15px;
+            font-size: 11px;
+            text-align: right;
+        }
+
+        hr {
+            margin: 15px 0;
+            border: none;
+            border-top: 1px solid #ddd;
+        }
+
+        .original-badge {
+            font-size: 10px;
+            color: #999;
+            text-align: right;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
+    <div class="facture-container">
+        <!-- Badge Original -->
+        <div class="original-badge">
+            Original
+        </div>
 
-        <img src="{{ public_path('storage/'.$entreprise->logo) }}" style="width: 150px; height: 100px;" alt="Logo entreprise" class="">
-        <!--<h1 class="mb-0 text-center">Eco Business Distribution</h1>-->
-<p>
-    Ninea : {{ $entreprise->ninea }} <br>
-    Telephone : {{ $entreprise->telephone }} <br>
-    Adresse : {{ $entreprise->adresse }}
-</p>
-<p class="footer-right">
-    Facture N° : <b>{{ $vente->reference }}</b>
-</p>
-
-<hr>
-
-@if($vente->client->nom !== 'Inconnu')
-    <p>
-        <b>Client :</b><br>
-        {{ $vente->client->nom }}<br>
-        {{ $vente->client->telephone ?? '' }} <br>
-        {{ $vente->client->adresse ?? '' }} <br>
-    </p>
-@endif
-<br>
-
-<table>
-    <thead>
-        <tr>
-            <th>Produit</th>
-            <th>Quantité</th>
-            <th>Prix unitaire (XOF)</th>
-            <th>Total (XOF)</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($vente->items as $item)
-        <tr>
-            <td>{{ $item->article->nom }}</td>
-            <td>{{ $item->quantite }}</td>
-            <td>{{ number_format($item->prix_unitaire, 0, ',', ' ') }}</td>
-            <td>{{ number_format($item->total, 0, ',', ' ') }}</td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
-
-    @if($entreprise->taux_tva > 1)
-        <h4>TVA ({{$item->taux_tva}} %) : {{ number_format($vente->total_tva, 0, ',', ' ') }} XOF</h4>
-    @endif
-    
-
-    @if($entreprise->taux_tva > 1)
-        <h2 style="color: red;">Total-TTC : {{ number_format($vente->total_ttc, 0, ',', ' ') }} XOF</h2>
-    @else
-        <h2 style="text-align: right; color: red;">SOMME : {{ number_format($vente->total, 0, ',', ' ') }} XOF</h2>
-    @endif
-    
-    <!--<table>
-        <h4>Detail paiements</h4>
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Montant</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($vente->paiements as $paiement)
-                <tr>
-                    <td>{{ $paiement->date_paiement }}</td>
-                    <td>{{number_format($paiement->montant, 0, ',',' ') }} XOF</td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="7" align="center">Aucun paiement !</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>-->
-    <p>Payée le <b>{{ $paiement->date_paiement }}</b></p>
-        <br>
-
-        <!-- Pied de page -->
-        <div class="invoice-footer">
-             @if($vente->montant_restant !== 0)
-                <div class="footer-left">
-                    <h3>Montant Restant : {{ number_format($vente->montant_restant, 0, ',',' ')}} XOF</h3>
-                </div>
+        <!-- En-tête entreprise -->
+        <div class="header">
+            @if($entreprise->logo)
+                <img src="{{ public_path('storage/'.$entreprise->logo) }}" style="width: 120px; height: auto; margin-bottom: 10px;" alt="Logo">
             @endif
-
-            <div class="footer-right">
-                <div class="status-paid">
-                    @if($vente->montant_restant == 0)
-                        PAIEMENT COMPLET
-                    @else
-                        PAIEMENT INCOMPLET
-                    @endif
-                </div>
-                <div style="margin-top: 10px; font-size: 12px;">Date de la facture: {{ $vente->created_at->format('d/m/Y') }}</div>
+            <div class="entreprise-name">{{ strtoupper($entreprise->nom) }}</div>
+            @if($entreprise->slogan)
+                <div class="entreprise-slogan">{{ $entreprise->slogan }}</div>
+            @endif
+            <div class="entreprise-infos">
+                NINEA: {{ $entreprise->ninea ?? '------------' }} | 
+                RCCM: {{ $entreprise->rccm ?? '------------' }}<br>
+                Tél: {{ $entreprise->telephone ?? '------------' }} | 
+                Fax: {{ $entreprise->fax ?? '' }}<br>
+                {{ $entreprise->adresse ?? '------------' }}
             </div>
         </div>
-<p>
-   Facture générée par {{strtoupper($vente->user->name)}}.
-</p>
 
+        <!-- Date et Numéro Facture -->
+        <div class="info-bar">
+            <div class="info-left">
+                le {{ date('d/m/Y') }}
+            </div>
+            <div class="info-right">
+                <span class="facture-number">Facture N° {{ $vente->reference }}</span>
+            </div>
+        </div>
+
+        <!-- Client -->
+        <div class="client-section">
+            <div class="client-label">Client :</div>
+            <div>{{ $vente->client->nom }}</div>
+            @if($vente->client->telephone)
+                <div>Tél: {{ $vente->client->telephone }}</div>
+            @endif
+            @if($vente->client->adresse)
+                <div>{{ $vente->client->adresse }}</div>
+            @endif
+        </div>
+
+        <!-- Tableau des articles -->
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th>QTE</th>
+                    <th>DESIGNATION</th>
+                    <th>P.U</th>
+                    <th>MONTANT</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                    $totalGeneral = 0;
+                @endphp
+                @foreach($vente->items as $item)
+                    @php
+                        $montant = $item->quantite * $item->prix_unitaire;
+                        $totalGeneral += $montant;
+                    @endphp
+                    <tr>
+                        <td>{{ $item->quantite }}</td>
+                        <td style="text-align: left;">{{ $item->article->nom }}</td>
+                        <td>{{ number_format($item->prix_unitaire, 0, ',', ' ') }}</td>
+                        <td>{{ number_format($montant, 0, ',', ' ') }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+
+        <!-- Totaux -->
+        <div class="totals-section">
+            @if($entreprise->taux_tva > 0)
+                <div class="total-line">
+                    TVA ({{ $entreprise->taux_tva }}%) : {{ number_format($vente->total_tva ?? 0, 0, ',', ' ') }} FCFA
+                </div>
+                <div class="total-line">
+                    Total HT : {{ number_format($vente->total ?? $totalGeneral, 0, ',', ' ') }} FCFA
+                </div>
+                <div class="total-ttc">
+                    TOTAL TTC : {{ number_format($vente->total_ttc ?? ($totalGeneral * (1 + $entreprise->taux_tva/100)), 0, ',', ' ') }} FCFA
+                </div>
+            @else
+                <div class="total-ttc">
+                    TOTAL : {{ number_format($vente->total ?? $totalGeneral, 0, ',', ' ') }} FCFA
+                </div>
+            @endif
+        </div>
+
+        <!-- Information de paiement -->
+        <div class="payment-info">
+            @php
+                $dernierPaiement = $vente->paiements->last();
+            @endphp
+            @if($dernierPaiement)
+                Payée le <strong>{{ \Carbon\Carbon::parse($dernierPaiement->date_paiement)->format('d/m/Y') }}</strong>
+            @elseif($vente->statut == 'payee')
+                Payée le <strong>{{ now()->format('d/m/Y') }}</strong>
+            @endif
+        </div>
+
+        <!-- Signature / Arrêtée -->
+        <div class="signature">
+            <div class="signature-left">
+                Par: {{ $vente->user->name ?? '_______________' }}
+            </div>
+            <div class="signature-right">
+                Arrêtée la présente facture à la somme de : <strong>{{ number_format($vente->total_ttc ?? $totalGeneral, 0, ',', ' ') }} FCFA</strong>
+            </div>
+        </div>
+
+        <!-- Pied de page -->
+        <div class="footer">
+            <div class="row">
+                <p style="text-align: left;">_________________________________________ <br>Caissier</p>
+                <p style="text-align: right;">_________________________________________ <br>Livreur</p>
+            </div>    
+        </div>
+    </div>
 </body>
 </html>
