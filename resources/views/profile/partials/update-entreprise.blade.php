@@ -40,8 +40,8 @@
 
             <div>
                 <x-input-label for="fixe" :value="__('Fixe')" />
-                <x-text-input id="fixe" name="fixe" type="text" class="mt-1 block w-full" :value="old('fixe', $entreprise->fixe)" required autocomplete="fixe" />
-                <x-input-error class="mt-2" :messages="$errors->get('fixe')" />
+                <x-text-input id="fixe" name="telfixe" type="text" class="mt-1 block w-full" :value="old('telfixe', $entreprise->fixe)" required autocomplete="telfixe" />
+                <x-input-error class="mt-2" :messages="$errors->get('telfixe')" />
             </div>
 
             <div>
