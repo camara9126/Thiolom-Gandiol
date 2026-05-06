@@ -108,6 +108,8 @@ class ProfileController extends Controller
             'adresse' => 'nullable|string',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'ninea' => 'nullable',
+            'tel2' => 'nullable',
+            'telfixe' => 'nullable',
         ]);
 
         // Gestion des logo
@@ -131,6 +133,8 @@ class ProfileController extends Controller
             'adresse' => $request->adresse,
             'logo' => $path  ?? $entreprise->logo,
             'ninea' => $request->ninea  ?? null,
+            'tel2' => $request->tel2  ?? null,
+            'telfixe' => $request->telfixe  ?? null,
         ]);
 
 
