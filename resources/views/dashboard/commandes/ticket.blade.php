@@ -16,14 +16,11 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            font-family: 'Courier New', 'Monaco', 'Lucida Console', monospace;
             padding: 3px;
         }
 
         .ticket {
-            max-width: 360px;
-            width: 100%;
+          
             background: #fff;
             box-shadow: 0 8px 20px rgba(0,0,0,0.15);
             position: relative;
@@ -165,43 +162,23 @@
         <!-- SECTION PRODUITS (exemple) -->
         <table class="items-table">
             <thead>
-                <tr>
-                    <th>Désignation</th>
-                    <!--<th>Quantité</th>-->
-                    <th>Prix</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody>
                 @foreach($vente->items as $item)
                     <tr>
-                        <td>{{ $item->article->nom }}</td>
-                        <!--<td>{{ $item->quantite }}</td>-->
-                        <td>{{ number_format($item->prix_unitaire, 0, ',', ' ') }} CFA</td>
-                        <td>{{ number_format($item->total_ttc, 0, ',', ' ') }} CFA</td>
+                        <th>{{ strtoupper($item->article->nom) }}</td>
+                        <!--<th>{{ $item->quantite }}</td>-->
+                        <th>{{ $item->quantite }} X {{ number_format($item->prix_unitaire, 0, ',', ' ') }} CFA</td>
+                        <th>{{ number_format($item->total_ttc, 0, ',', ' ') }} CFA</td>
                     </tr>
                 @endforeach
                 <tr>
-                    <td colspan="1" style="text-align:right; font-weight:bold;">SOUS-TOTAL</td>
+                    <td colspan="1" style="text-align:right; font-weight:bold;">SOMME</td>
                     <td style="font-weight:bold;">{{ number_format($vente->total_ttc, 0, ',', ' ') }} CFA</td>
                 </tr>
-            </tbody>
+            </thead>
         </table>
 
-        <div class="dashed-line"></div>
-
-        <!-- Montants -->
-        <!--<div class="info-line">
-            <span>Transport</span>
-            <span>SOMME</span>
-            <span>1 CFA</span>
-        </div>
-        <div class="info-line">
-            <span>Espèces</span>
-            <span>RENDU</span>
-            <span>1 CFA</span>
-        </div>-->
         <div class="dotted-line"></div>
+
         <div class="text-center text-small">Total des taxes : 0 CFA</div>
 
         <div class="dashed-line"></div>
@@ -212,13 +189,10 @@
             <div class="text-small">{{ date('d/m/Y H:i:s') }}</div>
         </div>
 
-       
-
         <!-- Pied de page -->
         <div class="footer-message">
             <div class="dashed-line"></div>
             <p>MERCI DE VOTRE VISITE</p>
-            <!--<p class="text-xxs" style="margin-top: 8px;">Ticket généré le {{ date('d/m/Y H:i:s') }}</p>-->
         </div>
     </div>
 

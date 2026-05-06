@@ -4,10 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Bon_commande_details extends Model
+class Achat_detatils extends Model
 {
     protected $fillable = [
-        'bon_commande_id',
+        'achat_id',
         'article_id',
         'quantite',
         'prix_unitaire',

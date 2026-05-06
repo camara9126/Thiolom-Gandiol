@@ -27,7 +27,7 @@ class articleController extends Controller
     }
 
     /**
-     * Recherche article par l'Admin.
+     * Recherche magasin par l'Admin.
      */
     public function search(Request $request)
     {
@@ -47,6 +47,7 @@ class articleController extends Controller
 
         return view('dashboard.articles.index', compact('articles', 'search','categorie','magasins'));
     }
+    
 
     /**
      * Show the form for creating a new resource.

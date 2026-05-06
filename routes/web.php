@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AchatController;
 use App\Http\Controllers\articleController;
 use App\Http\Controllers\ArticleImportController;
 use App\Http\Controllers\BonCommandeController;
@@ -147,13 +148,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/mouvementSearch', [MouvementController::class, 'search'])->name('mouvements.search');
 
     Route::resource('/magasin', MagasinController::class);
-    Route::get('/magasinSearch', [MagasinController::class, 'search'])->name('magasins.search');
+    Route::get('/mSearch', [MagasinController::class, 'mSearch'])->name('magasin.search');
+    Route::get('/magasinSearch', [MagasinController::class, 'search'])->name('mArticle.search');
     Route::get('/magasinListe/{id}', [MagasinController::class, 'liste'])->name('magasin.liste');
 
 });
 
-// Routes Bon_Commande et Fournisseur
+// Routes Achat - Bon_Commande et Fournisseur
 Route::middleware('auth')->group(function () {
+    Route::resource('/achats', AchatController::class);
+    Route::get('/achatsSearch', [AchatController::class, 'search'])->name('achats.search');
+    Route::get('/buySearch', [AchatController::class, 'achatSearch'])->name('achats.search');
+
     Route::resource('/bonCommande', BonCommandeController::class);
     Route::get('/bonCommandeSearch', [BonCommandeController::class, 'search'])->name('bonCommande.search');
     Route::get('/bonSearch', [BonCommandeController::class, 'bonSearch'])->name('bon.search');

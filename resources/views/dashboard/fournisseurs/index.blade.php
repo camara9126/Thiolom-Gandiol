@@ -38,7 +38,9 @@
                             {{ Session::get('danger') }}
                         </div>
                     @endif
-
+                    <div class="d-flex justify-content-center mt-4">
+                        {{$fournisseurs->links()}}
+                    </div>
                     <div class="card-header">
                         <span><i class="fas fa-box" style="color: var(--primary); margin-right: 0.5rem;"></i>Liste des founisseurs ({{$fournisseurs->count()}})</span>
                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"  data-bs-target="#fournisseurModal">
@@ -110,9 +112,7 @@
                                         @endforelse
                                     </tbody>
                                 </table>  
-                            <div class="d-flex justify-content-center mt-4">
-                                {{$fournisseurs->links()}}
-                            </div>
+
 
                             @if ($errors->any())
                                 <div class="alert alert-danger">

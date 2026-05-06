@@ -12,11 +12,16 @@ class MouvementController extends Controller
 {
 
     public function index() {
-        $mouvements= Mouvement_stock::with('article')->latest()->paginate(50);
+        $today = now()->toDateString();
+
+        $mouvements= Mouvement_stock::with('article')->whereDate('created_at', '!=', $today)->latest()->paginate(50);
+
+        $mouvementsJour= Mouvement_stock::with('article')->whereDate('created_at', $today)->latest()->get();
+
         $articles= Article::latest()->get();
         $magasins= Magasin::latest()->get();
 
-        return view('dashboard.mouvementStock.index', compact('mouvements','articles','magasins'));
+        return view('dashboard.mouvementStock.index', compact('mouvements','articles','magasins','mouvementsJour'));
     }
 
     public function search(Request $request)

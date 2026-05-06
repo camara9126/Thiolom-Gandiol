@@ -75,6 +75,7 @@
                             <span class="badge"></span>
                         </a>
                     </li>
+
                     <li>
                         <a href="{{ route('commandes.index') }}">
                            <i class="fas fa-shopping-cart"></i>
@@ -82,6 +83,15 @@
                             <span class="badge"></span>
                         </a>
                     </li>
+
+                    <li>
+                        <a href="{{ route('devis.index') }}">
+                            <i class="fas fa-receipt"></i>
+                            <span>Devis</span>
+                            <span class="badge"></span>
+                        </a>
+                    </li>
+
                     <li>
                         <a href="{{ route('commandes.factures') }}">
                            <i class="fas fa-file-invoice"></i>
@@ -89,6 +99,7 @@
                             <span class="badge"></span>
                         </a>
                     </li>
+
                     <li>
                         <a href="{{ route('commandes.pdv') }}">
                             <i class="fas fa-shop"></i>
@@ -98,13 +109,15 @@
                     </li>
                     
                     <div class="sidebar-divider"></div>
-                
+
                     <li>
-                        <a href="{{ route('mouvements') }}">
-                            <i class="fas fa-bars-staggered"></i>
-                            <span>Mouvement stock</span>
+                        <a href="{{ route('achats.index') }}">
+                            <i class="fa-solid fa-bag-shopping"></i>
+                            <span>Achat</span>
+                            <span class="badge"></span>
                         </a>
                     </li>
+
                     <li>
                         <a href="{{ route('bonCommande.index') }}">
                             <i class="fas fa-list"></i>
@@ -112,18 +125,18 @@
                             <span class="badge"></span>
                         </a>
                     </li>
-                    
-                    <li>
-                        <a href="{{ route('devis.index') }}">
-                            <i class="fas fa-receipt"></i>
-                            <span>Devis</span>
-                            <span class="badge"></span>
-                        </a>
-                    </li>
+                     
                     <li>
                         <a href="{{ route('magasin.index') }}">
                             <i class="fas fa-building"></i>
                             <span>Magasins</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ route('mouvements') }}">
+                            <i class="fas fa-bars-staggered"></i>
+                            <span>Mouvement stock</span>
                         </a>
                     </li>
 
@@ -152,19 +165,8 @@
                                 <i class="fas fa-chart-bar"></i>
                                 <span>Rapports</span>
                             </a>
-                        </li>
+                        </li>                    
                     
-                    @endif
-                    <div class="sidebar-divider"></div>
-
-                    <li>
-                        <a href="{{ route('parametre') }}">
-                            <i class="fas fa-cog"></i>
-                            <span>Paramètres</span>
-                        </a>
-                    </li>
-                    
-                    @if(request()->user()->role == 'administrateur')
                         <li>
                             <a href="{{ route('users.index') }}">
                                 <i class="fas fa-user"></i>
@@ -172,7 +174,14 @@
                             </a>
                         </li>
                     @endif
-                  
+                   <div class="sidebar-divider"></div>
+
+                    <li>
+                        <a href="{{ route('parametre') }}">
+                            <i class="fas fa-cog"></i>
+                            <span>Paramètres</span>
+                        </a>
+                    </li>
                 </ul>
             </nav>
         </aside>

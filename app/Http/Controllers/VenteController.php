@@ -18,6 +18,7 @@ use App\Models\VenteItem;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class VenteController extends Controller
 {
@@ -28,7 +29,7 @@ class VenteController extends Controller
         // Session Administrateur
         $today = now()->toDateString();
         
-        $ventes = Vente::with('client')->latest()->simplePaginate(50); 
+        $ventes = Vente::with('client')->whereDate('created_at', '!=', $today)->latest()->simplePaginate(50); 
 
         $total = Vente::whereDate('created_at', $today)->sum('total');
 
@@ -46,7 +47,7 @@ class VenteController extends Controller
             return redirect()->route('commandes.pdv')->with('success', 'Aucun session ouverte');
         }
 
-        $vente= Vente::where('session_caisse_id', $session->id)->latest()->whereDate('created_at', $today)->get();
+        $vente= Vente::where('session_caisse_id', $session->id)->latest()->get();
 
         $session->update([
             'nombre_ventes' => $vente->count(),
@@ -54,7 +55,7 @@ class VenteController extends Controller
             'total_encaisse' => $vente->sum('montant_paye'),
         ]);
 
-        return view('dashboard.commandes.index', compact('ventes','vente','ventesJour','total','totalEncaisse','depensesJour','user','session'));
+        return view('dashboard.commandes.index', compact('ventes','vente','today','ventesJour','total','totalEncaisse','depensesJour','user','session'));
     }
 
 
@@ -130,9 +131,9 @@ class VenteController extends Controller
 
         $totalEncaisse = Vente::with('client')->get()->sum('montant_paye');
         
-        $ventesJour = Vente::whereDate('created_at', $today)->get();
+        $ventesJour = Vente::whereDate('created_at', $today)->latest()->get();
 
-        $factures = Vente::with('client')->latest()->simplePaginate(10); 
+        $factures = Vente::with('client')->whereDate('created_at', '!=', $today)->latest()->simplePaginate(10); 
 
         return view('dashboard.commandes.factures', compact('factures','today','depensesJour','totalEncaisse','ventesJour','total','user'));
     }
@@ -161,155 +162,160 @@ class VenteController extends Controller
             'montant' => 'numeric|min:0'
         ]);
 
-        // Session 
-        $session= Session_caisse::where('user_id', request()->user()->id)->whereNull('closed_at')->first();
+        DB::beginTransaction();
+    
+        try {
+            // Session 
+            $session= Session_caisse::where('user_id', request()->user()->id)->whereNull('closed_at')->first();
 
-        // Creation vente item
-        $entreprise= Entreprise::findOrFail(1); // Recuperation de la TVA de l'entreprise
+            // Creation vente item
+            $entreprise= Entreprise::findOrFail(1); // Recuperation de la TVA de l'entreprise
 
-            //dd($request->montant);
-            $vente = Vente::create([
-                'client_id' =>  $request->client_id ?? 2,
-                'session_caisse_id' => $session->id,
-                'reference' => 'VNT-' . time(),
-                'date' => now(),
-                'total' => 0,
-                'total_tva' => 0,
-                'total_ttc' => 0,
-                'statut' => 'impayee',
-                'user_id' => request()->user()->id,
-            ]);
+                //dd($request->montant);
+                $vente = Vente::create([
+                    'client_id' =>  $request->client_id ?? 2,
+                    'session_caisse_id' => $session->id,
+                    'reference' => 'VNT-' . time(),
+                    'date' => now(),
+                    'total' => 0,
+                    'total_tva' => 0,
+                    'total_ttc' => 0,
+                    'statut' => 'impayee',
+                    'user_id' => request()->user()->id,
+                ]);
 
-            $total = 0;
-            $total_tva = 0;
-            $total_ttc = 0;
-        //dd($request->all());
-        foreach ($request->articles as $item) {
+                $total = 0;
+                $total_tva = 0;
+                $total_ttc = 0;
+            //dd($request->all());
+            foreach ($request->articles as $item) {
 
-           
-             if (empty($item['article_id'])) {
-                continue;
-            }
-
-            $produit = Article::where('id', $item['article_id'])->lockForUpdate()->firstOrFail(); // verrou stock
-            $magasin = Magasin::where('id', $produit->magasin_id)->lockForUpdate()->firstOrFail(); // verrou stock
-            //dd($magasin);
-            // Verification de la disponibilite de l'article dans le magasin
-            $stock = Article_depot::where('article_id', $produit->id)->where('magasin_id', $magasin->id)->first();
-
-            if($stock) {
-                if ($stock->stock < $item['quantite']) {
-                    return redirect()->back()->with('danger', 'Stock insuffisant dans ce dépôt');
+            
+                if (empty($item['article_id'])) {
+                    continue;
                 }
 
-                // 🔥 Déduire le stock
-                Article_depot::where('article_id', $produit->id)->where('magasin_id', $magasin->id)->decrement('stock', $item['quantite']);
-            } else {
-                return redirect()->back()->with('danger', 'Stock introuvable dans ce dépôt');
-            }
-            
+                $produit = Article::where('id', $item['article_id'])->lockForUpdate()->first(); // verrou stock
+                $magasin = Magasin::where('id', $produit->magasin_id)->lockForUpdate()->first(); // verrou stock
+                //dd($magasin);
+                // Verification de la disponibilite de l'article dans le magasin
+                $stock = Article_depot::where('article_id', $produit->id)->where('magasin_id', $magasin->id)->first();
 
-            // Verification stock mouvement
-            if ($produit->stock == 0) {
+                if($stock) {
+                    if ($stock->stock < $item['quantite']) {
+                        return redirect()->back()->with('danger', 'Stock insuffisant dans ce dépôt');
+                    }
 
-                 return redirect()->back()->with('danger','Vous devez enregister un mouvement d"abord');
-            }
-
-            // Alert stock minimum depasse
-            if ($produit->stock <= $produit->stock_min) {
-                return redirect()->back()->with('danger','Votre stock minimum est depasse');
-            }
-
-
-            // Verification quantite de stock
-            if ($produit->stock < $item['quantite']) {
+                    // 🔥 Déduire le stock
+                    Article_depot::where('article_id', $produit->id)->where('magasin_id', $magasin->id)->decrement('stock', $item['quantite']);
+                } else {
+                    return redirect()->back()->with('danger', 'Stock introuvable dans ce dépôt');
+                }
                 
-                return redirect()->back()->with('danger','Stock insuffisant pour cette article ');
-            }
 
-            
+                // Verification stock mouvement
+                if ($produit->stock == 0) {
 
-            
-            VenteItem::create([
-                'vente_id' => $vente->id,
-                'article_id' => $item['article_id'],
-                'magasin_id' => $produit->magasin_id,
-                'quantite' => $item['quantite'],
-                'prix_unitaire' => $item['prix_vente'],
-                'taux_tva' => $entreprise->taux_tva,
-                'montant_tva' => ($item['quantite'] * $item['prix_vente']) * ($entreprise->taux_tva /100 ),
-                'total_ttc' => ($item['quantite'] * $item['prix_vente']) + (($item['quantite'] * $item['prix_vente']) * ($entreprise->taux_tva /100 )),
-                'total' => $item['quantite'] * $item['prix_vente'],
-            ]);
+                    return redirect()->back()->with('danger','Vous devez enregister un mouvement d"abord');
+                }
 
-            // Mise a jour stock
-            $produit->decrement('stock', $item['quantite']);
+                // Alert stock minimum depasse
+                if ($produit->stock <= $produit->stock_min) {
+                    return redirect()->back()->with('danger','Votre stock minimum est depasse');
+                }
 
-            // Enregistrememt historique stock
-                Mouvement_stock::create([
-                    'article_id' => $produit->id,
-                    'type' => 'sortie',
-                    'quantite' => $item['quantite'],
-                    'magasin_id' => $produit->magasin_id,
-                    'reference' => 'MVT-' . now()->timestamp,
-                ]);
 
-            // Calcule total + total_tva + total_ttc
-            $total += $item['quantite'] *  $item['prix_vente'];
-            $total_tva += ($item['quantite'] * $item['prix_vente']) * ($entreprise->taux_tva /100 );
-            $total_ttc += ($item['quantite'] * $item['prix_vente']) + (($item['quantite'] * $item['prix_vente']) * ($entreprise->taux_tva /100 ));
-            
-            // Mise a jour total + total_tva + total_ttc
-            $vente->update([
-                'total' => $total,
-                'total_tva' => $total_tva,
-                'total_ttc' => $total_ttc,
-            ]);
-            
-        }
+                // Verification quantite de stock
+                if ($produit->stock < $item['quantite']) {
+                    
+                    return redirect()->back()->with('danger','Stock insuffisant pour cette article ');
+                }
         
-            // creation paiement
-            $paiement = $vente;
-
-            $totalPaye = $paiement->paiements()->where('statut','valide')->sum('montant');
-
-            $paiements= Paiements::create([
-                'vente_id' => $vente->id,
-                'user_id' => request()->user()->id,
-                'montant' => $vente->total_ttc,
-                'mode_paiement' => 'cash',
-                'date_paiement' => now(),
-                'statut' => 'valide',
-                'reference' => 'PAY-' . time()
-            ]);
-
-
-            // Mise à jour du statut de la vente
-            $vente = $paiements->vente;
-
-            $totalPaye = $vente->paiements()->where('statut','valide')->sum('montant');
-
-            $vente->statut = $totalPaye == 0 ? 'impayee' : ($totalPaye < $vente->total_ttc ? 'partielle' : 'payee');
-
-            $vente->save();
-
-
-            // 2. Création automatique de la recette
-            if($vente->statut == 'payee') {
-                 Recettes::create([
-                    'user_id' => $request->user()->id,
-                    'paiement_id' => $paiements->id,
-                    'reference' => 'REC-' . now()->timestamp,
-                    'libelle' => 'Paiement vente ' . $vente->reference,
-                    'montant' => $vente->total_ttc,
-                    'date_recette' => now(),
-                    'mode_paiement' => 'cash',
-                    'statut' => 'recu',
+                VenteItem::create([
+                    'vente_id' => $vente->id,
+                    'article_id' => $item['article_id'],
+                    'magasin_id' => $produit->magasin_id,
+                    'quantite' => $item['quantite'],
+                    'prix_unitaire' => $item['prix_vente'],
+                    'taux_tva' => $entreprise->taux_tva,
+                    'montant_tva' => ($item['quantite'] * $item['prix_vente']) * ($entreprise->taux_tva /100 ),
+                    'total_ttc' => ($item['quantite'] * $item['prix_vente']) + (($item['quantite'] * $item['prix_vente']) * ($entreprise->taux_tva /100 )),
+                    'total' => $item['quantite'] * $item['prix_vente'],
                 ]);
-            }
-           
 
-            return redirect()->route('commandes.index')->with('success', 'Vente effectuée avec succès');
+                // Mise a jour stock
+                $produit->decrement('stock', $item['quantite']);
+
+                // Enregistrememt historique stock
+                    Mouvement_stock::create([
+                        'article_id' => $produit->id,
+                        'type' => 'sortie',
+                        'quantite' => $item['quantite'],
+                        'magasin_id' => $produit->magasin_id,
+                        'reference' => 'MVT-' . now()->timestamp,
+                    ]);
+
+                // Calcule total + total_tva + total_ttc
+                $total += $item['quantite'] *  $item['prix_vente'];
+                $total_tva += ($item['quantite'] * $item['prix_vente']) * ($entreprise->taux_tva /100 );
+                $total_ttc += ($item['quantite'] * $item['prix_vente']) + (($item['quantite'] * $item['prix_vente']) * ($entreprise->taux_tva /100 ));
+                
+                // Mise a jour total + total_tva + total_ttc
+                $vente->update([
+                    'total' => $total,
+                    'total_tva' => $total_tva,
+                    'total_ttc' => $total_ttc,
+                ]);
+                
+            }
+            
+                // creation paiement
+                $paiement = $vente;
+
+                $totalPaye = $paiement->paiements()->where('statut','valide')->sum('montant');
+
+                $paiements= Paiements::create([
+                    'vente_id' => $vente->id,
+                    'user_id' => request()->user()->id,
+                    'montant' => $vente->total_ttc,
+                    'mode_paiement' => 'cash',
+                    'date_paiement' => now(),
+                    'statut' => 'valide',
+                    'reference' => 'PAY-' . time()
+                ]);
+
+
+                // Mise à jour du statut de la vente
+                $vente = $paiements->vente;
+
+                $totalPaye = $vente->paiements()->where('statut','valide')->sum('montant');
+
+                $vente->statut = $totalPaye == 0 ? 'impayee' : ($totalPaye < $vente->total_ttc ? 'partielle' : 'payee');
+
+                $vente->save();
+
+
+                // 2. Création automatique de la recette
+                if($vente->statut == 'payee') {
+                    Recettes::create([
+                        'user_id' => $request->user()->id,
+                        'paiement_id' => $paiements->id,
+                        'reference' => 'REC-' . now()->timestamp,
+                        'libelle' => 'Paiement vente ' . $vente->reference,
+                        'montant' => $vente->total_ttc,
+                        'date_recette' => now(),
+                        'mode_paiement' => 'cash',
+                        'statut' => 'recu',
+                    ]);
+                }
+           
+                DB::commit();
+                return redirect()->route('commandes.index')->with('success', 'Vente effectuée avec succès');
+
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return redirect()->back()->with('error', 'Erreur lors de la conversion: ' . $e->getMessage());
+            }
     }
 
 

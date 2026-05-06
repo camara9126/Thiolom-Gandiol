@@ -39,7 +39,7 @@
                 <!-- Recent Products Table -->
                 <div class="card">
                     <div class="card-header">
-                        <span><i class="fas fa-list" style="color: var(--primary); margin-right: 0.5rem;"></i> Liste des mouvements</span>
+                        <span><i class="fas fa-list" style="color: var(--primary); margin-right: 0.5rem;"></i> Historique du jour</span>
                     </div>
                      @if(Session::has('success'))
                         <div class="alert alert-success" role="alert">
@@ -51,6 +51,7 @@
                         </div>
                     @endif
                     <div class="card-body">
+
                         <div class="table-responsive">
                             <table>
                                 <thead>
@@ -64,7 +65,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($mouvements as $m)
+                                    @forelse($mouvementsJour as $m)
                                     <tr>
                                         <td>
                                             <div class="product-info">
@@ -87,10 +88,6 @@
                                 </tbody>
                             </table>
                         </div>
-                         
-                        <div class="d-flex justify-content-center mt-4">
-                            {{$mouvements->links()}}
-                        </div> 
                         
                          @if ($errors->any())
                             <div class="alert alert-danger">
@@ -157,6 +154,69 @@
                         </div> 
                     </div>
                 </div>
+
+                <hr>
+
+                <!-- Mouvement Total -->
+                 <div class="card">
+                    <div class="card-header">
+                        <span><i class="fas fa-list" style="color: var(--primary); margin-right: 0.5rem;"></i> Historique des mouvements</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-center mt-4">
+                            {{$mouvements->links()}}
+                        </div> 
+                        
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style="background-color: #EC6206;" class="text-white">Reference</th>
+                                        <th style="background-color: #EC6206;" class="text-white">Produit</th>
+                                        <th style="background-color: #EC6206;" class="text-white">Type</th>
+                                        <th style="background-color: #EC6206;" class="text-white">Quantite</th>
+                                        <th style="background-color: #EC6206;" class="text-white">Magasin</th>
+                                        <th style="background-color: #EC6206;" class="text-white">Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($mouvements as $m)
+                                    <tr>
+                                        <td>
+                                            <div class="product-info">
+                                                <div>
+                                                    <div style="font-weight: 600;">{{$m->reference}}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>{{$m->article->nom}}</td>
+                                        <td>{{$m->type}}</td>
+                                        <td><strong>{{$m->quantite}}</strong></td>
+                                        <td>{{ $m->magasin->nom }}</td>
+                                        <td>{{$m->created_at->format('d/m/Y')}}</td>
+                                    </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="7" align="center">Donnee vide !</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                         
+                       
+                         @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif 
+                      
+                    </div>
+                 </div>
                 
             </div>
         </main>

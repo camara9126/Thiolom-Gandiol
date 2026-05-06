@@ -62,14 +62,13 @@
     Telephone : {{ $entreprise->telephone }} <br>
     Adresse : {{ $entreprise->adresse }}
 </p>
-<p>
-    Facture N° : <b>{{ $vente->reference }}</b><br>
-    Date : <?= date('d-m-Y') ?>
+<p class="footer-right">
+    Facture N° : <b>{{ $vente->reference }}</b>
 </p>
 
 <hr>
 
-@if($vente->client->nom !== 'Client comptoir')
+@if($vente->client->nom !== 'Inconnu')
     <p>
         <b>Client :</b><br>
         {{ $vente->client->nom }}<br>
@@ -108,31 +107,31 @@
     @if($entreprise->taux_tva > 1)
         <h2 style="color: red;">Total-TTC : {{ number_format($vente->total_ttc, 0, ',', ' ') }} XOF</h2>
     @else
-        <h2 style="color: red;">Total-HT : {{ number_format($vente->total, 0, ',', ' ') }} XOF</h2>
+        <h2 style="text-align: right; color: red;">SOMME : {{ number_format($vente->total, 0, ',', ' ') }} XOF</h2>
     @endif
     
-        <table>
-            <h4>Detail paiements</h4>
-            <thead>
+    <!--<table>
+        <h4>Detail paiements</h4>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Montant</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($vente->paiements as $paiement)
                 <tr>
-                    <th>Date</th>
-                    <th>Montant</th>
+                    <td>{{ $paiement->date_paiement }}</td>
+                    <td>{{number_format($paiement->montant, 0, ',',' ') }} XOF</td>
                 </tr>
-            </thead>
-            <tbody>
-                @forelse($vente->paiements as $paiement)
-                    <tr>
-                        <td>{{ $paiement->date_paiement }}</td>
-                        <td>{{number_format($paiement->montant, 0, ',',' ') }} XOF</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="7" align="center">Aucun paiement !</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
- 
+            @empty
+                <tr>
+                    <td colspan="7" align="center">Aucun paiement !</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>-->
+    <p>Payée le <b>{{ $paiement->date_paiement }}</b></p>
         <br>
 
         <!-- Pied de page -->

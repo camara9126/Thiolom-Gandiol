@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\Categorie;
 use App\Models\Magasin;
 use Illuminate\Http\Request;
 
@@ -21,7 +22,7 @@ class MagasinController extends Controller
     /**
      * Recherche article par l'Admin.
      */
-    public function search(Request $request)
+    public function msearch(Request $request)
     {
         $search = $request->query('search');
 
@@ -35,6 +36,25 @@ class MagasinController extends Controller
         })->latest()->paginate(50)->withQueryString(); // 🔑 garde ?search=;
 
         return view('dashboard.magasin.index', compact('magasins', 'search'));
+    }
+
+    public function search(Request $request)
+    {
+        $search = $request->query('search');
+
+        $categorie= Categorie::latest()->get();
+        $magasins = Magasin::latest()->get();
+
+        $articles = Article::with('categorie')->when($search, function ($query, $search) {
+
+                $query->where('nom', 'like', "%{$search}%")->orWhereHas('categorie', function ($q) use ($search) {
+
+                        $q->where('nom', 'like', "%{$search}%");
+                });
+
+        })->latest()->paginate(50)->withQueryString(); // 🔑 garde ?search=;
+
+        return view('dashboard.magasin.listeArticle', compact('articles', 'search','categorie','magasins'));
     }
 
 

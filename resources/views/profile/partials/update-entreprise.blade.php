@@ -33,6 +33,18 @@
             </div>
 
             <div>
+                <x-input-label for="telephone 2" :value="__('Telephone 2')" />
+                <x-text-input id="telephone" name="tel2" type="text" class="mt-1 block w-full" :value="old('tel2', $entreprise->tel2)" required autocomplete="tel2" />
+                <x-input-error class="mt-2" :messages="$errors->get('tel2')" />
+            </div>
+
+            <div>
+                <x-input-label for="fixe" :value="__('Fixe')" />
+                <x-text-input id="fixe" name="fixe" type="text" class="mt-1 block w-full" :value="old('fixe', $entreprise->fixe)" required autocomplete="fixe" />
+                <x-input-error class="mt-2" :messages="$errors->get('fixe')" />
+            </div>
+
+            <div>
                 <x-input-label for="adresse" :value="__('Adresse')" />
                 <x-text-input id="" name="adresse" type="text" class="mt-1 block w-full" :value="old('adresse', $entreprise->adresse)" autofocus autocomplete="adresse" />
                 <x-input-error class="mt-2" :messages="$errors->get('adresse')" />

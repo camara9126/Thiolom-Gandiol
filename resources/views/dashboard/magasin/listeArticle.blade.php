@@ -13,7 +13,7 @@
 
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
-                    <form method="get" action="{{route('article.search')}}" class="form-inline">
+                    <form method="get" action="{{route('mArticle.search')}}" class="form-inline">
                         
                         <input type="text" name="search"  placeholder="Rechercher...">                                                   
                             
