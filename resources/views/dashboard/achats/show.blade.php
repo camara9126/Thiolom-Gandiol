@@ -62,11 +62,11 @@
                                 <p>
                                     Statut :
                                     @if($achat->statut == 'en_attente')
-                                        <span class="badge bg-warning">En attente</span>
+                                        <span class="badge bg-info">Partiel</span>
                                     @elseif($achat->statut == 'annule')
-                                        <span class="badge bg-danger">Annule</span>
+                                        <span class="badge bg-danger">Impayé</span>
                                     @else
-                                        <span class="badge bg-success">Recu</span>
+                                        <span class="badge bg-success">Payé</span>
                                     @endif
                                 </p>
                             </div>

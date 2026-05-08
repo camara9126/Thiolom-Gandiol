@@ -68,8 +68,11 @@
                                             <th style="background-color: #11C6FF;" class="text-white">Fournisseur</th>
                                             <th style="background-color: #11C6FF;" class="text-white">Date</th>
                                             <th style="background-color: #11C6FF;" class="text-white">Total</th>
+                                            <th style="background-color: #11C6FF;" class="text-white">Reste</th>
                                             <th style="background-color: #11C6FF;" class="text-white">Statut</th>
                                             <th style="background-color: #11C6FF;" class="text-white">Actions</th>
+                                            <th style="background-color: #11C6FF;" class="text-white">Details</th>
+                                            <th style="background-color: #11C6FF;" class="text-white">Facture</th>
                                         </tr>
                                     </thead>
 
@@ -83,26 +86,39 @@
                                                 <td>{{ $a->created_at->format('d/m/y') }}</td>
 
                                                 <td>{{ number_format($a->total, 0, ',', ' ') }} FCFA</td>
+                                                <td>{{ number_format($a->montant_restant, 0, ',', ' ') }} FCFA</td>
 
                                                 <td>
-                                                    @if($a->statut == 'en_attente')
-                                                        <span class="badge bg-warning">En attente</span>
-                                                    @elseif($a->statut == 'envoye')
-                                                        <span class="badge bg-info">Envoyé</span>
+                                                    @if($a->statut == 'annule')
+                                                        <span class="badge bg-danger">Impayé</span>
                                                     @elseif($a->statut == 'recu')
-                                                        <span class="badge bg-success">Reçu</span>
+                                                        <span class="badge bg-success">Payé</span>
+                                                    @else
+                                                        <span class="badge bg-info">Partiel</span>
                                                     @endif
                                                 </td>
 
                                                 <td class="d-flex gap-1">
 
-                                                    <!-- Voir -->
+                                                    @if($a->montant_restant == 0)
+                                                        <span class="badge" style="background-color: gray;">
+                                                                Payée
+                                                        </span>
+                                                    @else
+                                                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-id="{{$a->id}}" data-bs-target="#paiementModal">Payer
+                                                        </button>
+                                                    @endif
+                                                   
+
+                                                </td>
+                                                <td>
+                                                     <!-- Voir -->
                                                     <a href="{{ route('achats.show', $a->id) }}" 
                                                     class="btn btn-sm btn-info">
                                                         &nbsp;Voir&nbsp;
                                                     </a>
 
-                                                    <!-- Supprimer -->
+                                                    <!-- Supprimer 
                                                     <form action="{{ route('achats.destroy', $a->id) }}" 
                                                         method="POST" 
                                                         onsubmit="return confirm('Supprimer ?')">
@@ -112,8 +128,12 @@
                                                         <button class="btn btn-sm btn-danger">
                                                             Supprimer
                                                         </button>
-                                                    </form>
-
+                                                    </form>-->
+                                                </td>
+                                                <td>
+                                                    <a href="{{route('achats.factures', $a->id)}}" class="btn btn-warning mr-2" title="afficher la facture">
+                                                        <i class="fas fa-file-alt"></i>&nbsp;Afficher
+                                                    </a>
                                                 </td>
                                             </tr>
                                         @empty
@@ -127,8 +147,69 @@
 
                                 </table>
 
+                                <!-- Modal paiement -->
+                                <div class="modal fade" id="paiementModal" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <form action="{{ route('achats.paiement') }}" method="POST">
+                                            @csrf
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Paiement</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <input type="hidden" name="achat_id" id="achat_id">
+
+                                                    <div class="mb-3">
+                                                        <label>Montant à payer</label>
+                                                        <input type="number" name="montant" class="form-control" required>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Date du paiement</label>
+                                                        <input type="date" name="date_paiement" class="form-control" value="{{ date('Y-m-d') }}" required>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label>Mode de paiement</label>
+                                                        <select name="mode_paiement" class="form-select" required>
+                                                            <option value="cash">Cash</option>
+                                                            <option value="wave">Wave</option>
+                                                            <option value="orange_money">Orange Money</option>
+                                                            <option value="autre">Autre</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <button class="btn btn-success">
+                                                        Enregistrer le paiement
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            
+                                        </form>
+                                    </div>
+                                </div>  
                             </div>
                         </div>
 
 
+    <!-- Recuperation de l'ID de l'achat-->
+    <script>
+        
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const modal = document.getElementById('paiementModal');
+
+            modal.addEventListener('show.bs.modal', function (event) {
+
+                const button = event.relatedTarget;
+
+                const id = button.getAttribute('data-id');
+
+                modal.querySelector('#achat_id').value = id;
+            });
+        });
+
+        
+    </script>
 @include('partials.footer')

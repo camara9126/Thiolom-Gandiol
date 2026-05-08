@@ -158,6 +158,9 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::resource('/achats', AchatController::class);
     Route::get('/achatsSearch', [AchatController::class, 'search'])->name('achats.search');
+    Route::post('/achatsPaiement', [AchatController::class, 'paiement'])->name('achats.paiement');
+    Route::get('/achatsFacture/{id}', [AchatController::class, 'factures'])->name('achats.factures');
+
     Route::get('/buySearch', [AchatController::class, 'achatSearch'])->name('achats.search');
 
     Route::resource('/bonCommande', BonCommandeController::class);

@@ -11,6 +11,8 @@ use App\Models\Entreprise;
 use App\Models\Fournisseur;
 use App\Models\Magasin;
 use App\Models\Mouvement_stock;
+use App\Models\Paiements;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -94,6 +96,7 @@ class AchatController extends Controller
                 'fournisseur_id' => $request->fournisseur_id,
                 'total' => 0,
                 'note' => $request->note ?? 'null',
+                'statut' => 'annule'
             ]);
 
             $total = 0;
@@ -176,6 +179,69 @@ class AchatController extends Controller
             DB::rollBack();
             return redirect()->back()->with('error', 'Erreur lors de la conversion: ' . $e->getMessage());
         }
+    }
+
+
+    public function paiement(Request $request)
+    {
+        $request->validate([
+            'achat_id' => 'required|exists:achats,id',
+            'montant' => 'required|numeric|min:1',
+            'mode_paiement' => 'required',
+            'date_paiement' => 'required'
+        ]);
+        
+
+        $achat = Achat::findOrFail($request->achat_id);
+//dd($achat);
+        
+        $totalPaye = $achat->paiements()->where('statut','valide')->sum('montant');
+        $reste = $achat->total - $totalPaye;
+
+        if ($request->montant > $reste) {
+            return back()->withErrors([
+                'montant' => 'Le montant dépasse le reste à payer.'
+            ]);
+        }
+
+
+        $paiement= Paiements::create([
+            'achat_id' => $achat->id,
+            'montant' => $request->montant,
+            'mode_paiement' => $request->mode_paiement,
+            'date_paiement' => $request->date_paiement,
+            'reference' => 'PAY/ACH-' . time(),
+            'user_id' => request()->user()->id
+        ]);
+
+
+        // Mise à jour du statut de l'acahat
+        $achats = $paiement->achat;
+
+        $totalPaye = $achats->paiements()->where('statut','valide')->sum('montant');
+
+        $achats->statut = $totalPaye == 0 ? 'annule' : ($totalPaye < $achats->total ? 'en_attente' : 'recu');
+
+        $achats->save();
+
+
+        return back()->with('success', 'Paiement enregistré avec succès');
+    }
+
+
+     // Liste des factures venant du fournisseur
+    public function factures($id)
+    {
+        $entreprise= Entreprise::findOrFail(1);
+
+        //dd($id);
+        $achat = Achat::with('fournisseur', 'details')->findOrFail($id);
+
+        $achat->load(['fournisseur', 'details']);
+        //dd($achat);
+        $pdf = Pdf::loadView('dashboard.achats.factures', compact('achat', 'entreprise'));
+
+        return $pdf->stream ('Facture-' . $achat->reference . '.pdf');
     }
 
     /**

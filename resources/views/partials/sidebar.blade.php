@@ -110,13 +110,15 @@
                     
                     <div class="sidebar-divider"></div>
 
-                    <li>
-                        <a href="{{ route('achats.index') }}">
-                            <i class="fa-solid fa-bag-shopping"></i>
-                            <span>Achat</span>
-                            <span class="badge"></span>
-                        </a>
-                    </li>
+                    @if(request()->user()->role == 'administrateur')
+                        <li>
+                            <a href="{{ route('achats.index') }}">
+                                <i class="fa-solid fa-bag-shopping"></i>
+                                <span>Achat</span>
+                                <span class="badge"></span>
+                            </a>
+                        </li>
+                    @endif
 
                     <li>
                         <a href="{{ route('bonCommande.index') }}">

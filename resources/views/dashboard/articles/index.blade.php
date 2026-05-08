@@ -27,7 +27,7 @@
             <div class="content">
                 <!-- Page Header -->
 
-                <div class="card">
+                <div class="card mx-auto">
                     <div class="card-header">
                         <span><i class="fas fa-box" style="color: var(--primary); margin-right: 0.5rem;"></i>Liste des articles ( {{$articles->count()}} )</span>
                         <a href="{{route('articles.create')}}" style="color: var(--primary); text-decoration: none; font-weight: 500;" data-bs-toggle="modal"  data-bs-target="#articleModal">Nouveau article →</a>
@@ -55,7 +55,8 @@
                     <div class="d-flex justify-content-center mt-4">
                         {{$articles->links()}}
                     </div>
-                    <div class="card-body">    
+                    <div class="card-body">
+    
                         <div class="table-responsive">
                             <table>
                                 <thead>
@@ -262,7 +263,9 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
+            
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 

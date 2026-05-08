@@ -11,6 +11,7 @@ class Paiements extends Model
 
     protected $fillable = [
         'vente_id',
+        'achat_id',
         'entreprise_id',
         'user_id',
         'montant',
@@ -27,6 +28,11 @@ class Paiements extends Model
     public function vente()
     {
         return $this->belongsTo(Vente::class);
+    }
+
+     public function achat()
+    {
+        return $this->belongsTo(Achat::class);
     }
 
     public function user()

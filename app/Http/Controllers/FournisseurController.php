@@ -113,7 +113,7 @@ class FournisseurController extends Controller
     public function factures($id)
     {
         //dd($id);
-        $factures= Achat::where('fournisseur_id', $id)->where('statut', 'recu')->latest()->paginate(50);
+        $factures= Achat::where('fournisseur_id', $id)->latest()->paginate(50);
 
         return view('dashboard.fournisseurs.factures', compact('factures'));
     }
