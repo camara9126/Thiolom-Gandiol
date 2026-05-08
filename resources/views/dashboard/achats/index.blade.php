@@ -98,7 +98,7 @@
                                                     @endif
                                                 </td>
 
-                                                <td class="d-flex gap-1">
+                                                <td class="">
 
                                                     @if($a->montant_restant == 0)
                                                         <span class="badge" style="background-color: gray;">

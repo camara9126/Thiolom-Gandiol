@@ -160,16 +160,6 @@ class AchatController extends Controller
 
             $entreprise= Entreprise::findOrFail(1); 
 
-            Depenses::create([
-                'entreprise_id' => $entreprise->id,
-                'user_id' => request()->user()->id,
-                'reference' => 'DEP-' . now()->timestamp,
-                'libelle' => 'Achat - '. $achat->reference,
-                'description' => 'Achat article',
-                'montant' => $achat->total,
-                'date_depense' => now(),
-                'mode_paiement' => 'cash',
-            ]);
 
         DB::commit();
 
