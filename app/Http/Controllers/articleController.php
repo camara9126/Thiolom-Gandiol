@@ -19,7 +19,7 @@ class articleController extends Controller
      */
     public function index()
     {
-        $articles= Article::latest()->paginate(50);
+        $articles= Article::with('magasin')->latest()->paginate(50);
         $categorie= categorie::latest()->get();
         $magasins = Magasin::latest()->get();
 
@@ -111,9 +111,11 @@ class articleController extends Controller
         // Creation de l'article dans le depot
         $magasin = Magasin::where('id', $request->magasin_id)->lockForUpdate()->firstOrFail(); // verrou stock
 
+        $depotPrincipal= Magasin::where('type', 'principal')->first();
+
         Article_depot::create([
             'article_id' => $articles->id,
-            'magasin_id' => $magasin->id,
+            'magasin_id' => $magasin->id ?? $depotPrincipal->id,
             'stock' => $request->stock,
         ]);
 

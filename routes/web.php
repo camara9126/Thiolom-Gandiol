@@ -17,6 +17,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RapportController;
 use App\Http\Controllers\RecetteController;
 use App\Http\Controllers\SessionCaisseController;
+use App\Http\Controllers\TransfersStockController;
 use App\Http\Controllers\VenteController;
 use App\Models\Article;
 use App\Models\Bon_commande;
@@ -141,7 +142,7 @@ Route::middleware('auth')->group(function () {
 
 });
 
-// Routes Mouvements et Magasin
+// Routes Mouvements - Magasin et Transfers de stock
 Route::middleware('auth')->group(function () {
     Route::get('/mouvements', [MouvementController::class, 'index'])->name('mouvements');
     Route::post('/mouvements', [MouvementController::class, 'stock'])->name('stock');
@@ -152,6 +153,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/magasinSearch', [MagasinController::class, 'search'])->name('mArticle.search');
     Route::get('/magasinListe/{id}', [MagasinController::class, 'liste'])->name('magasin.liste');
 
+    Route::resource('/transfers', TransfersStockController::class);
+
 });
 
 // Routes Achat - Bon_Commande et Fournisseur
@@ -160,8 +163,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/achatsSearch', [AchatController::class, 'search'])->name('achats.search');
     Route::post('/achatsPaiement', [AchatController::class, 'paiement'])->name('achats.paiement');
     Route::get('/achatsFacture/{id}', [AchatController::class, 'factures'])->name('achats.factures');
-
-    Route::get('/buySearch', [AchatController::class, 'achatSearch'])->name('achats.search');
 
     Route::resource('/bonCommande', BonCommandeController::class);
     Route::get('/bonCommandeSearch', [BonCommandeController::class, 'search'])->name('bonCommande.search');

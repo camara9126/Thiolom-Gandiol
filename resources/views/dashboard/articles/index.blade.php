@@ -93,7 +93,7 @@
                                             @if($a->stock_min >= $a->stock)
                                                 <span class="badge bg-danger">Stock faible</span>
                                             @else
-                                                 <span class="badge-success">{{$a->stock}} en stock</span>
+                                                 <span class="badge-success">{{$a->magasin->sum('pivot.stock')}} en stock</span>
                                             @endif
                                         </td>
                                         <!--<td>{{$a->etiquette ?? 'Pas d"etiquette'}}</td>-->
@@ -155,10 +155,11 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="mb-3">
-                                                        <label>Depot</label>
+                                                        <label>Magasin</label>
                                                         <select name="magasin_id" class="form-control">
+                                                                <option value="">-- Choisir un magasin --</option>
                                                             @foreach($magasins as $m)
-                                                                <option value="{{ $m->id }}">{{ $m->nom }}</option>
+                                                                <option value="{{ $m->id }}">{{ $m->nom }} - {{ $m->type }}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>         
@@ -265,7 +266,7 @@
                 </div>
             </div>
 
-            
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 

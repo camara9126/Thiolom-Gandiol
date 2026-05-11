@@ -41,6 +41,9 @@
 
                     <div class="card-header">
                         <span><i class="fas fa-box" style="color: var(--primary); margin-right: 0.5rem;"></i>Liste des magasins ( {{$magasins->count()}} )</span>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"  data-bs-target="#transferModal">
+                            Transfers
+                        </button>
                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"  data-bs-target="#magasinModal">
                             Nouveau magasin →
                         </button>
@@ -52,6 +55,7 @@
                                     <thead>
                                         <tr>
                                             <th>Nom</th>
+                                            <th>Type</th>
                                             <th>Telephone</th>
                                             <th>Adresse</th>
                                             <th>Action</th>
@@ -61,6 +65,7 @@
                                         @forelse($magasins as $m)
                                         <tr>
                                             <td>{{$m->nom}}</td>
+                                            <td><strong>{{$m->type}}</strong></td>
                                             <td>{{$m->telephone ?? 'Vide'}}</td>
                                             <td>{{$m->adresse ?? 'Vide'}}</td>
                                             <td>
@@ -173,6 +178,66 @@
                                             </div>
                                         </div>
                                     </form>
+                                </div>
+                            </div>
+
+                            <!-- Transfers article -->
+                            <div class="modal fade" id="transferModal" tabindex="-1">
+                                <div class="modal-dialog">
+                                <form method="post" action="{{route('transfers.store')}}">
+                                    @csrf
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Transfers Stock</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label>Produit</label>
+                                                <select class="form-control" name="article_id" id="">
+                                                    <option value="">-- Veuillez choisir un produit --</option>
+                                                    @foreach($articles as $a)
+                                                    <option value="{{$a->id}}">{{$a->nom}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label>Magasin Source</label>
+                                                        <select class="form-control" name="source_id" id="exampleFormControlSelect1">
+                                                            <option value="">-- Veuillez choisir la source --</option>
+                                                            @foreach($magasins as $m)
+                                                            <option value="{{$m->id}}">{{$m->nom}}</option>
+                                                            @endforeach
+                                                        </select>                                                        
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label>Magasin de destination</label>
+                                                        <select class="form-control" name="destination_id" id="exampleFormControlSelect1">
+                                                            <option value="">-- Veuillez choisir la destination --</option>
+                                                            @foreach($magasins as $m)
+                                                            <option value="{{$m->id}}">{{$m->nom}}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label>Quantite</label>
+                                                <input type="number" name="quantite" min="1" class="form-control" id="exampleInputquantity1">
+                                            </div>
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                                        </div>
+                                    </div>
+                                </form>
                                 </div>
                             </div>
                         </div>

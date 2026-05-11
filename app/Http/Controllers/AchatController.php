@@ -25,7 +25,7 @@ class AchatController extends Controller
      */
     public function index()
     {
-         $achats = Achat::with('fournisseur')->latest()->get();
+         $achats = Achat::with('fournisseur')->latest()->paginate(30);
 
         return view('dashboard.achats.index', compact('achats'));
     }
@@ -92,7 +92,7 @@ class AchatController extends Controller
 
             // Création du bon de commande
             $achat = Achat::create([
-                'reference' => 'AC-' . strtoupper(Str::random(6)),
+                'reference' => 'FAC-' . strtoupper(Str::random(6)),
                 'fournisseur_id' => $request->fournisseur_id,
                 'total' => 0,
                 'note' => $request->note ?? 'null',
@@ -132,12 +132,14 @@ class AchatController extends Controller
                 // Mettre à jour le stock dans Article_depot 
                 $articleDepot = Article_depot::where('article_id', $item['article_id'])->where('magasin_id', $request->magasin_id)->first();
             
+                $depotPrincipal= Magasin::where('type', 'principal')->first();
+
                 if ($articleDepot) {
                     $articleDepot->increment('stock', $item['quantite']);
                 } else {
                     Article_depot::create([
                         'article_id' => $item['article_id'],
-                        'magasin_id' => $request->magasin_id,
+                        'magasin_id' => $request->magasin_id ?? $depotPrincipal->id,
                         'stock' => $item['quantite']
                     ]);
                 }

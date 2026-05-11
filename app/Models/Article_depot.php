@@ -11,4 +11,8 @@ class Article_depot extends Model
         'magasin_id',
         'stock',
     ];
+
+    public function article() {
+        return $this->hasMany(Article::class, 'article_depots')->withPivot('stock')->withTimestamps();
+    }
 }

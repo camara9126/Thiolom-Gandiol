@@ -10,6 +10,7 @@ class Magasin extends Model
         'nom',
         'telephone',
         'adresse',
+        'type'
     ];
 
     public function stock()

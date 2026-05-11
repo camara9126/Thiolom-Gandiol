@@ -89,10 +89,10 @@
                                     <div class="col-6">
                                         <div class="mb-3">
                                             <label>Magasin</label>
-                                            <select name="magasin_id" class="form-control" required>
+                                            <select name="magasin_id" class="form-control">
                                                 <option value="">-- Choisir un magasin --</option>
                                                 @foreach($magasin as $m)
-                                                    <option value="{{ $m->id }}">{{ $m->nom }}</option>
+                                                    <option value="{{ $m->id }}">{{ $m->nom }} - {{ $m->type }}</option>
                                                 @endforeach
                                             </select>
                                         </div>

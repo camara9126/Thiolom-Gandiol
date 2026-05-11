@@ -27,7 +27,7 @@ class Article extends Model
 
     public function magasin()
     {
-        $this->belongsToMany(Magasin::class, 'article_depots')->withPivot('stock')->withTimestamps();
+        return $this->belongsToMany(Magasin::class, 'article_depots')->withPivot('stock')->withTimestamps();
     }
 
 

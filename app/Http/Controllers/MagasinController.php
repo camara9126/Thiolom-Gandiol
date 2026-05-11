@@ -15,8 +15,9 @@ class MagasinController extends Controller
     public function index()
     {
         $magasins= Magasin::with('stock')->latest()->paginate(50);
+        $articles = Article::with('categorie')->latest()->get();
 
-        return view('dashboard.magasin.index', compact('magasins'));
+        return view('dashboard.magasin.index', compact('magasins','articles'));
     }
 
     /**
@@ -72,6 +73,7 @@ class MagasinController extends Controller
             'telephone' => $request->telephone,
             'email' => $request->email,
             'adresse' => $request->adresse,
+            'type' => 'magasin'
         ]);
 
         return redirect()->route('magasin.index')->with('success', 'Magasin ajouté avec succès');
@@ -103,6 +105,9 @@ class MagasinController extends Controller
         $magasin= Magasin::findOrFail($id);
         $articles= $magasin->article()->withPivot('stock')->latest()->paginate(50);
 
-        return view('dashboard.magasin.listeArticle', compact('magasin','articles'));
+        // Liste des magasin pour transfers
+        $magasins = Magasin::latest()->get();
+
+        return view('dashboard.magasin.listeArticle', compact('magasin','articles','magasins'));
     }
 }

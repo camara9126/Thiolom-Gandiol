@@ -15,7 +15,7 @@
                     <i class="fas fa-search"></i>
                     <form method="get" action="{{route('achats.search')}}" class="form-inline">
                         
-                        <input type="text" name="search"  placeholder="Recherche bon...">                                                   
+                        <input type="text" name="search"  placeholder="Recherche achat...">                                                   
                             
                     </form>
                 </div>
@@ -60,7 +60,9 @@
 
                         <div class="card">
                             <div class="card-body">
-
+                                <div class="d-flex justify-content-center mt-4">
+                                    {{$achats->links()}}
+                                </div> 
                                 <table class="table-responsive">
                                     <thead>
                                         <tr>
@@ -98,8 +100,7 @@
                                                     @endif
                                                 </td>
 
-                                                <td class="">
-
+                                                <td>
                                                     @if($a->montant_restant == 0)
                                                         <span class="badge" style="background-color: gray;">
                                                                 Payée
@@ -108,8 +109,6 @@
                                                         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-id="{{$a->id}}" data-bs-target="#paiementModal">Payer
                                                         </button>
                                                     @endif
-                                                   
-
                                                 </td>
                                                 <td>
                                                      <!-- Voir -->

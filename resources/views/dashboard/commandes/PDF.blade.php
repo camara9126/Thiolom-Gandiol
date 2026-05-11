@@ -219,13 +219,15 @@
 
         <!-- Client -->
         <div class="client-section">
-            <div class="client-label">Client :</div>
-            <div>{{ $vente->client->nom }}</div>
-            @if($vente->client->telephone)
-                <div>Tél: {{ $vente->client->telephone }}</div>
-            @endif
-            @if($vente->client->adresse)
-                <div>{{ $vente->client->adresse }}</div>
+            @if($vente->client->nom)
+                <div class="client-label">Client :</div>
+                <div>{{ $vente->client->nom }}</div>
+                @if($vente->client->telephone)
+                    <div>Tél: {{ $vente->client->telephone }}</div>
+                @endif
+                @if($vente->client->adresse)
+                    <div>{{ $vente->client->adresse }}</div>
+                @endif
             @endif
         </div>
 

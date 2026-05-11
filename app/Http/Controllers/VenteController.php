@@ -17,7 +17,6 @@ use App\Models\Vente;
 use App\Models\VenteItem;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class VenteController extends Controller
@@ -173,7 +172,7 @@ class VenteController extends Controller
 
                 //dd($request->montant);
                 $vente = Vente::create([
-                    'client_id' =>  $request->client_id ?? 2,
+                    'client_id' =>  $request->client_id ?? null,
                     'session_caisse_id' => $session->id,
                     'reference' => 'VNT-' . time(),
                     'date' => now(),
