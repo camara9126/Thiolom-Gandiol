@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('transfers_stocks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('article_id')->nullable()->constrained()->onDelete('cascade');
-            $table->foreignId('source_id')->nullable()->constrained()->onDelete('cascade');
-            $table->foreignId('destination_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('article_id')->nullable();
+            $table->foreignId('source_id')->nullable();
+            $table->foreignId('destination_id')->nullable();
             $table->integer('quantite');
             $table->timestamps();
         });
